@@ -1,0 +1,35 @@
+name: Auto Patch PPT Images with White Background
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - '**.md' # 只有當有修改 .md 筆記時才觸發，節省效能
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 賦予機器人修改並回推檔案的權限
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.x'
+
+    - name: Run image patching script
+      run: |
+        python Github_Actions/auto_patch_images.py
+
+    - name: Commit and Push changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "?? [GitHub Actions] Automatically added white background to PPT images"
+        file_pattern: '**.md'
