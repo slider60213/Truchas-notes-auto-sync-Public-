@@ -2,16 +2,15 @@ import os
 import re
 
 def patch_markdown_images(vault_dir):
-    # Regex pattern to match standard Markdown image format: ![width](pics/path)
-    md_pattern = re.compile(r'!\[(\d*)\]\((pics/[^)]+)\)')
+    # 萬用正則：同時捕捉 ![[pics/名稱.png]] 和 ![寬度](pics/名稱.png)
+    # Group 1: 捕捉標準語法的寬度, Group 2: 捕捉雙括號路徑, Group 3: 捕捉標準括號路徑
+    pattern = re.compile(r'!\[(\d*)\]\(\s*(pics/[^)]+)\s*\)|!\[\[\s*(pics/[^\]]+)\s*\]\]')
 
     for root, dirs, files in os.walk(vault_dir):
-        # Exclude hidden folders
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         
         for file in files:
-            # 確保只處理標準筆記，跳過外掛產生的衝突暫存檔
-            if file.endswith('.md') and 'conflict-files' not in file:
+            if file.endswith('.md'):
                 file_path = os.path.join(root, file)
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
@@ -19,19 +18,24 @@ def patch_markdown_images(vault_dir):
 
                     if 'pics/' in content:
                         def replacer(match):
-                            width = match.group(1)
-                            img_path = match.group(2)
+                            # 判斷是哪一種語法抓到的路徑
+                            width = match.group(1) or ''
+                            img_path = match.group(2) or match.group(3)
+                            
+                            # 清除可能的空白字元，並將網頁不支援的空白編碼改為 %20
+                            img_path = img_path.strip().replace(' ', '%20')
+                            
                             width_attr = f'width="{width}"' if width else ''
                             return f'<img src="{img_path}" {width_attr} style="background-color:#ffffff; padding:10px; border-radius:8px;" alt="Image">'
 
-                        new_content = md_pattern.sub(replacer, content)
+                        new_content = pattern.sub(replacer, content)
 
                         if new_content != content:
                             with open(file_path, 'w', encoding='utf-8') as f:
                                 f.write(new_content)
                             print(f"Successfully patched: {file}")
                 except Exception as e:
-                    print(f"Skipped file due to error: {file}, {str(e)}")
+                    print(f"Error processing {file}: {str(e)}")
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
