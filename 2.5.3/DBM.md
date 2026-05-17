@@ -28,7 +28,7 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 # 👨‍💻 以後
-![[pics/Pasted image 20260518005848.png]]
+![Pasted image 20260518005848](pics/Pasted%20image%2020260518005848.png)
 
 ---
 # 📝 內容紀錄
