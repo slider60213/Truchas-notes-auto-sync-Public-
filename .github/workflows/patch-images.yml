@@ -5,13 +5,13 @@ on:
     branches:
       - main
     paths:
-      - '**.md' # 只有當有修改 .md 筆記時才觸發，節省效能
+      - '**.md'
 
 jobs:
   patch:
     runs-on: ubuntu-latest
     permissions:
-      contents: write # 賦予機器人修改並回推檔案的權限
+      contents: write
 
     steps:
     - name: Checkout repository
@@ -31,5 +31,5 @@ jobs:
     - name: Commit and Push changes
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: "?? [GitHub Actions] Automatically added white background to PPT images"
+        commit_message: "Automated patch: Add white background to PPT images"
         file_pattern: '**.md'
