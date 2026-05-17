@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-18 00:44
-modified: 2026-05-18 02:12
+modified: 2026-05-18 02:13
 tags:
   - "#Truchas"
   - 2˙5˙3版
