@@ -2,14 +2,26 @@ import os
 
 def patch_markdown_images(vault_dir):
     valid_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp')
+    
+    print(f"=== [DEBUG] GitHub Actions Python Script Started ===")
+    print(f"=== [DEBUG] Target Directory: {vault_dir}")
 
+    # 檢查目標目錄是否存在
+    if not os.path.exists(vault_dir):
+        print(f"=== [DEBUG] ERROR: Target directory does not exist! ===")
+        return
+
+    md_file_count = 0
     for root, dirs, files in os.walk(vault_dir):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         
         for file in files:
-            # 1. 先判讀是否為 md 檔
             if file.endswith('.md'):
+                md_file_count += 1
                 file_path = os.path.join(root, file)
+                # 列印出腳本在雲端實際上揪出的每一篇 MD 檔名與相對路徑
+                print(f"=== [DEBUG] Found MD file: {os.path.relpath(file_path, vault_dir)}")
+                
                 try:
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
@@ -18,42 +30,34 @@ def patch_markdown_images(vault_dir):
                     modified = False
                     
                     while True:
-                        # 尋找驚嘆號
                         start_excl = content.find('![', idx)
                         if start_excl == -1:
                             break
                         
-                        # 尋找對應的中括號結尾
                         end_bracket = content.find(']', start_excl)
                         if end_bracket == -1:
                             idx = start_excl + 2
                             continue
                             
-                        # 尋找緊接在後的小括號開頭
                         start_paren = content.find('(', end_bracket)
                         if start_paren == -1 or start_paren != end_bracket + 1:
                             idx = end_bracket + 1
                             continue
                             
-                        # 尋找小括號結尾
                         end_paren = content.find(')', start_paren)
                         if end_paren == -1:
                             idx = start_paren + 1
                             continue
 
-                        # 完全符合 ![...] (...) 格式，直接以括號當作首尾索引截取路徑
                         path_content = content[start_paren + 1:end_paren].strip()
                         alt_text = content[start_excl + 2:end_bracket].strip()
                         full_match_str = content[start_excl:end_paren + 1]
                         
-                        # 判斷截取出來的字串結尾是否為圖片格式
                         lower_path = path_content.lower()
                         is_image = any(lower_path.endswith(ext) or (ext + '?') in lower_path for ext in valid_extensions)
                         
                         if is_image:
-                            # 整理圖片路徑中的空白字元與 %20
                             img_path = path_content.replace('%20', ' ').replace(' ', '%20')
-                            
                             width_attr = ''
                             if alt_text:
                                 if '|' in alt_text:
@@ -63,25 +67,27 @@ def patch_markdown_images(vault_dir):
                                 elif alt_text.isdigit():
                                     width_attr = f'width="{alt_text}"'
                             
-                            # 組合成白底圓角 <img> 標籤，並在下一行強行加上 YES 註解
                             img_tag = f'<img src="{img_path}" {width_attr} style="background-color:#ffffff; padding:12px; border-radius:8px;" alt="Image">\n'
                             content = content.replace(full_match_str, img_tag)
                             idx = start_excl + len(img_tag)
+                            print(f"    -> [MATCH SUCCESS] Replaced image: {path_content}")
                         else:
-                            # 如果符合特徵但不是圖片副檔名，在原本語法下一行強行加上 NO 註解
                             no_tag = f'{full_match_str}\n'
                             content = content.replace(full_match_str, no_tag)
                             idx = start_excl + len(no_tag)
+                            print(f"    -> [MATCH FAILED] Not an image extension: {path_content}")
                             
                         modified = True
 
                     if modified:
                         with open(file_path, 'w', encoding='utf-8') as f:
                             f.write(content)
-                        print(f"Successfully logging/patching: {file}")
+                        print(f"    -> [FILE WRITE] Successfully saved modifications to {file}")
                         
                 except Exception as e:
-                    print(f"Error processing {file}: {str(e)}")
+                    print(f"    -> [ERROR] Failed to process {file}: {str(e)}")
+
+    print(f"=== [DEBUG] Scan Finished. Total MD files scanned: {md_file_count} ===")
 
 if __name__ == "__main__":
     script_dir = os.path.dirname(os.path.abspath(__file__))
