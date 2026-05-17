@@ -2,8 +2,7 @@ import os
 import re
 
 def patch_markdown_images(vault_dir):
-    # 強大萬用正則：精確捕捉標準 Markdown、Obsidian 混血網頁語法
-    # 只要含有 pics/ 且符合圖片特徵，全部一網打盡
+    # Match standard MD, mixed MD with %20, and Obsidian WikiLinks
     pattern = re.compile(r'!\[([^\]]*)\]\(\s*(pics/[^)]+)\s*\)|!\[\[\s*(pics/[^\]]+)\s*\]\]')
 
     for root, dirs, files in os.walk(vault_dir):
@@ -21,23 +20,20 @@ def patch_markdown_images(vault_dir):
                             alt_text = match.group(1) or ''
                             img_path = match.group(2) or match.group(3)
                             
-                            # 統一處理路徑中的空白字元與網頁編碼
+                            # Clean up space characters and web encodings
                             img_path = img_path.strip().replace('%20', ' ').replace(' ', '%20')
                             
                             width_attr = ''
-                            # 解析 Obsidian 各種 | 寬高組合 (例如: 394|375, |425, image_name|310)
+                            # Parse Obsidian dimensions like 394|375, |425, image_name|310
                             if alt_text and '|' in alt_text:
                                 parts = [p.strip() for p in alt_text.split('|')]
-                                # 優先檢查第一部分是不是純數字寬度 (如 394|375)
                                 if parts[0].isdigit():
                                     width_attr = f'width="{parts[0]}"'
-                                # 再檢查最後一部分是不是純數字寬度 (如 image_name|310)
                                 elif parts[-1].isdigit():
                                     width_attr = f'width="{parts[-1]}"'
                             elif alt_text and alt_text.isdigit():
                                 width_attr = f'width="{alt_text}"'
                             
-                            # 回傳完美的圓角白底標籤，並維持原本的寬度縮放
                             return f'<img src="{img_path}" {width_attr} style="background-color:#ffffff; padding:12px; border-radius:8px;" alt="Image">'
 
                         new_content = pattern.sub(replacer, content)
