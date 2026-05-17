@@ -24,12 +24,21 @@ jobs:
       with:
         python-version: '3.x'
 
-    - name: Run image patching script
+    - name: Run Python Patch and Push Directly
       run: |
+        # 1. 執行你寫得非常完美的純字串切片 Python 腳本
         python Github_Actions/auto_patch_images.py
-
-    - name: Commit and Push changes
-      uses: stefanzweifel/git-auto-commit-action@v5
-      with:
-        commit_message: "Automated patch: Add white background to PPT images"
-        file_pattern: '**.md'
+        
+        # 2. 設定雲端機器人的 Git 資訊
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # 3. 檢查是否有檔案被修改，有的話就直接原生 Push 
+        if [ -n "$(git status --porcelain)" ]; then
+          echo "=== [DEBUG] Changes detected, committing... ==="
+          git add .
+          git commit -m "Automated patch: Add white background to PPT images"
+          git push origin main
+        else
+          echo "=== [DEBUG] No changes detected. ==="
+        fi
