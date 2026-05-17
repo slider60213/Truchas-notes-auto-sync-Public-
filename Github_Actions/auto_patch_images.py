@@ -2,8 +2,12 @@ import os
 import re
 
 def patch_markdown_images(vault_dir):
-    # 修改後的萬用正則：相容路徑前方帶有 ../ 或其他目錄層級的狀況
-    pattern = re.compile(r'!\[([^\]]*)\]\(\s*([^)]*pics/[^)]+)\s*\)|!\[\[\s*([^\]]*pics/[^\]]+)\s*\]\]')
+    # 精準正則：抓取標準 Markdown 圖片語法 ! [ alt ] ( path )
+    # Group 1: 欄位描述 (含寬度) , Group 2: 完整檔案路徑
+    md_pattern = re.compile(r'!\[([^\]]*)\]\(\s*([^)]+)\s*\)')
+    
+    # 支援的圖片副檔名
+    valid_extensions = ('.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp')
 
     for root, dirs, files in os.walk(vault_dir):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
@@ -15,33 +19,37 @@ def patch_markdown_images(vault_dir):
                     with open(file_path, 'r', encoding='utf-8') as f:
                         content = f.read()
 
-                    if 'pics/' in content:
-                        def replacer(match):
-                            alt_text = match.group(1) or ''
-                            # 抓取完整的路徑（包含前面的 ../）
-                            img_path = match.group(2) or match.group(3)
+                    def replacer(match):
+                        alt_text = match.group(1)
+                        img_path = match.group(2).strip()
+                        
+                        # 擷取路徑最後，轉小寫來檢查是否為圖片檔
+                        lower_path = img_path.lower()
+                        if lower_path.endswith(valid_extensions) or any(ext + '?' in lower_path for ext in valid_extensions):
+                            # 整理路徑編碼（處理空白與 %20）
+                            img_path = img_path.replace('%20', ' ').replace(' ', '%20')
                             
-                            # 清理空白與網頁編碼
-                            img_path = img_path.strip().replace('%20', ' ').replace(' ', '%20')
-                            
+                            # 解析 Obsidian 的寬高設定 (例如: image|310)
                             width_attr = ''
-                            if alt_text and '|' in alt_text:
-                                parts = [p.strip() for p in alt_text.split('|')]
-                                if parts[0].isdigit():
-                                    width_attr = f'width="{parts[0]}"'
-                                elif parts[-1].isdigit():
-                                    width_attr = f'width="{parts[-1]}"'
-                            elif alt_text and alt_text.isdigit():
-                                width_attr = f'width="{alt_text}"'
-                            
+                            if alt_text:
+                                if '|' in alt_text:
+                                    width = alt_text.split('|')[-1].strip()
+                                    if width.isdigit():
+                                        width_attr = f'width="{width}"'
+                                elif alt_text.isdigit():
+                                    width_attr = f'width="{alt_text}"'
+                                    
                             return f'<img src="{img_path}" {width_attr} style="background-color:#ffffff; padding:12px; border-radius:8px;" alt="Image">'
+                        
+                        # 如果不是圖片副檔名，保持原樣不變
+                        return match.group(0)
 
-                        new_content = pattern.sub(replacer, content)
+                    new_content = md_pattern.sub(replacer, content)
 
-                        if new_content != content:
-                            with open(file_path, 'w', encoding='utf-8') as f:
-                                f.write(new_content)
-                            print(f"Successfully patched images in: {file}")
+                    if new_content != content:
+                        with open(file_path, 'w', encoding='utf-8') as f:
+                            f.write(new_content)
+                        print(f"Successfully patched images in: {file}")
                 except Exception as e:
                     print(f"Error processing {file}: {str(e)}")
 
