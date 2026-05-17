@@ -2,8 +2,8 @@ import os
 import re
 
 def patch_markdown_images(vault_dir):
-    # Match standard MD, mixed MD with %20, and Obsidian WikiLinks
-    pattern = re.compile(r'!\[([^\]]*)\]\(\s*(pics/[^)]+)\s*\)|!\[\[\s*(pics/[^\]]+)\s*\]\]')
+    # 修改後的萬用正則：相容路徑前方帶有 ../ 或其他目錄層級的狀況
+    pattern = re.compile(r'!\[([^\]]*)\]\(\s*([^)]*pics/[^)]+)\s*\)|!\[\[\s*([^\]]*pics/[^\]]+)\s*\]\]')
 
     for root, dirs, files in os.walk(vault_dir):
         dirs[:] = [d for d in dirs if not d.startswith('.')]
@@ -18,13 +18,13 @@ def patch_markdown_images(vault_dir):
                     if 'pics/' in content:
                         def replacer(match):
                             alt_text = match.group(1) or ''
+                            # 抓取完整的路徑（包含前面的 ../）
                             img_path = match.group(2) or match.group(3)
                             
-                            # Clean up space characters and web encodings
+                            # 清理空白與網頁編碼
                             img_path = img_path.strip().replace('%20', ' ').replace(' ', '%20')
                             
                             width_attr = ''
-                            # Parse Obsidian dimensions like 394|375, |425, image_name|310
                             if alt_text and '|' in alt_text:
                                 parts = [p.strip() for p in alt_text.split('|')]
                                 if parts[0].isdigit():
