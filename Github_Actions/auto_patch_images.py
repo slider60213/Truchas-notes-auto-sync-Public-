@@ -33,6 +33,7 @@ def patch_markdown_images(vault_dir):
                         print(f"成功自動優化圖片樣式: {file}")
 
 if __name__ == "__main__":
-    # 使用相對路徑，自動偵測當前執行目錄
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    patch_markdown_images(current_dir)
+    # 自動定位到當前腳本的上一層（即專案根目錄）
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    vault_root = os.path.abspath(os.path.join(script_dir, ".."))
+    patch_markdown_images(vault_root)
