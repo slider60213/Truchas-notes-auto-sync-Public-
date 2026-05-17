@@ -2,8 +2,7 @@ import os
 import re
 
 def patch_markdown_images(vault_dir):
-    # 萬用正則：同時捕捉 ![[pics/名稱.png]] 和 ![寬度](pics/名稱.png)
-    # Group 1: 捕捉標準語法的寬度, Group 2: 捕捉雙括號路徑, Group 3: 捕捉標準括號路徑
+    # Match both standard MD syntax and Obsidian WikiLinks syntax
     pattern = re.compile(r'!\[(\d*)\]\(\s*(pics/[^)]+)\s*\)|!\[\[\s*(pics/[^\]]+)\s*\]\]')
 
     for root, dirs, files in os.walk(vault_dir):
@@ -18,11 +17,10 @@ def patch_markdown_images(vault_dir):
 
                     if 'pics/' in content:
                         def replacer(match):
-                            # 判斷是哪一種語法抓到的路徑
                             width = match.group(1) or ''
                             img_path = match.group(2) or match.group(3)
                             
-                            # 清除可能的空白字元，並將網頁不支援的空白編碼改為 %20
+                            # Replace spaces with %20 for HTML compatibility
                             img_path = img_path.strip().replace(' ', '%20')
                             
                             width_attr = f'width="{width}"' if width else ''
