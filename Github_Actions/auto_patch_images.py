@@ -2,12 +2,11 @@ import os
 import re
 
 def patch_markdown_images(vault_dir):
-    # 萬用匹配：尋找 Markdown 圖片語法 ![[...]] 或 ![寬度](路徑)
-    # 捕捉標準 MD 語法：![寬度](路徑)
+    # Regex pattern to match standard Markdown image format: ![width](path)
     md_pattern = re.compile(r'!\[(\d*)\]\((pics/[^)]+)\)')
 
     for root, dirs, files in os.walk(vault_dir):
-        # 排除隱藏資料夾（如 .git, .obsidian）
+        # Exclude hidden folders like .git and .obsidian
         dirs[:] = [d for d in dirs if not d.startswith('.')]
         
         for file in files:
@@ -16,9 +15,8 @@ def patch_markdown_images(vault_dir):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     content = f.read()
 
-                # 如果有點擊 PPT 貼上的圖片，進行萬用替換
                 if 'pics/' in content:
-                    # 替換成自帶圓角白底、保持原有寬度的標準 HTML 標籤
+                    # Replace with HTML img tag containing background styling
                     def replacer(match):
                         width = match.group(1)
                         img_path = match.group(2)
@@ -30,10 +28,10 @@ def patch_markdown_images(vault_dir):
                     if new_content != content:
                         with open(file_path, 'w', encoding='utf-8') as f:
                             f.write(new_content)
-                        print(f"成功自動優化圖片樣式: {file}")
+                        print(f"Successfully patched: {file}")
 
 if __name__ == "__main__":
-    # 自動定位到當前腳本的上一層（即專案根目錄）
+    # Locate the repository root folder (one level above this script)
     script_dir = os.path.dirname(os.path.abspath(__file__))
     vault_root = os.path.abspath(os.path.join(script_dir, ".."))
     patch_markdown_images(vault_root)
