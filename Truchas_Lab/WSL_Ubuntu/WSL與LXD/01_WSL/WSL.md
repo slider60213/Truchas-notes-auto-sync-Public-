@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-05-18 21:57
+modified: 2026-05-18 22:01
 tags:
   - WSL
   - Linux
@@ -66,13 +66,17 @@ wsl --install
 安裝完成後依提示重啟電腦，系統預設會自動幫你裝好最新版的 [Ubuntu](https://learn.microsoft.com/zh-tw/windows/wsl/install) 環境。 [[1](https://learn.microsoft.com/zh-tw/windows/wsl/install)]
 
 
-### 💼 匯出/還原整個 WSL
+### 💼 匯出/匯入整個 WSL
 ```
 # 先關閉 WSL 確保資料完整
 wsl --shutdown
 
-# 執行匯出 (假設你的 WSL 名稱是 Ubuntu，可用 wsl -l -v 查看)
-wsl --export Ubuntu D:\Truchas_Parallel_Full_20260407.tar
+# 匯出打包 (可用 wsl -l -v 查看想打包的 WSL 名稱，假設是 Ubuntu-20260407)
+wsl --export Ubuntu-20260407 D:\Truchas_Parallel_Full_20260407.tar
+
+# 匯入打包好的WSL (WSL名稱取為Truchas-Lab，位置設在 D:\WSL_Truchas)
+wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
+
 ```
 ---
 # 🔗 參考資料
