@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-05-17 02:55
+modified: 2026-05-18 21:55
 tags:
   - WSL
   - Linux
@@ -25,7 +25,7 @@ AND !icontains(file.name, "excalidraw")
 # 📝 內容紀錄
 ## WSL 是什麼?
 
-==**WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是微軟開發的一項 Windows 內建功能，讓使用者能在 Windows 電腦上直接執行 Linux 環境**==。它省去了過去需要安裝個別虛擬機（如 VMware、VirtualBox）或設定雙系統的麻煩，讓開發人員可以同時享受 Windows 的日常便利與 Linux 的強大開發工具。 [[1](https://learn.microsoft.com/zh-tw/windows/wsl/about)]
+WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是微軟開發的一項 Windows 內建功能，讓使用者能在 Windows 電腦上直接執行 Linux 環境。它省去了過去需要安裝個別虛擬機（如 VMware、VirtualBox）或設定雙系統的麻煩，讓開發人員可以同時享受 Windows 的日常便利與 Linux 的強大開發工具。 [[1](https://learn.microsoft.com/zh-tw/windows/wsl/about)]
 
 ### 💡 核心優點與特色
 
@@ -39,7 +39,7 @@ AND !icontains(file.name, "excalidraw")
 - 執行常用的 Linux 終端機指令（如 `grep`、`sed`、`awk`）。
 - 執行 Bash 腳本與各類程式語言環境（如 Python、Node.js、Rust、Go、C++）。
 - 流暢運行 [Docker](https://www.reddit.com/r/webdev/comments/1eo6wdn/what_does_wsl_actually_do_and_why_is_it_needed/?tl=zh-hant) 容器化開發環境。
-- 亦可以針對不同研究主題設置 [[../02_LXD容器/LXD 容器|LXD 容器]] [[../../116版_2.0.2/pics/LXD_Docker_.venv|( LXD or Docker ? )]]
+- 亦可以針對不同研究主題設置 [LXD vs Docker](../../116版_2.0.2/pics/LXD_Docker_.venv.md)
 - 使用 Linux 套件管理工具（如 `apt`）一鍵下載安裝各式軟體。 
 
 ### 🔄 WSL 1 與 WSL 2 的差別
