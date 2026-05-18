@@ -40,12 +40,17 @@ AND !icontains(file.name, "excalidraw")
 # 👨‍💻 以後
 
 ![466|375](pics/Pasted%20image%2020260518221818.png)
+
 流體流變特性圖
 
+
 ![|375](pics/Pasted%20image%2020260518223019.png)
+
 DBM 關係圖 (Shear stress - Strain rate)
 
+
 ![|375](pics/Pasted%20image%2020260518223327.png)
+
 DBM 關係圖 (Viscosity - Strain rate)
 
 ---
