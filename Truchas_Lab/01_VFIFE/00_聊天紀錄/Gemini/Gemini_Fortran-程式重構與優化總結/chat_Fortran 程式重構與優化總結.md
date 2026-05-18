@@ -12,7 +12,7 @@
 
 *[This turn includes uploaded images]*
 
-![「MD」圖示](assets/img-001.png)
+![「MD」圖示](../Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
 
 總結一下這份修改過程的貢獻 可以的話最後列個對比表 遇到什麼問題 怎麼優化
 
@@ -68,7 +68,7 @@
 
 *[This turn includes uploaded images]*
 
-![「不明」圖示](assets/img-002.png)
+![「不明」圖示](../Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 把裡面的英文註解改寫成中文
 
@@ -185,7 +185,7 @@ Material_Group: 1
 
 *[This turn includes uploaded images]*
 
-![「不明」圖示](assets/img-002.png)
+![「不明」圖示](../Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 翻譯這份好了 只要翻譯！開頭的
 
@@ -407,7 +407,7 @@ Total_Force_Nodes (nnaf4): 0
 
 *[This turn includes uploaded images]*
 
-![「不明」圖示](assets/img-002.png)
+![「不明」圖示](../Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 我們終於在gfortran可以編譯的前提下，完成dat檔讀取的改寫以及各種陣列的動態配置，現在要繼續將後半部分的物理計算接上去，一個一個來，第一個該做什麼
 
@@ -619,7 +619,7 @@ end subroutine
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-003.png)
+![上傳圖片預覽](../Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
 
 我說的是程式大綱的問題，像圖片這樣假如我把各個結構摺疊起來，我會看到 SUBROUTINE readata1, SUBROUTINE FIND_CARD, SUBROUTINE dynamic(), SUBROUTINE compute_internal(), SUBROUTINE allocate_arrays(), FUNCTION GET_VALUE_AFTER_COLON(line) RESULT(val)，但其中只有readata1, dynamic, compute_internal才是關鍵步驟，其他都是小章節或是工具
 
