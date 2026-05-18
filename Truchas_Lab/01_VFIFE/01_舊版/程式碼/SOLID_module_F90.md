@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-14 01:41
-modified: 2026-05-14 01:43
+modified: 2026-05-19 03:51
 tags:
   - "#Truchas"
   - VFIFE
@@ -24,6 +24,7 @@ AND !icontains(file.name, "excalidraw")
 # 🦖 以前
 - 被使用於 [fluid_flow_module_F90](fluid_flow_module_F90.md)
 
+原版 `bmass` 的本質就是：**「遍歷每個四面體單元 $\rightarrow$ 用向量公式算出體積 $\rightarrow$ 乘上密度得到總質量 $\rightarrow$ 平均平分給 12 個自由度並寫入 `xmeli`」**
 ---
 # 👨‍💻 以後
 
