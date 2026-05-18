@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-18 00:44
-modified: 2026-05-18 02:17
+modified: 2026-05-18 22:38
 tags:
   - "#Truchas"
   - 2˙5˙3版
@@ -20,22 +20,22 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 # 📌 摘要
-
+- DBM 全名為 Discontinuous Bi-viscous Model，在實驗室發表的文章中被稱為 CBM (Conventional Bi-viscous Model)。
+- 
 
 ---
 # 🦖 以前
 
 
+
 ---
 # 👨‍💻 以後
 
+![466|375](pics/Pasted%20image%2020260518221818.png)
 
-![Pasted image 20260518005848|310](pics/Pasted%20image%2020260518005848.png)
+![|375](pics/Pasted%20image%2020260518223019.png)
 
-
-![394|375](pics/Pasted%20image%2020260518012642.png)
-
-![|425](pics/Pasted%20image%2020260518014422.png)
+![|375](pics/Pasted%20image%2020260518223327.png)
 
 ---
 # 📝 內容紀錄

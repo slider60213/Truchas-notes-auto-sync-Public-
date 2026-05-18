@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-16 21:17
-modified: 2026-05-18 22:04
+modified: 2026-05-18 22:30
 tags:
   - WSL
   - Linux
@@ -33,7 +33,6 @@ AND !icontains(file.name, "excalidraw")
 # 📝 內容紀錄
 
 [Gemini_LXD容器提問](../00_聊天紀錄/Gemini/Gemini_LXD容器提問.md)
-
 ---
 # 🔗 參考資料
 
