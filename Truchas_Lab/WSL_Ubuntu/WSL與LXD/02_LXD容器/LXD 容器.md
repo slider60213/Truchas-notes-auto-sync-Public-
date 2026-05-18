@@ -32,6 +32,7 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 📝 內容紀錄
 
+[Gemini_LXD容器提問](../00_聊天紀錄/Gemini/Gemini_LXD容器提問.md)
 
 ---
 # 🔗 參考資料
