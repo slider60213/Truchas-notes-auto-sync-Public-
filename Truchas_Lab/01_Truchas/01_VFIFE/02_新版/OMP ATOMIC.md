@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-20 00:46
-modified: 2026-05-20 00:48
+modified: 2026-05-20 03:40
 tags:
   - "#Truchas"
 ---
@@ -24,9 +24,12 @@ AND !icontains(file.name, "excalidraw")
 # 🦖 以前
 
 
+
 ---
 # 👨‍💻 以後
 
+
+[Gemini_MPI-與-OpenMP-差異解析](../00_聊天紀錄/Gemini/Gemini_MPI-與-OpenMP-差異解析.md)
 
 ---
 # 📝 內容紀錄
