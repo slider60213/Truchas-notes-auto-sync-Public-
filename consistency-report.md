@@ -13,7 +13,7 @@
 - (line 16): `../../../Excalidraw/pics/Pasted image 20260504023300.png`
 
 
-[[Truchas_Lab/01_VFIFE/00_聊天紀錄/NBLM/VFIFE_NBLM-20260303]]:
+[[Truchas_Lab/01_Truchas/01_VFIFE/00_聊天紀錄/NBLM/VFIFE_NBLM-20260303]]:
 - (line 7): `Zotero`
 - (line 7): `NotebookLM`
 - (line 9): `三維海嘯模擬`
@@ -28,7 +28,7 @@
 - (line 302): `drivers.F90`
 
 
-[[Truchas_Lab/01_VFIFE/02_新版/Gmsh]]:
+[[Truchas_Lab/01_Truchas/01_VFIFE/02_新版/Gmsh]]:
 - (line 32): `聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/chat_Gmsh-GUI-設定建議.md#1`
 - (line 34): `聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/chat_Gmsh-GUI-設定建議.md#7`
 - (line 35): `聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/chat_Gmsh-GUI-設定建議.md#20`
@@ -41,21 +41,21 @@
 
 
 # Bad embeds (4 files)
-[[Truchas_Lab/02_WSL_Ubuntu/01_116版_2.0.2/模擬效能比較_20260406]]:
+[[Truchas_Lab/01_Truchas/02_WSL_Ubuntu/01_116版_2.0.2/模擬效能比較_20260406]]:
 - (line 10): `Pasted image 20260405232723.png`
 
 
-[[Truchas_Lab/01_VFIFE/02_新版/WSL_VFIFE]]:
+[[Truchas_Lab/01_Truchas/01_VFIFE/02_新版/WSL_VFIFE]]:
 - (line 45): `../pics/Pasted image 20260504043026.png`
 - (line 46): `../pics/Pasted image 20260504043927.png`
 
 
-[[Truchas_Lab/01_VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/chat_免費建模軟體比較與建議]]:
+[[Truchas_Lab/01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/chat_免費建模軟體比較與建議]]:
 - (line 631): `../pics/img-001.png`
 - (line 731): `../../../Gemini_Fortran-程式碼重構與優化/pics/img-002.png`
 
 
-[[Truchas_Lab/01_VFIFE/02_新版/VFIFE_FSI_module.F90]]:
+[[Truchas_Lab/01_Truchas/01_VFIFE/02_新版/VFIFE_FSI_module.F90]]:
 - (line 50): `../pics/Pasted image 20260504043026.png`
 - (line 51): `../pics/Pasted image 20260504043927.png`
 
@@ -70,7 +70,7 @@
 - (line 56): `Ubuntu/LXD容器_116/Truchas-Lab(116)_WSL_模擬效能比較_20260406`
 
 
-[[Truchas_Lab/01_VFIFE/00_聊天紀錄/NBLM/VFIFE_NBLM-20260303]]:
+[[Truchas_Lab/01_Truchas/01_VFIFE/00_聊天紀錄/NBLM/VFIFE_NBLM-20260303]]:
 - (line 7): `Zotero`
 - (line 7): `NotebookLM`
 - (line 9): `三維海嘯模擬`
@@ -86,7 +86,7 @@
 
 
 # Wiki embeds (1 files)
-[[Truchas_Lab/02_WSL_Ubuntu/01_116版_2.0.2/模擬效能比較_20260406]]:
+[[Truchas_Lab/01_Truchas/02_WSL_Ubuntu/01_116版_2.0.2/模擬效能比較_20260406]]:
 - (line 10): `Pasted image 20260405232723.png`
 
 

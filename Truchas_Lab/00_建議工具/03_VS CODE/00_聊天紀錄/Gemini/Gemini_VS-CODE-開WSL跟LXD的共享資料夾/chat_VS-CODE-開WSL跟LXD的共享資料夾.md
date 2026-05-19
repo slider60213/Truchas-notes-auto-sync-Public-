@@ -319,7 +319,7 @@ cd /home/user_student/student-VFIFE/VFIFE
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
+![上傳圖片預覽](../../../../../01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
 
 我有連到WSL但連錯了
 我要連的是Truchas_Lab開頭的那個，但他自動連到Ubuntu開頭的
@@ -457,7 +457,7 @@ wsl --set-default Truchas_Lab_20260422
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
+![上傳圖片預覽](../../../../../01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 我應該選什麼？
 

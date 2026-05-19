@@ -419,7 +419,7 @@ gfortran -ffree-line-length-none your_file.f90
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
+![上傳圖片預覽](../../../../../01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 我要怎麼貼這段
 "[fortran_modern]": {
@@ -1281,7 +1281,7 @@ VS Code 的設定分為 **User (使用者本地)** 與 **Remote (遠端伺服器
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
+![上傳圖片預覽](../../../../../01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
 
 這個嗎
 
