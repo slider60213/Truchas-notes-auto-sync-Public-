@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-05-18 22:01
+modified: 2026-05-19 21:24
 tags:
   - WSL
   - Linux
@@ -80,4 +80,3 @@ wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
 ```
 ---
 # 🔗 參考資料
--
