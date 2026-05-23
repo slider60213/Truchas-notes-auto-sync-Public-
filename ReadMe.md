@@ -1,3 +1,8 @@
+
+![Buoy](Truchas_Lab/01_Truchas/03_成果合輯/pics/Buoy.gif)
+
+![龜山島 landslide](Truchas_Lab/01_Truchas/03_成果合輯/pics/龜山島%20landslide.gif)
+
 # 1. 相關研究進度在 Truchas_Lab 裡面。
 
 # 2. 部分排版錯誤

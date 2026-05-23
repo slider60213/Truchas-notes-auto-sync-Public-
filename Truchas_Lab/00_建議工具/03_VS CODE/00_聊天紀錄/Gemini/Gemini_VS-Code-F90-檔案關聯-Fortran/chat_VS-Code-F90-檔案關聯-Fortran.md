@@ -374,7 +374,7 @@ gfortran -ffree-line-length-none your_file.f90
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-001.jpg)
+![上傳圖片預覽](pics/img-001.jpg)
 
 我找不到你說的
 
@@ -1589,7 +1589,7 @@ end program
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-005.png)
+![上傳圖片預覽](pics/img-005.png)
 
 ### 🤖 Assistant
 
@@ -1668,7 +1668,7 @@ Fortran 程式碼通常不是孤立的。你的 `program` 可能會 `use` 某個
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-006.jpg)
+![上傳圖片預覽](pics/img-006.jpg)
 
 即使是我從XFTP開啟的這個檔案也沒有
 
@@ -1773,7 +1773,7 @@ Host 161_Server
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-008.jpg)
+![上傳圖片預覽](pics/img-008.jpg)
 
 沒有出現輸入密碼的視窗
 他是給我LINUX WINDOS的選項
@@ -2468,7 +2468,7 @@ Host 161-Server
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-012.jpg)
+![上傳圖片預覽](pics/img-012.jpg)
 
 我開了一個確定在本地有的檔案，並且嘗試了不同的Sort選項，但都沒看到OUTLINNNE
 
