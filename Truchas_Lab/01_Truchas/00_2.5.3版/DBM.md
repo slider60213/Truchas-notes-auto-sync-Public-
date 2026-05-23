@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-18 00:44
-modified: 2026-05-19 00:00
+modified: 2026-05-23 08:28
 tags:
   - "#Truchas"
   - 2˙5˙3版
@@ -54,6 +54,10 @@ DBM 關係圖 (Viscosity - Strain rate)
 ---
 # 📝 內容紀錄
 
+## DBM 相關程式:
+- src\physics\fluid_flow\viscous\viscous_module.F90
+- src\physics\fluid_flow\predictor\predictor_module.F90
+- src\physics\properties\property_module.F90
 
 ---
 # 🔗 參考資料
