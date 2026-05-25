@@ -1,4 +1,5 @@
-# 0. 動畫展示
+# 0. 成果展示
+！ 要記得修改 GIF 時間然後轉成影片檔
 <center>Buoy-Wave Interaction</center>
 
 | ![\|425](pics/image116.gif) | ![Buoy\|425](Truchas_Lab/01_Truchas/03_成果合輯/pics/Buoy.gif) |
@@ -25,10 +26,10 @@
 
 # 2. 部分排版錯誤
 - 由於 Github 幾年前取消了 Markdown 語法中對部分排版的支援，網頁上看到的文字及圖片其位置、顏色、大小可能無法正確呈現。
-- 可以直接下載 md 檔然後用 VS CODE 或是 Obsidian 開啟觀看。
+- 可以直接下載 md 檔然後用 VS CODE 或是 Obsidian (建議) 開啟觀看。
 
 # 3. 頁面跳轉錯誤
-- 頁面跳轉有時候不精確，要根據網址末端標註的位置來尋找。
+- 頁面跳轉有時候不精確，要根據上下文或是網址末端標註的位置來尋找。
 - 例如跳轉後網址是 `https://github.........md#turn-40` ，表示要找第 Turn 40 的問答。
 
 
