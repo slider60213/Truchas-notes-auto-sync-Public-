@@ -1,5 +1,4 @@
-
-
+# 0. 動畫展示
 <center>Buoy-Wave Interaction</center>
 
 | ![\|425](pics/image116.gif) | ![Buoy\|425](Truchas_Lab/01_Truchas/03_成果合輯/pics/Buoy.gif) |
