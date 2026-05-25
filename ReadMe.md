@@ -34,7 +34,7 @@
 
 
 
-# 資料夾說明
+# 4. 資料夾說明
 
 - Truchas_Lab：研究進度
 - 筆記自動上傳測試：測試用
@@ -46,3 +46,4 @@
 - .trash：廢棄資料
 - consistency-report.md：引用連結檢查
 - copilot：Obsidian 聯動 AI 助手的聊天紀錄
+- pics：當層路徑下各筆記的附件（圖片、GIF、MP4 ...）
