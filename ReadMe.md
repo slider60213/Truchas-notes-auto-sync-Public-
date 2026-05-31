@@ -44,7 +44,6 @@
 - 模版 Templates：筆記模版
 - .github：Github 相關功能
 - .gitignore：上傳時要忽略的檔案
-- .obsidian：資料庫設定、擴充功能
 - .smart-env：擴充功能 smart-connection
 - .trash：廢棄資料
 - consistency-report.md：引用連結檢查
