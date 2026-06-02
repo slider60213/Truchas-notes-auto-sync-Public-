@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-14 01:41
-modified: 2026-05-19 03:51
+modified: 2026-06-03 00:13
 tags:
   - "#Truchas"
   - VFIFE
@@ -23,6 +23,57 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 🦖 以前
 - 被使用於 [fluid_flow_module_F90](fluid_flow_module_F90.md)
+
+`SOLID_module.f90` 是 VFIFE 固體計算模組的核心入口，其架構嚴格遵循「檔案與流程管理（`solid3D`）→ 記憶體分配（`dynamic`）→ 數據讀取與初始化（`readata1` / `chkdata` / `bmass`）→ 動力演進求解（`esolv`）」的序列邏輯。,,,
+
+身為流體數值模式專家，我根據原始碼為您詳細梳理這個模組的層級化架構：
+
+1. 模組入口與檔案管理：`subroutine solid3D`
+
+這是模組的最外層接口，主要負責環境準備：
+
+- **檔案操作**：開啟所有必要的輸入（`.dat`）與輸出（`.plt`, `.txt`）檔案單元（Unit 5, 6, 7, 45...）。,
+- **流程觸發**：設定最大記憶體容量（`maxq`）並呼叫 `dynamic` 進入核心控制層。,
+
+2. 核心控制與記憶體管理器：`subroutine dynamic`
+
+此子程序扮演「調度員」的角色，負責系統級的設置：
+
+- **動態記憶體模擬**：VFIFE 使用一個巨大的 `real*8` 陣列 `ar`，透過手動計算索引偏移量（如 `npint`, `nfeli`）來模擬動態分配，這在早期 Fortran 程式碼中很常見。,,
+- **讀取標頭與控制參數**：讀取並輸出 `CARD 1` 至 `CARD 4` 的全域物理與時間控制參數（如 `maxstp`, `delta`）。,
+- **協調初始化順序**：依序呼叫 `readata1`（讀檔）、`chkdata`（校核）、`bmass`（算質量）以及最後的求解器 `esolv`。,,
+
+3. 數據解析器：`subroutine readata1`
+
+負責解析複雜的外部輸入文件：
+
+- **幾何與屬性讀取**：具體處理 `CARD 6`（節點）、`CARD 7`（單元）、`CARD 8-9`（材料屬性）。,,,
+- **力函數載入**：讀取重力歷時（`CARD 10-11`）以及各種外力歷史（`CARD 15-24`）。,,
+
+4. 前處理工具集：`chkdata` 與 `bmass`
+
+在開始計算前確保物理合理性：
+
+- **chkdata**：檢查材料參數是否完整（例如金屬是否給了抗拉強度、土壤是否給了內摩擦角）。,,
+- **bmass**：根據單元體積與密度計算 **節點集中質量（Lumped Mass）**，這是後續 F=ma 運算的基礎。,,
+
+5. 動力演進求解器：`subroutine esolv`
+
+這是 VFIFE 最吃重的演算法核心，包含時間積分循環：
+
+- **時間步進**：執行顯式 **中心差分法（Central Difference Method）**。,
+- **單元計算**：在每一時步遍歷所有單元，呼叫 `fintiso3` 進行協同旋轉架構下的內力計算。,,
+- **流固耦合對接**：處理流體壓力插值（`IGPRESSURE`）並將其轉化為節點外力 `pforce`。,,
+- **應力彙整**：呼叫 `stress` 將各單元的應力分量加權平均至節點，供視覺化輸出。,
+
+
+
+
+
+
+
+
+
 
 原版 `bmass` 的本質就是：**「遍歷每個四面體單元 $\rightarrow$ 用向量公式算出體積 $\rightarrow$ 乘上密度得到總質量 $\rightarrow$ 平均平分給 12 個自由度並寫入 `xmeli`」**
 ---
