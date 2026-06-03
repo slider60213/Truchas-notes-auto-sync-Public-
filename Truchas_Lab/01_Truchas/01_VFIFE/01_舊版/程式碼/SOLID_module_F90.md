@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-14 01:41
-modified: 2026-06-03 00:13
+modified: 2026-06-04 01:27
 tags:
   - "#Truchas"
   - VFIFE
@@ -66,7 +66,40 @@ AND !icontains(file.name, "excalidraw")
 - **流固耦合對接**：處理流體壓力插值（`IGPRESSURE`）並將其轉化為節點外力 `pforce`。,,
 - **應力彙整**：呼叫 `stress` 將各單元的應力分量加權平均至節點，供視覺化輸出。,
 
+```
+subroutine esolv(...)
+  ! 1. 初始化：將 xc 設定為初始座標
+  ! ...
+  do 2222 nstep = 1, maxstp
+    ! (A) 更新當前瞬時座標 (使用上一時步算好的 d)
+    xc(i) = xct(i) + d(j)  ! [1], [2]
 
+    ! (B) 計算內力 (基於剛更新的 xc)
+    call fintiso3(..., xc, ...)  ! [3], [4]
+
+    ! (C) 流固耦合：取得壓力並積分為節點力
+    ! 使用 xc 取得壓力點 IGPOINT 並計算 pforce
+    ! [3], [5]
+
+    ! (D) 更新 VOF2 (僅在流體週期結尾執行)
+    if (nstep == maxstp) call update_vof2(...) ! [6], [7]
+
+    ! (E) 計算外力 (重力、地震力等)
+    call fextl(..., xct, ...)  ! [8], [9]
+
+    ! (F) 運動積分 (牛頓第二定律 F=ma)
+    ! 計算新的位移增量 dp
+    dp(j) = c1*(fsum/xmass) + c2*d(j) - c3*dn(j) ! [10], [11]
+
+    ! (G) 關鍵更新步 (將「舊的運動」固化到基準座標)
+    ! 注意：這裡加的是進入迴圈時那個舊的 d，而非剛算好的 dp
+    xct(i) = xct(i) + d(j)  ! [12], [13]
+
+    ! (H) 準備下一圈的位移變數
+    d(i) = dt1(i) - db(i)  ! 更新相對位移 d 供下一圈 (A) 步驟使用 [14], [15]
+  end do
+end subroutine
+```
 
 
 
@@ -76,9 +109,14 @@ AND !icontains(file.name, "excalidraw")
 
 
 原版 `bmass` 的本質就是：**「遍歷每個四面體單元 $\rightarrow$ 用向量公式算出體積 $\rightarrow$ 乘上密度得到總質量 $\rightarrow$ 平均平分給 12 個自由度並寫入 `xmeli`」**
+
 ---
+
 # 👨‍💻 以後
 
+[VFIFE_MainEntry_module](../../02_新版/程式碼/VFIFE_MainEntry_module.md)
+[VFIFE_Core_module](../../02_新版/程式碼/VFIFE_Core_module.md)
+[VFIFE_Utils_module](../../02_新版/程式碼/VFIFE_Utils_module.md)
 
 ---
 ## 📝 內容紀錄
