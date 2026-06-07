@@ -11,8 +11,8 @@
 ## Guishan Island Lanslide
 [龜山島山崩海嘯](Truchas_Lab/01_Truchas/03_成果合輯/龜山島山崩海嘯.md)
 
-| ![龜山島 landslide\|425](Truchas_Lab/01_Truchas/03_成果合輯/pics/龜山島%20landslide.gif) | ![\|425](pics/image142.gif) |
-| ---------------------------------------------------------------------------------------- | --------------------------- |
+| ![\|425](pics/Guishan_SideView.gif) | ![\|425](pics/Guishan_TopView.gif) |
+| ----------------------------------- | ---------------------------------- |
 
 ---
 ## Guandu Bridge Local Scour
