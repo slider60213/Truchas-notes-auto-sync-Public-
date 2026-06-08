@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-27 13:23
-modified: 2026-06-04 03:29
+modified: 2026-06-09 03:43
 tags:
   - "#Truchas"
   - WSL
@@ -20,11 +20,14 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 📌 摘要
 
-[VFIFE_ReadDatFile_module_F90](VFIFE_ReadDatFile_module_F90.md)
-[VFIFE_Geometry_module_F90](VFIFE_Geometry_module_F90.md)
-
-[VFIFE_Utils_module_F90](VFIFE_Utils_module_F90.md)
-[VFIFE_Data_module_F90](VFIFE_Data_module_F90.md)
+參數讀取： [VFIFE_Input_module_F90](VFIFE_Input_module_F90.md)
+初始化： [VFIFE_Setup_module_F90](VFIFE_Setup_module_F90.md)
+內力：[VFIFE_Internal_Force_module_F90](VFIFE_Internal_Force_module_F90.md)
+壓力：[VFIFE_Pressure_module_F90](VFIFE_Pressure_module_F90.md)
+外力：[VFIFE_External_Force_module_F90](VFIFE_External_Force_module_F90.md)
+求解：[VFIFE_Solver_module_F90](VFIFE_Solver_module_F90.md)
+小工具： [VFIFE_Utils_module_F90](VFIFE_Utils_module_F90.md)
+變數定義： [VFIFE_Data_module_F90](VFIFE_Data_module_F90.md)
 
 
 ---
@@ -106,69 +109,85 @@ end subroutine
 
 ``` fortran
 MODULE VFIFE_Driver_module
-   USE VFIFE_Core_module  ! �ޥΤj���`�Greadata1, dynamic, compute_internal
+   USE VFIFE_Data_module
+   USE VFIFE_Input_module
+   USE VFIFE_Setup_module
+
+
+   ! USE VFIFE_Internal_Force_module
+   ! USE VFIFE_External_Force_module
+   ! USE VFIFE_Pressure_module
+   ! USE VFIFE_Solver_module
+   USE VFIFE_Utils_module
+
+
    !SHANE 記得把 input_file 開回來
    !USE output_module,             ONLY: input_file
 
-   IMPLICIT NONE          ! ��� Module �g�@���Y�i�A�j��n�D�Ҳդ��Ҧ����l�{�ǳ��������T�ŧi�ܼ�
-
+   IMPLICIT NONE
 
    PRIVATE
    PUBLIC :: EXECUTE_VFIFE_SIMULATION
+
+   !SHANE 記得把 input_file 開回來之後刪掉這行
    character(LEN = 256),  public :: input_file
 
 CONTAINS
 
-   ! ==========================================================
-   !  VFIFE �D����{�� (�����x�ŧO)
-   ! ==========================================================
+
    SUBROUTINE EXECUTE_VFIFE_SIMULATION()
-      CHARACTER(LEN=256)           :: V5_dat_name
+      IMPLICIT NONE
       INTEGER                      :: i_err, u_inp
 
       WRITE(*,*) ">>> [VFIFE] Starting Simulation Workflow..."
       !input_file='V5_New_Dat_Format.inp'
       input_file='Code_devlope_test.inp'
 
-      ! 1. ���� input_file �O�_�w�Q��� (�w�����ˬd)
+      ! 1. Get input file name from output_module (or hardcoded for now)
       IF (LEN_TRIM(input_file) == 0) THEN
          WRITE(*,*) "Fatal: No input file specified in output_module."
          STOP
       END IF
 
-      ! 2. �ϥ� NEWUNIT �}�ҭ�l .inp (�۰ʨ��o�t�ƽs���A�O�Ҥ��P Truchas �Ĭ�)
+      ! 2. Open input file
       OPEN(NEWUNIT=u_inp, FILE=TRIM(input_file), STATUS='OLD', IOSTAT=i_err)
       IF (i_err /= 0) THEN
          WRITE(*, '("Fatal: Cannot open [", A, "].")') TRIM(input_file)
          STOP
       END IF
 
-      ! 3. �ʺA�ഫ�ɦW (�d�ҡGcase1.inp -> case1.dat)
-      ! input_file(1:LEN_TRIM(input_file)-4) �|�I���̫�|�Ӧr�� ".inp"
+      ! 3. Derive .dat file name from .inp file name
       V5_dat_name = input_file(1:LEN_TRIM(input_file)-4) // '.dat'
       WRITE(*,*) " [DEBUG] V5 Solid logic will read from: ", TRIM(V5_dat_name)
 
-      ! 4. ����֤�Ū���P�p��y�{
-      WRITE(*,*) ' Shane: readata1 start'
-      CALL readata1(V5_dat_name) ! �ǤJ�ഫ�᪺ .dat �ɦW
-      WRITE(*,*) ' Shane: readata1 finish'
+      ! 4. Read input data and initialize simulation state
+      WRITE(*,*) ' Shane: read_dat start'
+      CALL read_dat(V5_dat_name)
+      CALL check_dat()  ! Optional: Output read data for verification
+      WRITE(*,*) ' Shane: read_dat finish'
 
-      WRITE(*,*) ' Shane: bmass start'
-      CALL bmass()
-      WRITE(*,*) ' Shane: bmass finish'
+      ! 5. Compute Geometry, mass, face_judge, etc.
+      WRITE(*,*) ' Shane: nodemass start'
+      CALL nodemass()
+      CALL face_judgement()
+      WRITE(*,*) ' Shane: nodemass finish'
 
+
+
+      ! 6. Main dynamic loop
       WRITE(*,*) ' Shane: dynamic start'
-      CALL dynamic()
+      CALL fintiso3()
+      ! CALL dynamic()
       WRITE(*,*) ' Shane: dynamic finish'
 
 
-      ! 5. �����ɮרòM�z
+      ! 7. Close input file and finalize
       CLOSE(u_inp)
-
       WRITE(*,*) ">>> [VFIFE] Simulation Completed."
    END SUBROUTINE EXECUTE_VFIFE_SIMULATION
 
 END MODULE VFIFE_Driver_module
+
 
 ```
 ---
