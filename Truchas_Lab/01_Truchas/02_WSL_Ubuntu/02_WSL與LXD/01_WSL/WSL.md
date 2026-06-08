@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-05-19 21:24
+modified: 2026-06-09 04:10
 tags:
   - WSL
   - Linux
@@ -77,6 +77,8 @@ wsl --export Ubuntu-20260407 D:\Truchas_Parallel_Full_20260407.tar
 # 匯入打包好的WSL (WSL名稱取為Truchas-Lab，位置設在 D:\WSL_Truchas)
 wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
 
+# 登入 WSL
+wsl -d Truchas-Lab
 ```
 ---
 # 🔗 參考資料
