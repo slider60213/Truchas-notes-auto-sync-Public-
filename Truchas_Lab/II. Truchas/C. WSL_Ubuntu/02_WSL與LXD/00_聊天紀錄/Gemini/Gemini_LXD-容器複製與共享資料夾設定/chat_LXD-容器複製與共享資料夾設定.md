@@ -4256,7 +4256,7 @@ MATLAB 並不像 Python 或 GCC 是開源免費軟體，無論是 Windows、macO
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../00_建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-001.png)
+![上傳圖片預覽](../../../../../../I.%20建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-001.png)
 
 我之前幫我的WSL（Ubuntu-24.04）設置成U槽，我現在多裝了WSL（Truchas_Lab_20260422）我想要設置成T槽
 
@@ -4349,7 +4349,7 @@ subst T: \\wsl.localhost\Truchas_Lab_20260422\home\user_student
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../00_建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-002.png)
+![上傳圖片預覽](../../../../../../I.%20建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-002.png)
 
 subst T: \\wsl.localhost\Truchas_Lab_20260422\home\user_student
 為什麼他說已中斷？我明明還開著WSL的視窗也確定沒中斷

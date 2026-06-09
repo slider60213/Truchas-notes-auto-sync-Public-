@@ -374,7 +374,7 @@ gfortran -ffree-line-length-none your_file.f90
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-001.jpg)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-STL-網格生成問題排除/pics/img-001.jpg)
 
 我找不到你說的
 
@@ -419,7 +419,7 @@ gfortran -ffree-line-length-none your_file.f90
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 我要怎麼貼這段
 "[fortran_modern]": {
@@ -1281,7 +1281,7 @@ VS Code 的設定分為 **User (使用者本地)** 與 **Remote (遠端伺服器
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../01_Truchas/01_VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
 
 這個嗎
 
@@ -1589,7 +1589,7 @@ end program
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-005.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-005.png)
 
 ### 🤖 Assistant
 
@@ -1668,7 +1668,7 @@ Fortran 程式碼通常不是孤立的。你的 `program` 可能會 `use` 某個
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-006.jpg)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-STL-網格生成問題排除/pics/img-006.jpg)
 
 即使是我從XFTP開啟的這個檔案也沒有
 
@@ -2468,7 +2468,7 @@ Host 161-Server
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-012.jpg)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-STL-網格生成問題排除/pics/img-012.jpg)
 
 我開了一個確定在本地有的檔案，並且嘗試了不同的Sort選項，但都沒看到OUTLINNNE
 

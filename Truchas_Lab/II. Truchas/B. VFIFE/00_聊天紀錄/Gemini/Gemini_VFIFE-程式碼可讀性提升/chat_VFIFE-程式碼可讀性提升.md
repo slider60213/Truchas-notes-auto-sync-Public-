@@ -561,7 +561,7 @@ allocate(ar(maxindex))
 
 *[This turn includes uploaded images]*
 
-![「不明」圖示](../../../../../00_建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-001.png)
+![「不明」圖示](../../../../../I.%20建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-001.png)
 
 這是SOLID_module.F90的程式碼，我現在需要你幫我根據底下NBLM的分析以及你自己的分析，幫程式碼加入註解說明，尤其要註明每個變數的意義
 說明大致看懂了，我現在需要你幫我拆解SOLID_module.F90的架構，註解每個SUBROUTINE或重要段落、步驟的意義，尤其重要的是變數名稱的意義，目前取的變數名稱太隨意了很難看懂
@@ -852,7 +852,7 @@ enddo
 
 *[This turn includes uploaded images]*
 
-![「不明」圖示](../../../../../00_建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-001.png)
+![「不明」圖示](../../../../../I.%20建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-001.png)
 
 我想先編排好原本程式碼的架構，我平常使用EMEDITOR，配合它的大綱模式我可以輕易展開或折疊程式碼來觀察架構，但是不知道是FORTRAN還是EMEDITOR的關係，有時候一行開頭是空兩格有時候是TAB導致程式折疊的區域不正確，我要怎麼修正這個問題？
 
@@ -1799,7 +1799,7 @@ run_sim() {
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../00_建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-002.png)
+![上傳圖片預覽](../../../../../I.%20建議工具/03_VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-002.png)
 
 是你新寫的run_compile有問題，它在這行的一半突然變成註解 local build_script_name=$(ls "$wsl_project_root"/*/build_*.sh 2>/dev/null | head -n 1)
 

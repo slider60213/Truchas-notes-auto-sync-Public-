@@ -75,7 +75,7 @@ AND !icontains(file.name, "excalidraw")
 - 2026/03 仍持續更新
 - 兼具 Windows 版與 Linux 版
 - 腳本操作適配 AI 工具
-過往最大的難點在於 UI 選項龐雜操作難用，但如今透過 AI 工具可輕鬆完成建模腳本，大幅提升建模速度與精細度，UI 則作為檢視器來預覽成果，雙版本也完美適配 [WSL](../../02_WSL_Ubuntu/02_WSL與LXD/01_WSL/WSL.md) 的工作環境。
+過往最大的難點在於 UI 選項龐雜操作難用，但如今透過 AI 工具可輕鬆完成建模腳本，大幅提升建模速度與精細度，UI 則作為檢視器來預覽成果，雙版本也完美適配 [WSL](../../C.%20WSL_Ubuntu/02_WSL與LXD/01_WSL/WSL.md) 的工作環境。
 ### **4. 物理計算**
 <mark style="background:#ff4d4f">待完成 </mark>
 

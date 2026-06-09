@@ -9,7 +9,7 @@ tags:
   - copilot-conversation
 ---
 
-**user**: [|587/400](pics/Pasted%20image%2020260605231731.png)
+**user**: [|587/400](../../Truchas_Lab/II.%20Truchas/D.%202.5.3版/pics/Pasted%20image%2020260605231731.png)
 
 圖片大小的設定是這樣寫嗎
 [Context: Notes: Truchas_Lab/01_Truchas/00_2.5.3版/未命名.md]
