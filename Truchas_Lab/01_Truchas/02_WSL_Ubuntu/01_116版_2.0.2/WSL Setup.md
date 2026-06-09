@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-14 02:15
-modified: 2026-05-14 02:17
+modified: 2026-06-09 16:31
 tags:
   - "#Truchas"
   - 116版
@@ -129,7 +129,7 @@ Basically, all the commands you will need are listed on the login interface. If 
     
     `wsl -l -v`
     
-    `wsl --unregister Ubuntu`
+    `wsl --unregister UbuntuName`
     
 3. Unregister (delete) the previously failed Truchas-Lab import:
     
@@ -145,7 +145,7 @@ Basically, all the commands you will need are listed on the login interface. If 
     
 6. Re-import Truchas-Lab:
     
-    (Refer to Installation Step 4)
+    (Refer to Installation Step 3)
     
 
 #### Quick Fix for PowerShell Lag
