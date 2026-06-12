@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:35
+modified: 2026-06-13 01:35
+tags:
+  - AI
+  - AI/Gemini
+---
 # 螺線型速度場定義與命名
 
 **Date**: March 17, 2026 at 01:24 PM

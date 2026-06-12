@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:35
+modified: 2026-06-13 01:35
+tags:
+  - AI
+  - AI/Gemini
+---
 # Truchas 116版環境隔離建議
 
 **Date**: March 31, 2026 at 02:55 PM

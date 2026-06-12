@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:30
+modified: 2026-06-13 01:30
+tags:
+  - AI
+  - AI/Gemini
+---
 # Fortran 程式碼重構與優化
 
 **Date**: May 4, 2026 at 03:35 AM

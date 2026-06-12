@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:34
+modified: 2026-06-13 01:34
+tags:
+  - AI
+  - AI/Gemini
+---
 # 免費建模軟體比較與建議
 
 **Date**: May 13, 2026 at 12:33 AM

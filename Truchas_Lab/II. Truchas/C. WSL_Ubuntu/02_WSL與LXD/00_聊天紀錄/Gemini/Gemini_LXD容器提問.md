@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:34
+modified: 2026-06-13 01:34
+tags:
+  - AI
+  - AI/Gemini
+---
 # Conversation ac8c34b2
 
 **Date**: May 18, 2026 at 10:03 PM

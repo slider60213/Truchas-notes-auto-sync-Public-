@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:33
+modified: 2026-06-13 01:33
+tags:
+  - AI
+  - AI/Gemini
+---
 # VS Code F90 檔案關聯 Fortran
 
 **Date**: May 16, 2026 at 09:14 PM

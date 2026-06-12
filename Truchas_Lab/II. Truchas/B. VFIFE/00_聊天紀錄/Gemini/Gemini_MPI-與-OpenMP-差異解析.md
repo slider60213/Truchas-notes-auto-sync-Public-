@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:33
+modified: 2026-06-13 01:33
+tags:
+  - AI
+  - AI/Gemini
+---
 # MPI 與 OpenMP 差異解析
 
 **Date**: May 20, 2026 at 03:38 AM

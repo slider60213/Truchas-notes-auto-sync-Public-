@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:35
+modified: 2026-06-13 01:35
+tags:
+  - AI
+  - AI/Gemini
+---
 # Gmsh STL 網格生成問題排除
 
 **Date**: May 12, 2026 at 10:05 PM

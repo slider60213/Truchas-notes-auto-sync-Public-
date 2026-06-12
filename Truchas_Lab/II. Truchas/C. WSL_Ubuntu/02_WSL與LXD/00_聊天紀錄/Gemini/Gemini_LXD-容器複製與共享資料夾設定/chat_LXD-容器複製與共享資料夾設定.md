@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:28
+modified: 2026-06-13 01:28
+tags:
+  - AI
+  - AI/Gemini
+---
 # LXD 容器複製與共享資料夾設定
 
 **Date**: May 14, 2026 at 11:09 AM

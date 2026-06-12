@@ -1,3 +1,11 @@
+---
+type: 📝 Research
+created: 2026-06-13 01:32
+modified: 2026-06-13 01:33
+tags:
+  - AI
+  - AI/Gemini
+---
 # 我用VS CODE 開啟這個WSL跟LXD的共享資料夾\\\\wsl\.localhost\\Truchas\_Lab\_20260422\\home\\user\_student
 
 雖然有開啟檔案但裡面內容有缺漏不是最新版的
