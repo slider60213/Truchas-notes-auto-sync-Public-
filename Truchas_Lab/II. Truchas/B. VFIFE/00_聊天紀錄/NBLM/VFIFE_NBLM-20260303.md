@@ -5,7 +5,7 @@ type: allChat
 title: Truchas程式碼 - Chat
 tags:
   - AI
-  - NBLM
+  - AI/NBLM
   - Truchas
 ---
 核心工具：[Truchas_2.5.3](../../../2.5.3/Truchas_2.5.3.md)、[[Zotero]]、[[NotebookLM]]
@@ -13,7 +13,7 @@ tags:
 研究專案: [[三維海嘯模擬]]、[[局部沖刷]]、[[流固耦合]]
 核心代碼: [[drivers.F90]], [[bc_atlases.F90]], [[set_bc_module.F90]]
 相關人員: [[Shane]], [[吳祚任]], [[Tso-ren]]
-資料來源: #NBLM #Truchas
+資料來源: #AI/NBLM #Truchas
 ---
 # Truchas程式碼 - Chat
 

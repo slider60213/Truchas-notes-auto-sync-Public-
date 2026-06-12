@@ -4,12 +4,12 @@ created: 2026-05-18 00:44
 modified: 2026-05-23 08:28
 tags:
   - "#Truchas"
-  - 2˙5˙3版
-  - 32位元
-  - DBM
-  - Shear_stress
-  - Strain_rate
-  - Viscosity
+  - Truchas/2-5-3版
+  - 電腦/32位元
+  - Truchas/DBM
+  - Truchas/DBM/Shear_stress
+  - Truchas/DBM/Strain_rate
+  - Truchas/DBM/Viscosity
 ---
 ## 📂 本文關聯檔案索引
 ```dataview

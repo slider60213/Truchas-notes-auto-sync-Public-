@@ -4,9 +4,9 @@ created: 2026-04-29 03:51
 modified: 2026-05-14 02:56
 tags:
   - Truchas
-  - WSL
+  - 電腦/WINDOWS/WSL
   - Truchas/VFIFE
-  - Gmsh
+  - Truchas/VFIFE/Gmsh
 ---
 ## 📂 本文關聯檔案索引
 ```dataview

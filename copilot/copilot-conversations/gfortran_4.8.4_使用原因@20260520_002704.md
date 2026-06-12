@@ -1,12 +1,9 @@
 ---
 epoch: 1779208024737
-modelKey: "gemini-2.5-flash|google"
-topic: "gfortran 4.8.4 使用原因"
-
-
-
+modelKey: gemini-2.5-flash|google
+topic: gfortran 4.8.4 使用原因
 tags:
-  - copilot-conversation
+  - AI/copilot-conversation
 ---
 
 **user**: 這份檔案中是不是有解釋為什麼要使用極舊的gfortran  4.8.4

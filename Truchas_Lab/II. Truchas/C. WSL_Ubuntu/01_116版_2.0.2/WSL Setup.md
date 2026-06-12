@@ -1,12 +1,12 @@
 ---
 type: 📝 Research
 created: 2026-05-14 02:15
-modified: 2026-06-09 16:59
+modified: 2026-06-12 19:14
 tags:
   - "#Truchas"
-  - 116版
-  - WSL
-  - 64位元
+  - Truchas/116版
+  - 電腦/WINDOWS/WSL
+  - 電腦/64位元
 ---
 ## 📂 本文關聯檔案索引
 ```dataview

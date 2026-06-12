@@ -4,7 +4,7 @@ created: 2026-05-27 13:25
 modified: 2026-06-01 01:56
 tags:
   - "#Truchas"
-  - WSL
+  - 電腦/WINDOWS/WSL
   - Truchas/VFIFE
 ---
 ## 📂 本文關聯檔案索引

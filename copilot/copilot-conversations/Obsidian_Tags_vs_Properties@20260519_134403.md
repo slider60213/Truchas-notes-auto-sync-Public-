@@ -1,12 +1,9 @@
 ---
 epoch: 1779169443546
-modelKey: "gemini-2.5-flash|google"
-topic: "Obsidian Tags vs Properties"
-
-
-
+modelKey: gemini-2.5-flash|google
+topic: Obsidian Tags vs Properties
 tags:
-  - copilot-conversation
+  - AI/copilot-conversation
 ---
 
 **user**: Obsidian中，標籤跟屬性的差別是什麼

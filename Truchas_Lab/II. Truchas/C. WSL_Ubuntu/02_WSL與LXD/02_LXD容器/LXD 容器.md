@@ -3,9 +3,9 @@ type: 📝 Research
 created: 2026-05-16 21:17
 modified: 2026-05-19 21:22
 tags:
-  - WSL
-  - Linux
-  - LXD
+  - 電腦/WINDOWS/WSL
+  - 電腦/Linux
+  - 電腦/WINDOWS/LXD
 ---
 ## 📂 本文關聯檔案索引
 ```dataview

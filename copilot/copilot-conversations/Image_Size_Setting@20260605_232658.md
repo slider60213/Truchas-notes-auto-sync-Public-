@@ -1,12 +1,9 @@
 ---
 epoch: 1780673218177
-modelKey: "gemini-2.5-flash|google"
-topic: "Image Size Setting"
-
-
-
+modelKey: gemini-2.5-flash|google
+topic: Image Size Setting
 tags:
-  - copilot-conversation
+  - AI/copilot-conversation
 ---
 
 **user**: [|587/400](../../Truchas_Lab/II.%20Truchas/D.%202.5.3版/pics/Pasted%20image%2020260605231731.png)
