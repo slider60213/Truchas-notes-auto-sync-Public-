@@ -3,6 +3,10 @@ exported: 2026-03-03T15:31:35.184Z
 source: NotebookLM
 type: allChat
 title: Truchas程式碼 - Chat
+tags:
+  - AI
+  - NBLM
+  - Truchas
 ---
 核心工具：[Truchas_2.5.3](../../../2.5.3/Truchas_2.5.3.md)、[[Zotero]]、[[NotebookLM]]
 ---

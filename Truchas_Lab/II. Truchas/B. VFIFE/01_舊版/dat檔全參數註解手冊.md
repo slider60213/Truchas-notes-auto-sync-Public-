@@ -4,7 +4,7 @@ created: 2026-05-14 01:49
 modified: 2026-05-14 01:50
 tags:
   - "#Truchas"
-  - VFIFE
+  - Truchas/VFIFE
 ---
 2026-04-12 17:55  
 ## 📂 本文關聯檔案索引

@@ -1,10 +1,10 @@
 ---
 type: 📝 Research
 created: 2026-05-14 01:39
-modified: 2026-05-14 01:51
+modified: 2026-06-12 19:02
 tags:
   - "#Truchas"
-  - VFIFE
+  - Truchas/VFIFE
 ---
 ## 📂 本文關聯檔案索引
 ```dataview
@@ -59,7 +59,7 @@ end MODULE Datasave_module
 	- **<font color="#ffff00">nnd</font>** **(NumNodes)**：總節點數，決定了座標（`xc`）、位移（`d`）、受力（`force`）等陣列的大小。
 	- **<font color="#ffff00">nel</font>** **(NumElements)**：總單元數（四面體），決定了拓撲連結陣列（`rnode`）與單元內力（`feli`）的大小。
 	- **<font color="#ffff00">nummat</font>** **(NumMaterials)**：材料種類總數，決定材料參數陣列（`nem`）的大小。
-	- **<font color="#ffff00">ndof</font>** **(DOF)**：節點自由度，VFIFE 固定為 3 (X, Y, Z)，用於計算總方程式數 `meq = nnd * ndof`。
+	- **<font color="#ffff00">ndof</font>** **(DOF)**：節點自由度，固定為 3 (X, Y, Z)，用於計算總方程式數 `meq = nnd * ndof`。
 	
 	- **決定變數**：`meq` (Total Equations)，計算公式為 `nnd * 3`。,
 	- **對應陣列**：
