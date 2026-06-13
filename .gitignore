@@ -1,6 +1,7 @@
 # 排除 Obsidian 的系統雜物
 .obsidian/
 .trash/
+copilot/
 Excalidraw/
 Zotero/
 投稿/
