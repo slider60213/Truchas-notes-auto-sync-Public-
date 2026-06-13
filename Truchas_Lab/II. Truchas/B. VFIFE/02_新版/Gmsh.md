@@ -1,13 +1,14 @@
 ---
 type: 📝 Research
 created: 2026-05-11 20:07
-modified: 2026-05-14 01:54
+modified: 2026-06-14 02:21
 tags:
   - "#Truchas"
   - Truchas/VFIFE
-  - 電腦/WINDOWS/WSL
   - Truchas/VFIFE/Gmsh
   - Truchas/VFIFE/MeshLab
+  - 電腦
+  - 電腦/WINDOWS/WSL
 ---
 ## 📂 本文關聯檔案索引
 ```dataview
