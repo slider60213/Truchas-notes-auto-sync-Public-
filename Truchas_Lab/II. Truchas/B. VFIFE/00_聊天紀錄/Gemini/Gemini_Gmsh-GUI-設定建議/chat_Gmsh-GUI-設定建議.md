@@ -74,7 +74,7 @@ GMSH 功能
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../C.%20WSL_Ubuntu/01_116版_2.0.2/00_聊天紀錄/Gemini/移植-Truchas-編譯器版本確認/pics/img-002.png)
+![上傳圖片預覽](../../../../Truchsa-WSL/01_116版_2.0.2/00_聊天紀錄/Gemini/移植-Truchas-編譯器版本確認/pics/img-002.png)
 
 解釋一下這頁的各個勾選功能的效果
 你會建議我勾選哪些以及絕對不要勾選哪些
