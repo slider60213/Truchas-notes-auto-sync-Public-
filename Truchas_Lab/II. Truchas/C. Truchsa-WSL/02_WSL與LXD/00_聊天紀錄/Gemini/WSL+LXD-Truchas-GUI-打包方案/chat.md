@@ -2177,7 +2177,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-005.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-005.png)
 
 目前執行main.py選擇WSL之後顯示的畫面如圖，雖然界面看起來沒問題，但是沒有顯示當前路徑，如果換成在power shell的話，wsl登入後當前位置在WSL的路徑跟在WINDOWS中的路徑分別如下，這些資訊要反應在GUI界面上，也就是說GUI界面應該要等效於WSL界面，只是把相關操作跟資訊轉換到圖形介面而已
 user_student@MSI:~$ pwd_win
@@ -2475,7 +2475,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-006.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/pics/img-006.png)
 
 目前看起來不錯 有實際串接模擬指令了嗎？
 
@@ -3403,7 +3403,7 @@ wsl_args = [
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-008.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-008.png)
 
 雖然有啟動 但這些畫面我是要留給開發者看的 一般使用者只要會選/改inp跟按模擬即可，為了避免一般使用者卡在這個畫面，直接幫他們預先啟用LXD容器
 
@@ -4523,7 +4523,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-012.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-012.png)
 
 🛠️ 開發者終端的按鈕有成功，但是LXD容器的下拉選單還是錯的，你是不是沒有修改這部份，我們跳出這個視窗的時候應該是已經登入WSL的狀態，因此下拉選單直接反應lxc list的結果即可，使用者依此選擇之後就把對應的容器作啟動
 
@@ -6812,7 +6812,7 @@ bash: syntax error near unexpected token `('
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-014.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-014.png)
 
 卡在這邊，而且也沒有顯示任何資訊，應該要同步顯示WSL上會顯示的資訊才對
 
@@ -7020,7 +7020,7 @@ exec_cmd = f"export PATH=$PATH:/snap/bin && ..."
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-015.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-015.png)
 
 我想要調整一下排版並新增按鈕
 🐳 模擬目標環境 (LXD):目前跟後面的下拉選單離得太遠了，把下拉選單到顯示宿主 WSL: 的部分往左平移到冒號後面，就像網址列後方直接是網址一樣，平移後多出來的空間新增兩個按鈕，分別是複製LXD容器 跟 刪除LXD容器，功能是按下後會等效於bashrc中的 Copy_LXD 跟 Del_LXD ，先完成這個架構外觀
@@ -9049,7 +9049,7 @@ wsl -d Truchas-Lab_20260609 -- bash -c "cat ~/Shane_Command/.lxc_config"
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-016.png)
+![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-016.png)
 
 ### 🤖 Assistant
 

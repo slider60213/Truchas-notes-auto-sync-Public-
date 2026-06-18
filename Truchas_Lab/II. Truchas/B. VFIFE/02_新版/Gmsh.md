@@ -27,7 +27,7 @@ AND !icontains(file.name, "excalidraw")
 
 ### **1. 安裝**
 * [查看 Turn 2~5 的安裝步驟](../00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/chat_免費建模軟體比較與建議.md#turn-2)
-* 隨著 [WSL](../../Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 更新， Gmsh搭配的 python版本可能與系統有所差異，因此使用 [venv](../../Truchsa-WSL/01_116版_2.0.2/pics/LXD_Docker_.venv.md) (Virtual Environment) 來作隔離，操作 Gmsh 前須在 WSL狀態輸入指令切換至 venv身份。
+* 隨著 [WSL](../../C.%20Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 更新， Gmsh搭配的 python版本可能與系統有所差異，因此使用 [venv](../../C.%20Truchsa-WSL/01_116版_2.0.2/pics/LXD_Docker_.venv.md) (Virtual Environment) 來作隔離，操作 Gmsh 前須在 WSL狀態輸入指令切換至 venv身份。
 * 登入 `source .venv/bin/activate`
 * 退出 `deactivate`
 * 或是用寫好的函數 `venv` 跟 `venv_exit` ![500x50](pics/Pasted%20image%2020260513025558.png)
@@ -43,9 +43,9 @@ AND !icontains(file.name, "excalidraw")
 
 ### **3. 建模操作**
 
-- **開始操作前，在 [WSL](../../Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 狀態下輸入 `venv` 來切換成 venv 身份。**
-- **開始操作前，在 [WSL](../../Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 狀態下輸入 `venv` 來切換成 venv 身份。**
-- **開始操作前，在 [WSL](../../Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 狀態下輸入 `venv` 來切換成 venv 身份。**
+- **開始操作前，在 [WSL](../../C.%20Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 狀態下輸入 `venv` 來切換成 venv 身份。**
+- **開始操作前，在 [WSL](../../C.%20Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 狀態下輸入 `venv` 來切換成 venv 身份。**
+- **開始操作前，在 [WSL](../../C.%20Truchsa-WSL/02_WSL與LXD/01_WSL/WSL.md) 狀態下輸入 `venv` 來切換成 venv 身份。**
 
 #### **檔案架構**
 * `Check.geo`, `geo_files`

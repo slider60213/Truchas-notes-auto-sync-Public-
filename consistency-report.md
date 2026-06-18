@@ -41,7 +41,7 @@
 
 
 # Bad embeds (4 files)
-[[Truchas_Lab/II. Truchas/Truchsa-WSL/01_116版_2.0.2/模擬效能比較_20260406]]:
+[[Truchas_Lab/II. Truchas/C. Truchsa-WSL/01_116版_2.0.2/模擬效能比較_20260406]]:
 - (line 10): `Pasted image 20260405232723.png`
 
 
@@ -86,7 +86,7 @@
 
 
 # Wiki embeds (1 files)
-[[Truchas_Lab/II. Truchas/Truchsa-WSL/01_116版_2.0.2/模擬效能比較_20260406]]:
+[[Truchas_Lab/II. Truchas/C. Truchsa-WSL/01_116版_2.0.2/模擬效能比較_20260406]]:
 - (line 10): `Pasted image 20260405232723.png`
 
 
