@@ -1,3 +1,13 @@
+---
+type: 📝 Research
+created: 2026-06-20 00:06
+modified: 2026-06-20 00:11
+tags:
+  - AI
+  - AI/Gemini
+  - 電腦/WINDOWS/WSL
+  - 電腦/WINDOWS/LXD
+---
 # WSL\+LXD Truchas GUI 打包方案
 
 **Date**: June 18, 2026 at 04:07 PM
@@ -7628,6 +7638,7 @@ from gui.localization import TRANSLATIONS
 
 ### 👤 User
 
+```
 import os
 import re
 import subprocess
@@ -8019,7 +8030,7 @@ self.run_btn.setEnabled(True)
 self.run_btn.setText("🚀 開始模擬 (run_sim)")
 self.log_output.append(f"\n💡 [系統提示] 模擬進程執行完畢。Exit Code: {exit_code}")
 self.process = None
-
+```
 ### 🤖 Assistant
 
 可以。
@@ -8504,6 +8515,7 @@ class SimulationWindow(QMainWindow):
 ### 👤 User
 
 這兩個目前還是中文
+```
 # 🛠️ 開發者終端按鈕
 self.dev_term_btn = QPushButton("🛠️ 開發者終端")
 self.dev_term_btn.setStyleSheet("font-weight: bold; background-color: #4A148C; color: white;")
@@ -8516,6 +8528,7 @@ self.selected_file_label = QLabel("當前選定檔案：(尚未選擇)")
 self.selected_file_label.setStyleSheet("color: #BBBBBB; font-style: italic;")
 self.selected_file_label.setTextInteractionFlags(Qt.TextInteractionFlag.TextSelectableByMouse)
 layout.addWidget(self.selected_file_label)
+```
 
 ### 🤖 Assistant
 
@@ -9070,7 +9083,7 @@ wsl -d Truchas-Lab_20260609 -- bash -c "cat ~/Shane_Command/.lxc_config"
 請打開你的 **D:\Truchas_App_Project\main.py**，搜尋有沒有 `open_import_dialog` 這個字眼。
 
 - 如果在 `check_environment` 函式（大約第 169 行上下）裡看到 `self.open_import_dialog` 或 `MainWindow.open_import_dialog`，這代表那是舊架構遺留下來的棄用程式碼。
-- 請直接將那幾行衝突的舊防呆或舊呼叫**註解掉（前方加 #）或刪除**。
+- 請直接將那幾行衝突的舊防呆或舊呼叫**註解掉（前方加 # ）或刪除**。
 
 #### 步驟 2：清除 PyInstaller 歷史快取與暫存檔（最關鍵）
 PyInstaller 預設會重複使用先前的編譯快取，這會導致你剛才改好的代碼沒有被更新進去。請在 PowerShell 中**直接手動刪除**舊的編譯產物：
