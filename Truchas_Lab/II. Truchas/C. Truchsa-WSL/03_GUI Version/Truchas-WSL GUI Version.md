@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-06-22 15:15
+modified: 2026-06-22 15:42
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -20,10 +20,8 @@ AND !icontains(file.name, "excalidraw")
 # 📌 摘要
 
 
-
-
 ---
-# 🦖 以前
+
 
 
 ---
@@ -37,7 +35,18 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 📝 內容紀錄
 
-
+## 未來完成：
+- IMPORT WSL 功能 
+	``` # 匯入打包好的 WSL (WSL 名稱取為 Truchas-Lab，位置設在 D:\WSL_Truchas)```
+	``` wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_ 20260407.tar```
+- ICON
+- LOADING 畫面
+- LXD +/-
+- LXD 清單修正
+- LOG 訊息文字翻譯
+- 自動更新通知
+- GMV/MATLAB/PYTHON 繪圖成果預覽
+- AI AGENT
 ---
 # 🔗 參考資料
 
