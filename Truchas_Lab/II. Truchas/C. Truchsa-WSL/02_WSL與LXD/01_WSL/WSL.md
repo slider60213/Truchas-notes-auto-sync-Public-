@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-06-22 13:52
+modified: 2026-06-26 02:09
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -80,5 +80,50 @@ wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
 # 登入 WSL
 wsl -d Truchas-Lab
 ```
+
+### 👨‍💻 若為 MAC 用戶
+
+#### 方案 A：使用 Docker 匯入（最快、最直覺）
+
+Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker 映像檔（Image），並直接啟動。
+
+1. **在 Mac 安裝 Docker Desktop**。
+2. **匯入您的 TAR 檔**：打開 Mac 的終端機（Terminal），切換到該檔案所在資料夾，執行：
+    
+    bash
+    
+    ```
+    docker import Truchas_Parallel_Full_20260407.tar truchas_backup:v1
+    ```
+    
+    請謹慎使用程式碼。
+    
+3. **啟動並進入環境**：
+    
+    bash
+    
+    ```
+    docker run -it truchas_backup:v1 /bin/bash
+    ```
+    
+    請謹慎使用程式碼。
+    
+    _注意：因為 WSL 本身就是一個完整的系統，裡面可能帶有一些不必要的 init 服務，但這種方式能讓您最快在 Mac 裡面看到原本的檔案與軟體。_
+
+#### 方案 B：使用 Lima 虛擬機還原（最接近原本 WSL 的體驗）
+
+如果您希望像原本 WSL 一樣，擁有一個獨立的 Linux 虛擬機，而且能在裡面繼續操作 LXD，可以用 **Lima** 來載入這個根檔案系統：
+
+1. **安裝 Lima**（透過 Homebrew）：
+    
+    bash
+    
+    ```
+    brew install lima
+    ```
+    
+    請謹慎使用程式碼。
+    
+2. **解壓並轉換**：您可以利用 Lima 的規格檔案（YAML），將這個 `.tar` 檔指定為虛擬機的磁碟映像來源，Lima 就會直接把這個備份還原成 Mac 上的 Linux 虛擬機環境。
 ---
 # 🔗 參考資料

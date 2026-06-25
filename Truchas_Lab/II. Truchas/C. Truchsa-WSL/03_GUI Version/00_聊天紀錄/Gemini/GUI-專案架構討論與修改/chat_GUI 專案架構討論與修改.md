@@ -2777,7 +2777,7 @@ log_dir = os.path.join(base_dir, "exported_logs")
 
 我的AI連線為什麼出錯了？
 🤖 [AI 助手] 正在打包多模態附件並連線至 Google Gemini，請稍候...
-❌ [AI 連線錯誤] Error transferring https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk - server replied with status code 503
+❌ [AI 連線錯誤] Error transferring https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=ssssssssssssssssssssssssssssssss - server replied with status code 503
 
 ### 🤖 Assistant
 
