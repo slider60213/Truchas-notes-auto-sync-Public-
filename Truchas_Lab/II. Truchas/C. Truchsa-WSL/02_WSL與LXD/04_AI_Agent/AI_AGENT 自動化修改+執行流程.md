@@ -26,6 +26,7 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 👨‍💻 以後
 
+接上 GOOGLE API KEY
 告訴 AGENT 要執行不同網格設置的模擬
 ![](pics/Pasted%20image%2020260702042131.png)
 
