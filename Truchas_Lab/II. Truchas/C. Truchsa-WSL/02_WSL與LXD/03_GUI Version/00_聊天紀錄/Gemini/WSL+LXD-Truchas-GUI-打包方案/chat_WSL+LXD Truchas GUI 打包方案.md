@@ -933,7 +933,7 @@ def probe_truchas_wsl():
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
 
 雖然有成功 但是沒有換行顯示，另外視窗的文字可以改成能反白複製嗎？方便使用者操作
 
@@ -1148,7 +1148,7 @@ def probe_truchas_wsl():
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 畫面資訊太多了，應該要是
 偵測到已安裝過 Truchas-WSL
@@ -1545,7 +1545,7 @@ EX: run_sim 2 ABCD.inp
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
 
 執行模擬與參數輸入：這邊不要直接列出所有的inp檔，而是要分為創建新inp跟選擇已存在inp，選擇創建新inp的話之後會跳出一連串詢問使用者的互動式輸入視窗，選擇已存在inp的話則是像平常常見的瀏覽檔案視窗一樣，像圖片中的樣子。完成inp檔設置後詢問CPU數量，然後才開始等效進行模擬run_sim 2 ABCD.inp
 
@@ -1882,7 +1882,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-004.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-004.png)
 
 雖然視窗外觀跟內容都有符合要求，但是瀏覽工作目錄的時候，它顯示的是main.py的位置，包括選擇已存在的inp跳出來的瀏覽視窗也是，我需要的是工作目錄根據偵測到的LXD來作選擇，為了實現這件事情可能需要先實踐open_win的GUI
 user_student@MSI:~$ run_sim
@@ -2187,7 +2187,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-005.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-005.png)
 
 目前執行main.py選擇WSL之後顯示的畫面如圖，雖然界面看起來沒問題，但是沒有顯示當前路徑，如果換成在power shell的話，wsl登入後當前位置在WSL的路徑跟在WINDOWS中的路徑分別如下，這些資訊要反應在GUI界面上，也就是說GUI界面應該要等效於WSL界面，只是把相關操作跟資訊轉換到圖形介面而已
 user_student@MSI:~$ pwd_win
@@ -2485,7 +2485,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/pics/img-006.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/pics/img-006.png)
 
 目前看起來不錯 有實際串接模擬指令了嗎？
 
@@ -2910,7 +2910,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-007.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-007.png)
 
 ### 🤖 Assistant
 
@@ -3413,7 +3413,7 @@ wsl_args = [
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-008.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-008.png)
 
 雖然有啟動 但這些畫面我是要留給開發者看的 一般使用者只要會選/改inp跟按模擬即可，為了避免一般使用者卡在這個畫面，直接幫他們預先啟用LXD容器
 
@@ -3546,7 +3546,7 @@ wsl_args = [
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-009.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-009.png)
 
 現在的版本可以順利模擬沒有問題，但我想作一些界面的優化。
 目前上方的網址列有正常顯示，瀏覽功能跟open_win功能也都有正常運作，要確保點選瀏覽之後，有同時給予系統cd到該路徑的指令。
@@ -3884,7 +3884,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-010.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-010.png)
 
 為什麼下拉選單還是沒有內容
 
@@ -4187,7 +4187,7 @@ wsl_args = ["-d", self.wsl_name, "--", "bash", "-li", "-c", "..."]
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-011.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-011.png)
 
 既然是有實際登入的話，直接在一開始選擇啟用的WSL時就直接登入就好，這樣lxc list不會有問題，也可以無縫切換成開發者模式（power shell介面）
 
@@ -4533,7 +4533,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-012.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-012.png)
 
 🛠️ 開發者終端的按鈕有成功，但是LXD容器的下拉選單還是錯的，你是不是沒有修改這部份，我們跳出這個視窗的時候應該是已經登入WSL的狀態，因此下拉選單直接反應lxc list的結果即可，使用者依此選擇之後就把對應的容器作啟動
 
@@ -4895,7 +4895,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-013.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-013.png)
 
 執行main.py 然後點選 Truchas-Lab_20260609 後
 它先是顯示⚠️ 偵測超時 (LXD 服務可能正在啟動中，請再點擊一次
@@ -6822,7 +6822,7 @@ bash: syntax error near unexpected token `('
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-014.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-014.png)
 
 卡在這邊，而且也沒有顯示任何資訊，應該要同步顯示WSL上會顯示的資訊才對
 
@@ -7030,7 +7030,7 @@ exec_cmd = f"export PATH=$PATH:/snap/bin && ..."
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-015.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-015.png)
 
 我想要調整一下排版並新增按鈕
 🐳 模擬目標環境 (LXD):目前跟後面的下拉選單離得太遠了，把下拉選單到顯示宿主 WSL: 的部分往左平移到冒號後面，就像網址列後方直接是網址一樣，平移後多出來的空間新增兩個按鈕，分別是複製LXD容器 跟 刪除LXD容器，功能是按下後會等效於bashrc中的 Copy_LXD 跟 Del_LXD ，先完成這個架構外觀
@@ -9062,7 +9062,7 @@ wsl -d Truchas-Lab_20260609 -- bash -c "cat ~/Shane_Command/.lxc_config"
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-016.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-016.png)
 
 ### 🤖 Assistant
 

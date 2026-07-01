@@ -12,11 +12,11 @@
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](pics/img-001.png)
+![「PY」圖示](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-001.png)
 
-![「PY」圖示](pics/img-001.png)
+![「PY」圖示](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-001.png)
 
-![「PY」圖示](pics/img-001.png)
+![「PY」圖示](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-001.png)
 
 我這邊在試著把之前的Truchas-WSL寫成GUI來給新手使用，主要用到這幾個py檔，專案架構類似這樣
 Truchas_App_Project/
@@ -496,7 +496,7 @@ WSL狀態的判斷不太好，應該是不管RUNNING或STOPPED都讀取 Windows 
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](pics/img-001.png)
+![「PY」圖示](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-001.png)
 
 ### 🤖 Assistant
 
@@ -1247,7 +1247,7 @@ TRANSLATIONS = load_all_translations()
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](pics/img-001.png)
+![「PY」圖示](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-001.png)
 
 因為太多了 所以我直接傳現在的main_window.py給你
 
@@ -2048,7 +2048,7 @@ IndentationError: unindent does not match any outer indentation level
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-002.png)
+![上傳圖片預覽](../../../../../01_116版_2.0.2/00_聊天紀錄/Gemini/移植-Truchas-編譯器版本確認/pics/img-002.png)
 
 IndentationError: unindent does not match any outer indentation level
 [Localization Warning] 檔案 en.json 格式解析失敗: Expecting property name enclosed in double quotes: line 27 column 5 (char 1566)
@@ -2197,7 +2197,7 @@ cpu_input, ok = QInputDialog.getText(self, prompt_title, prompt_text, text="2")
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-003.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/pics/img-003.png)
 
 看到錯誤訊息了 不過顯然文字渲染沒有生效
 
@@ -2228,7 +2228,7 @@ cpu_input, ok = QInputDialog.getText(self, prompt_title, prompt_text, text="2")
 
 *[This turn includes uploaded images]*
 
-![「JSON」圖示](pics/img-001.png)
+![「JSON」圖示](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-001.png)
 
 有成功了，原來是我json檔名稱忘記改了，改成語言全名就正確了，現在能幫我把這個json檔轉成越南語的json檔內容嗎？
 
@@ -2799,7 +2799,7 @@ log_dir = os.path.join(base_dir, "exported_logs")
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-004.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-004.png)
 
 我如果打包的話 是整個資料夾都要打包嗎？
 包括get-pip.py？

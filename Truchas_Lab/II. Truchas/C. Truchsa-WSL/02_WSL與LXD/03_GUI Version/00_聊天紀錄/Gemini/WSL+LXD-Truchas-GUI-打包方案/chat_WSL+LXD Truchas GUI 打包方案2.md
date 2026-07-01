@@ -402,7 +402,7 @@ D:\Truchas_App_Project\
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-002.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 為什麼我的icon.ico跟實際的圖示有落差
 
@@ -479,7 +479,7 @@ D:\Truchas_App_Project/
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-003.png)
+![上傳圖片預覽](../../../../../../B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-003.png)
 
 目前長這樣
 
@@ -520,7 +520,7 @@ D:\Truchas_App_Project/
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-004.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-004.png)
 
 概念都很好 唯一一個是AI對話框的形式，我不想要彈窗，我想要單純接在目前log畫面的最下方，在重啟面板與語言切換之上
 
@@ -972,7 +972,7 @@ AttributeError: 'SimulationWindow' object has no attribute 'settings'
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-007.png)
+![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-007.png)
 
 雖然功能有出來但是排版太醜了，我預想的AI對話框是單獨一個框，寬度要跟LOG界面一樣，高則是大概1/3倍的LOG界面，這個AI框底下稍微分隔一條淺線才是重啟面板跟切換語言
 
