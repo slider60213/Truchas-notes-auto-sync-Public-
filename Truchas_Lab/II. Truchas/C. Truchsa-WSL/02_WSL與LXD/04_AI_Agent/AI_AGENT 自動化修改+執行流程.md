@@ -36,6 +36,7 @@ AND !icontains(file.name, "excalidraw")
 
 AI 發現其中 dt_init 會生成錯誤的 log 檔
 初始時間步長 (dt_init = 5.0 e-8) 被設定得小於允許的最小時間步長 (dt_min = 1.0 e-5)
+
 AI 判斷 ：呼叫工具 -> update_numerics_dt_params，參數 -> {'dt_init': 1 e-05}
 
 ![](pics/Pasted%20image%2020260702051955.png)
