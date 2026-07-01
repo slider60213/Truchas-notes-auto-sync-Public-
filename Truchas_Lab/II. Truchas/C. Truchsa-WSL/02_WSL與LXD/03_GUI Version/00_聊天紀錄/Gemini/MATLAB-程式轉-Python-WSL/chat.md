@@ -3095,7 +3095,7 @@ if __name__ == "__main__":
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-002.png)
+![上傳圖片預覽](pics/img-002.png)
 
 位置不對 你新增的都跑掉了
 
@@ -3317,7 +3317,7 @@ if __name__ == "__main__":
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-003.png)
+![上傳圖片預覽](pics/img-003.png)
 
 START按鈕沒有灰底按了也沒反應、轉正視角只能看不能按、錯誤訊息
 Font 'default' does not have a glyph for '\u8abf' [U+8abf], substituting with a dummy symbol.
@@ -3465,7 +3465,7 @@ if __name__ == "__main__":
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-004.png)
+![上傳圖片預覽](pics/img-004.png)
 
 有成功 不過說明文字的排版太醜了，如果這麼隨便還不如不加
 另外有錯誤訊息
@@ -3571,7 +3571,7 @@ if __name__ == "__main__":
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-005.png)
+![上傳圖片預覽](pics/img-005.png)
 
 文字跟按鈕好像不在一個水平線上，START PLOTTING的按鈕要改成跟文字同一個色系
 

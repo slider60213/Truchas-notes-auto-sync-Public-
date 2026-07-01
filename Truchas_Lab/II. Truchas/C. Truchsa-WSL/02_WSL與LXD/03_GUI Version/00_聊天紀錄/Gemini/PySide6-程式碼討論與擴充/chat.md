@@ -12,7 +12,7 @@
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
 你先看完這份檔案 我們再來後續討論
 
@@ -27,7 +27,7 @@
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](assets/img-002.png)
+![上傳圖片預覽](pics/img-002.png)
 
 開啟操作面板之後，應該會自動執行一次智慧導航，後續可以透過選擇「模擬目標環境（LXD）」再作跳轉，但不知道為什麼這個功能失效了，會出現如下錯誤訊息
 Error calling Python override of QComboBox::showPopup(): Traceback (most recent call last):

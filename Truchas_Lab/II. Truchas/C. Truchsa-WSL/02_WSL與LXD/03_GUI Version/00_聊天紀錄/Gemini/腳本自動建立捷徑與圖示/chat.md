@@ -60,17 +60,17 @@ start "" ".\python\pythonw.exe" "main.py"
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
-![「JSON」圖示](assets/img-001.png)
+![「JSON」圖示](pics/img-001.png)
 
 好像其實有成功，接下來我會給你我GUI專案的python檔，你讀完之後我們再來討論後續優化
 Truchas_App_Project/
@@ -330,7 +330,7 @@ class MainWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
 你再重看一次我原本的main.py
 
@@ -2814,7 +2814,7 @@ RuntimeError: libshiboken: Internal C++ object (PySide6.QtCore.QProcess) already
 
 *[This turn includes uploaded images]*
 
-![「PY」圖示](assets/img-001.png)
+![「PY」圖示](pics/img-001.png)
 
 我先給你目前的D:\Truchas_App_Project\gui\main_window.py
 你看看為什麼LXD下拉選單失效了？雖然選單界面還在 但如果跳轉路徑後不會自動導航到正確的位置
