@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-02 04:18
-modified: 2026-07-02 05:23
+modified: 2026-07-02 05:27
 tags:
   - "#Truchas"
 ---
@@ -28,9 +28,9 @@ AND !icontains(file.name, "excalidraw")
 
 接上 GOOGLE API KEY
 
-告訴 AI AGENT 要執行不同網格設置的模擬
+告訴 AI AGENT 要執行不同網格設置的模擬 ［100, 1, 40］ 跟 ［100, 1, 20］
 
-- 第一組
+- 第一組 ［100, 1, 40］
 ![](pics/Pasted%20image%2020260702051917.png)
 
 
@@ -43,13 +43,17 @@ AI 判斷 ：呼叫工具 -> update_numerics_dt_params，參數 -> {'dt_init': 1
 完成模擬後，執行繪圖程式
 ![](pics/Pasted%20image%2020260702042204.png)
 
-人工檢查：確實有修改 inp 檔
+人工檢查：確實有修改 inp 檔的 dt
 ![](pics/Pasted%20image%2020260702051208.png)
 
-AI 自動接續執行第二按模擬
+AI 自動接續執行第二按模擬  ［100, 1, 20］
 
 ![](pics/Pasted%20image%2020260702052021.png)
 
+人工檢查：確實有修改 inp 檔的 NCELL
+![](pics/Pasted%20image%2020260702052713.png)
+
+完成模擬後，執行繪圖程式
 ![](pics/Pasted%20image%2020260702052122.png)
 
 順利完成兩組模擬！
