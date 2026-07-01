@@ -18,6 +18,7 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 📌 摘要
 
+![](pics/Pasted%20image%2020260702054802.png)
 
 ---
 # 🦖 以前
