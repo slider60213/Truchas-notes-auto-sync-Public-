@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-02 04:18
-modified: 2026-07-02 05:28
+modified: 2026-07-03 04:48
 tags:
   - "#Truchas"
 ---
@@ -40,7 +40,7 @@ AI 發現其中 dt_init 會生成錯誤的 log 檔
 
 AI 判斷 ：呼叫工具 -> update_numerics_dt_params，參數 -> {'dt_init': 1 e-05}
 
-![](pics/Pasted%20image%2020260702051955.png)
+![|850](pics/Pasted%20image%2020260702051955.png)
 
 完成模擬後，執行繪圖程式
 ![](pics/Pasted%20image%2020260702042204.png)
