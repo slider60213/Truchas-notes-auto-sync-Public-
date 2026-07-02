@@ -1,5 +1,5 @@
-# LangGraph Agent 概念與程式碼討論
 
+<<<<<<< HEAD
 **Date**: July 2, 2026 at 05:30 AM
 **Turns**: 71
 **Source**: [Gemini Chat](https://gemini.google.com/app/270cfc9200e564f2?android-min-version=301356232&ios-min-version=322.0&is_sa=1&campaign_id=test_autosubmit&pt=9008&mt=8)
@@ -7944,3 +7944,5 @@ def decide_next_step(state: dict) -> str:
 
 *Exported from [Voyager](https://github.com/Nagi-ovo/gemini-voyager)*  
 *Generated on July 2, 2026 at 05:30 AM*
+=======
+>>>>>>> origin/main
