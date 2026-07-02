@@ -6942,19 +6942,19 @@ Truchas 運行日誌顯示，模擬在初始化時間步長時發生了致命錯
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk
+❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk
 ⚠️ 大腦無法解析日誌或拒絕做出選用工具決策，跳過優化。
 🔄 [大腦決策] 任務 0 失敗，目前已重試 0 次。觸發自動優化修正流！
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 503 Server Error: Service Unavailable for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk
+❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 503 Server Error: Service Unavailable for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk
 ⚠️ 大腦無法解析日誌或拒絕做出選用工具決策，跳過優化。
 🔄 [大腦決策] 任務 0 失敗，目前已重試 0 次。觸發自動優化修正流！
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 503 Server Error: Service Unavailable for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk
+❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 503 Server Error: Service Unavailable for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk
 ⚠️ 大腦無法解析日誌或拒絕做出選用工具決策，跳過優化。
 🔄 [大腦決策] 任務 0 失敗，目前已重試 0 次。觸發自動優化修正流！
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
@@ -7006,13 +7006,13 @@ Truchas 運行日誌顯示，模擬在初始化時間步長時發生了致命錯
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk
+❌ [API 連線錯誤] 呼叫 Gemini 大腦失敗: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk
 Traceback (most recent call last):
 File "/home/user_student/Shane_Command/Truchas_Python_Agent/agents/diagnostic_agent.py", line 88, in call_gemini_brain
 response.raise_for_status()
 File "/home/user_student/Shane_Command/venv/lib/python3.12/site-packages/requests/models.py", line 1167, in raise_for_status
 raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk
+requests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk
 During handling of the above exception, another exception occurred:
 Traceback (most recent call last):
 File "/home/user_student/Shane_Command/Truchas_Python_Agent/truchas_agent.py", line 186, in <module>
@@ -7576,25 +7576,25 @@ DEBUG: KEY 開頭字首為: AIzaSyA... 末尾字尾為: ...Nbnk
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk)。
+⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk)。
 🔒 觸發安全斷路器：強制判定任務 0 失敗，並將重試次數遞增，防禦死循環。
 🔄 [大腦決策] 任務 0 失敗，目前已重試 1 次。觸發自動優化修正流！
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk)。
+⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk)。
 🔒 觸發安全斷路器：強制判定任務 0 失敗，並將重試次數遞增，防禦死循環。
 🔄 [大腦決策] 任務 0 失敗，目前已重試 2 次。觸發自動優化修正流！
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk)。
+⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk)。
 🔒 觸發安全斷路器：強制判定任務 0 失敗，並將重試次數遞增，防禦死循環。
 🔄 [大腦決策] 任務 0 失敗，目前已重試 3 次。觸發自動優化修正流！
 [🩺 Vice Agent B] 進入房間：【智慧診斷修復間】
 🤖 [動態工具箱] 目前已自動感知並註冊了 2 個 update 工具。
 🧠 正在將日誌與可用工具投遞給 Gemini 大腦進行推導...
-⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaSyAw9N49QQMcMn3Ynw3udX9RFAOPj3LNbnk)。
+⚠️ [診斷副官防禦] 呼叫 Gemini 大腦失敗 (原因: 429 Client Error: Too Many Requests for url: https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=AIzaS.0...........LNbnk)。
 🔒 觸發安全斷路器：強制判定任務 0 失敗，並將重試次數遞增，防禦死循環。
 ➡️ [大腦決策] 指針指向 -> 【推進下一組網格】(下一組索引: 0)
 [🧠 Main Agent] 進入房間：【算力引擎執行間】
