@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-07-13 16:59
+modified: 2026-07-13 17:24
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -56,9 +56,8 @@ AND !icontains(file.name, "excalidraw")
 
 ## 未來完成：
 
-- 互動式創建新.inp
+- 互動式創建新.inp (尚未對接)
 - AI AGENT (尚未對接)
-- 部分文字翻譯
 - 自動更新通知
 
 
