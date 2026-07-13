@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-07-14 04:30
+modified: 2026-07-14 04:43
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -50,7 +50,8 @@ AND !icontains(file.name, "excalidraw")
 
 - To add or customize a language, mirror the existing directory structure under the locales directory: `Truchas_WSL_GUI/Truchas_App_Project/locales/`
 	
-- Localization files must strictly adhere to the following naming convention and hierarchy: `[Language] / [Python Module Name] / [Class Name].json`
+- Localization files must strictly adhere to the following naming convention and hierarchy:
+   `[Language] / [Python Module Name] / [Class Name].json`
 
 ---
 # 📝 內容紀錄
