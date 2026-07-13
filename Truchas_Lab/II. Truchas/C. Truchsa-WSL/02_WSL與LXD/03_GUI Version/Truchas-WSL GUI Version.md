@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-07-13 16:10
+modified: 2026-07-13 16:26
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -18,6 +18,23 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 # 📌 摘要
+
+## Quick Start 
+1. **Download & Extract:** Download and extract the `Truchas-WSL` and `GUI` packages into your desired directory. 
+2. **Create Shortcut:** Navigate to the GUI directory and run `MakeShortcut.bat` to generate a shortcut named `Truchas_WSL_GUI`. 
+   ![|475](pics/Pasted%20image%2020260626201010.png)
+3. **Launch the Application:** Run `Truchas_WSL_GUI`. *(Note: If this is your first time running the application, ensure WSL2 is installed on your system.)* 
+4. **Environment Setup:** Import `Truchas-WSL` via the GUI, then restart the application. 
+   ![475](pics/Pasted%20image%2020260713161006.png)
+   ![|475](pics/Pasted%20image%2020260626184206.png)
+5. **Debug Mode (Optional):** If you need to view error logs for troubleshooting, launch the application using `Truchas_WSL_DEBUG.bat` instead. 
+6. **Select WSL Environment:** Choose your target WSL environment. *(By default, the GUI selects your last-used environment. You can import additional WSL environments by clicking the ➕ button.)* 
+   ![|475](pics/Pasted%20image%2020260713155744.png)
+7. **Configure AI Integration:** Connect to your preferred AI platform by entering your API key. 
+8. **Run Simulation:** Select your target LXD container and choose an existing `.inp` file to execute the simulation. 
+9. **UI Controls:** 
+   - Click the 🌐 button to toggle the interface language.
+   - Click the ⟳ button to reload the GUI.
 
 ## How to Use
 
