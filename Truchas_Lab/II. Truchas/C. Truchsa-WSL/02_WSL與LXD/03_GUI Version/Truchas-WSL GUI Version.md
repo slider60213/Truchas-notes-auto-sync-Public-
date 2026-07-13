@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-06-30 19:53
+modified: 2026-07-13 14:58
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -62,10 +62,8 @@ AND !icontains(file.name, "excalidraw")
 
 ## 未來完成：
 
-- LXD +/- 功能
-- LXD 清單修正
 - 互動式創建新.inp
-- AI AGENT
+- AI AGENT (尚未對接)
 - 部分文字翻譯
 - 自動更新通知
 
