@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-07-13 20:27
+modified: 2026-07-13 23:07
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -29,15 +29,15 @@ AND !icontains(file.name, "excalidraw")
    ![|475](pics/Pasted%20image%2020260626184206.png)
 5. **Debug Mode (Optional):** If you need to view error logs for troubleshooting, launch the application using `Truchas_WSL_DEBUG.bat` instead. 
 6. **Select WSL Environment:** Choose your target WSL environment. *(By default, the GUI selects your last-used environment. You can import additional WSL environments by clicking the ➕ button.)*  
-   ![|475](pics/Pasted%20image%2020260713202140.png)
+   ![475](pics/Pasted%20image%2020260713230709.png)
 
-7. **Run Simulation:** Select your target LXD container and choose an existing `.inp` file to execute the simulation. 
-8. **Configure AI Integration:** Connect to your preferred AI platform by entering your API key. 
-9. **UI Controls:** 
+8. **Run Simulation:** Select your target LXD container and choose an existing `.inp` file to execute the simulation. 
+9. **Configure AI Integration:** Connect to your preferred AI platform by entering your API key. 
+10. **UI Controls:** 
    - Click the 🌐 button to toggle the interface language.
    - Click the ⟳ button to reload the GUI.
 
-   ![|475](pics/Pasted%20image%2020260713160315.png)
+	   ![|475](pics/Pasted%20image%2020260713160315.png)
 ## Customize
 ### Customizing Assets
 
