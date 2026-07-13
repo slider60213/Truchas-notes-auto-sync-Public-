@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-19 04:28
-modified: 2026-07-13 14:58
+modified: 2026-07-13 16:10
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -18,6 +18,63 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 # 📌 摘要
+
+## How to Use
+
+1. Download and extract the `Truchas-WSL` and `GUI` packages.
+2. Navigate to the `GUI` directory. Run ` MakeShortcut.bat` to create a shortcut named `Truchas_WSL_GUI`.  
+    ![|475](pics/Pasted%20image%2020260626201010.png)
+3. Launch `Truchas_WSL_GUI`. (Note: ` WSL2 ` installation may be required during the initial setup.)
+4. Import `Truchas-WSL` via the `GUI`, then restart the application.
+   ![475](pics/Pasted%20image%2020260713161006.png)
+   ![|475](pics/Pasted%20image%2020260626184206.png)
+5. If error logs are required, please switch to using `Truchas_WSL_DEBUG.bat` instead.
+6. Select your target `WSL` environment. (Default option: The one you used last time; Others: other WSL env.)
+7. Import more WSL env. by clicking the ➕ button.
+8. Toggle the interface language by clicking the 🌐 button.
+   ![|475](pics/Pasted%20image%2020260713155744.png)
+9. Choose an `LXD` container and select an Exisiting `.inp` file to execute the simulation.
+10. Connect to the AI platform through API KEY.
+11. Reload the GUI by clicking the ⟳ button.
+12. Toggle the interface language by clicking the 🌐 button.
+    ![|475](pics/Pasted%20image%2020260713160315.png)
+
+
+## Customize
+### Customizing Assets
+
+- **Shortcut Icon:** To change the shortcut icon, simply replace `icon.ico` with your preferred icon file.
+    
+- **Splash Screen / Loading Image:** To customize the loading screen displayed when entering the WSL environment, replace `LoadingPic.png` with your custom image.
+    ![|475](pics/Pasted%20image%2020260713160143.png)
+
+### Adding Custom Languages
+
+- To add or customize a language, mirror the existing directory structure under the locales directory: `Truchas_WSL_GUI\Truchas_App_Project\locales\`
+	
+- Localization files must strictly adhere to the following naming convention and hierarchy: `[Language] / [Python Module Name] / [Class Name].json`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ## 1. 創建捷徑
