@@ -330,7 +330,7 @@ RuntimeError: libshiboken: Internal C++ object (PySide6.QtCore.QProcess) already
 ### 👤 User
 
 你找到的跟我現在的不太一樣
-def handle_async_ready(self, previous_selection):
+```def handle_async_ready(self, previous_selection):
 """當背景 QProcess 讀取完畢時，自動接手解析與狀態切換"""
 if not self.container_process:
 return
@@ -363,7 +363,7 @@ self.setCurrentIndex(0)
 self.blockSignals(False)
 # 載入完清單後，手動強制觸發一次當前容器的導航更新
 #if self.parent_window and hasattr(self.parent_window, #"handle_container_changed"):
-# self.parent_window.handle_container_changed(self.#currentText())
+# self.parent_window.handle_container_changed(self.#currentText())```
 
 ### 🤖 Assistant
 
@@ -454,6 +454,7 @@ self.blockSignals(False)
 ### 👤 User
 
 我測試了安裝的功能，雖然好像有成功，但是INSTALL到一半就卡住也不知道要不要繼續等，我想要把WSL安裝時的%數顯示在畫面上，或是乾脆讓這個POWER SHELL的執行畫面顯示出來不要隱藏
+```
 D:\Truchas_App_Project\main.py
 class ImportDialog(QDialog):
 """環境匯入與布署的設定視窗"""
@@ -547,7 +548,7 @@ self.accept()
 else:
 QMessageBox.critical(self, "失敗", msg)
 self.confirm_btn.setEnabled(True)
-self.confirm_btn.setText("開始匯入環境")
+self.confirm_btn.setText("開始匯入環境")```
 
 ### 🤖 Assistant
 

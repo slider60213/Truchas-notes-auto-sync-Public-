@@ -3368,6 +3368,7 @@ break
 ### 👤 User
 
 現在的版本
+```
 def load_vof(self, step_idx, material_idx, nx, ny, nz):
 """讀取指定時間步與材料的 VOF 資料，並將其重組為 (nx, ny, nz) 的 3D NumPy 陣列
 :param step_idx: 時間步索引 (0, 1, 2...)
@@ -3404,6 +3405,7 @@ vof_3d_z_first = vof_flat.reshape((nz, ny, nx))
 #vof_3d_final = vof_flat.reshape((nx, ny, nz), order='F') # 形狀直接為 (nx, ny, nz)
 vof_3d_final = vof_3d_z_first.transpose((2, 1, 0))
 return vof_3d_final
+```
 
 ### 🤖 Assistant
 

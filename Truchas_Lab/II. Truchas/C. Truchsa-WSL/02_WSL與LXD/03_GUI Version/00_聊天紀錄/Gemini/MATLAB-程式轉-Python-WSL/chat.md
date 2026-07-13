@@ -2615,7 +2615,7 @@ Ensight_Plot 11_sending_solitary_wave_2.inp
 ### 👤 User
 
 有成功，現在我要把它接到我的WSL GUI上，我目前的GUI專案寫在D:\Truchas_App_Project，未來打包到其他電腦會是不同路徑，其中下面這兩段應該是按下run_sim相關的部分，在確認模擬完成後要接上我們剛剛寫好的Ensight_Plot
-D:\Truchas_App_Project\gui\main_window.py
+```D:\Truchas_App_Project\gui\main_window.py
 class SimulationWindow(QMainWindow):
 def init_ui(self):
 # --- 3. .inp 檔案配置分流區塊 ---
@@ -2646,7 +2646,7 @@ self.run_btn.setText(self.tr("btn_run_sim"))
 self.log_output.append(f"\n💡 [系統提示] 模擬進程執行完畢。Exit Code: {exit_code}")
 # 🟢 [新增] 只要 LOG 框內容有更新，且有勾選，就立刻自動導出到網址列路徑
 self.export_log_to_dir(self.log_output.toPlainText())
-self.sim_process = None
+self.sim_process = None```
 
 ### 🤖 Assistant
 

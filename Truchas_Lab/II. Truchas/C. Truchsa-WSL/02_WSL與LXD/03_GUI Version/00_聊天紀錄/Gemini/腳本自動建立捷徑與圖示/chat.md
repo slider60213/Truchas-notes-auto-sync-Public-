@@ -541,6 +541,7 @@ if __name__ == "__main__":
 
 ### 👤 User
 
+```
 class ImportDialog(QDialog):
 class MainWindow(QMainWindow):
 只有這兩個class，你是不是認錯字了？把MainWindow看成WelcomeWindow？
@@ -750,7 +751,7 @@ sys.exit(0)
 else:
 window = MainWindow(wsl_string)
 window.show()
-sys.exit(app.exec())
+sys.exit(app.exec())```
 
 ### 🤖 Assistant
 
@@ -2384,6 +2385,7 @@ self.nav_overlay = None
 ### 👤 User
 
 有成功 不過這個還需要修改嗎？另外我想要調整圖片的大小要改哪裡？
+```
 class LoadingOverlay(QDialog):
 """遊戲/PPT 級全域強制定點讀取畫面：獨立浮水印視窗"""
 def __init__(self, parent=None):
@@ -2438,6 +2440,7 @@ p_geo.x() + (p_geo.width() - self.width()) // 2,
 p_geo.y() + (p_geo.height() - self.height()) // 2
 )
 self.raise_()
+```
 
 ### 🤖 Assistant
 
