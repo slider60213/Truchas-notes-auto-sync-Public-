@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-06-26 02:09
+modified: 2026-07-20 05:09
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -80,6 +80,170 @@ wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
 # 登入 WSL
 wsl -d Truchas-Lab
 ```
+
+### 🎨 個人化設定
+透過 power shell 輸入 `notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`
+會跳出 `setting.json` 可於其中設定 WSL 的個人配置，以下內容僅供參考，複製貼上無用必須針對個人電腦調整。
+```
+{
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": 
+    [
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "auto",
+                "splitMode": "duplicate"
+            },
+            "id": "User.splitPane.A6751878"
+        },
+        {
+            "command": "find",
+            "id": "User.find"
+        },
+        {
+            "command": "paste",
+            "id": "User.paste"
+        },
+        {
+            "command": 
+            {
+                "action": "copy",
+                "singleLine": false
+            },
+            "id": "User.copy.644BA8F2"
+        }
+    ],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "keybindings": 
+    [
+        {
+            "id": "User.paste",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "User.find",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "User.copy.644BA8F2",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "User.splitPane.A6751878",
+            "keys": "alt+shift+d"
+        }
+    ],
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
+    ],
+    "profiles": 
+    {
+        // 所有終端機環境（WSL、PowerShell、CMD）皆會自動繼承此處的視覺預設值
+        "defaults": 
+        {
+            // [變數 1] 圖片路徑：請確保路徑中的斜線為雙反斜線 \\
+            "backgroundImage": "C:\\Users\\user\\Desktop\\Truchas_App_Project\\theme\\loading\\Truchas Slider.png",
+            
+            // [變數 2] 透明度：數值範圍為 0.0 (完全透明) 到 1.0 (完全不透明)
+            "backgroundImageOpacity": 0.15, 
+            
+            // [變數 3] 圖片大小縮放模式：
+            // "uniformToFill" -> 等比例拉伸填滿視窗 (目前設定，適合當大背景)
+            // "uniform"       -> 保持原圖比例縮放，直到碰到視窗邊緣
+            // "none"          -> 保持圖片原本的原始大小，不進行縮放
+            "backgroundImageStretchMode": "uniform",
+            
+            // [變數 4] 圖片對齊位置：可選 "center", "left", "right", "top", "bottom"
+            "backgroundImageAlignment": "center",
+
+            // 💡 提示：如果將 StretchMode 改為 "none" 或 "uniform"，
+            // 這裡已經取消註解，可以自由自訂圖片的具體像素寬高：
+            "backgroundImageHeight": "1600px",
+            "backgroundImageWidth": "1600px"
+        },
+        "list": 
+        [
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "\u547d\u4ee4\u63d0\u793a\u5b57\u5143"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{4af6b532-e771-585d-9d6c-a046937ee234}",
+                "hidden": false,
+                "name": "Ubuntu-24.04",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{8eaa6b02-91c4-56d4-9211-cad6ec54f96e}",
+                "hidden": false,
+                "name": "Ubuntu-Legacy",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{60de18b7-9498-5800-a4a0-7a6f9ac32a4b}",
+                "hidden": false,
+                "name": "Truchas_Lab_20260422",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{41afc21a-4062-511e-90fa-ed31a2d48929}",
+                "hidden": false,
+                "name": "Truchas-Lab_20260609",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{9431cfd9-cb5f-5436-8813-17bf5719831c}",
+                "hidden": false,
+                "name": "Truchas-Lab-ENG",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{e2ffec3e-52b7-55b5-8db4-0df48f9bca75}",
+                "hidden": false,
+                "name": "Truchas-Lab-CHI",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{47c07f62-b6fa-5f1e-9ce4-3580a6b21ae4}",
+                "hidden": false,
+                "name": "Truchas-Lab-CHI",
+                "source": "Microsoft.WSL"
+            },
+            {
+                "guid": "{6e2da920-8006-5b14-9aca-802210ad63a4}",
+                "hidden": false,
+                "name": "Truchas-Lab-ENG",
+                "source": "Microsoft.WSL"
+            }
+        ]
+    },
+    "schemes": [],
+    "themes": []
+}
+```
+
 
 ### 👨‍💻 若為 MAC 用戶
 
