@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-18 04:03
-modified: 2026-07-18 04:34
+modified: 2026-07-21 23:57
 tags:
   - "#Truchas"
 ---
@@ -41,8 +41,41 @@ AND !icontains(file.name, "excalidraw")
 ## 2. 專屬區段 &DBM: 
    現在可以在 inp 檔的&DBM 設定流變參數，大幅減少編譯的依賴性。  
 ![](pics/Pasted%20image%2020260718040651.png)
+
+### **- LOAD_BATHYMETRY** 
+	Code Path:
+	  src/drivers/drivers.F90
+	  src/drivers/load_bathymetry_module.F90
+	  src/input/Load_Topo_input.F90
   
-  
+### **- INTERNAL_SOURCE_SETTINGS**
+	Code Path:
+	  src/input/Internal_Source_input.F90
+	  src/physics/fluid_flow/internal_source_nodule.F90
+	  check NBLM for others
+
+### **- DBM **
+	Code Path
+	  src/input/DBM_input.F90
+	  src/physics/fluid_flow/viscous/viscous_module.F90
+	  check NBLM for others
+
+### **- Sponge_Layer**
+	sp_Left : Face -X
+	sp_Right: Face +X
+	decay from start (s) to end (e)
+	Code Path: 
+	  src/input/Sponge_Layer_input.F90
+	  src/physics/fluid_flow/Sponge_Layer_module.F90
+
+
+### **- SET_BC_SETTINGS**
+	Code Path:
+	  src/input/Set_BC_input.F90
+	  src/physics/fluid_flow/set_bc_module.F90
+	  check NBLM for others
+
+
 
 
 ---
