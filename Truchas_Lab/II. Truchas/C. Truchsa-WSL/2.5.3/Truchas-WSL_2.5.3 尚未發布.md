@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-18 04:03
-modified: 2026-07-22 00:15
+modified: 2026-07-22 05:41
 tags:
   - "#Truchas"
 ---
@@ -75,6 +75,11 @@ AND !icontains(file.name, "excalidraw")
 	  src/physics/fluid_flow/set_bc_module.F90
 	  check NBLM for others
 
+### **- Pressure_BC_Settings**
+	Code Path:
+	  src/input/Pressure_BC_input.F90
+	  src/physics/fluid_flow/Pressure_BC_module.F90
+	  check NBLM for others
 
 ## 3. inp 檔順序調整
    - 由於 `inp` 檔讀取是認 `&` 與 `/`，外部空間可作為註解。  
