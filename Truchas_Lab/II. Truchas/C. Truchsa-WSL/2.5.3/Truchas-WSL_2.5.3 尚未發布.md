@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-18 04:03
-modified: 2026-07-21 23:57
+modified: 2026-07-22 00:15
 tags:
   - "#Truchas"
 ---
@@ -76,7 +76,20 @@ AND !icontains(file.name, "excalidraw")
 	  check NBLM for others
 
 
-
+## 3. inp 檔順序調整
+   - 由於 `inp` 檔讀取是認 `&` 與 `/`，外部空間可作為註解。  
+   - 整體排版邏輯遵循 **「邏輯優先順序 (Logical Workflow)」**：
+	1. **網格與時空 (Mesh & Time)**：決定計算邊界與時間長度。
+	    
+	2. **物理機制與流體物性 (Physics & Materials)**：定義算什麼、用什麼材料。
+	    
+	3. **幾何區域 (Body)**：把材料填入哪些空間。
+	    
+	4. **邊界與源項 (BC, Source, Sponge Layer)**：邊界條件與波浪/源項設置。
+	    
+	5. **數值解法與求解器 (Numerics & Linear Solver)**：時間步長、庫朗數與矩陣求解。
+	    
+	6. **輸出與平行計算 (Outputs & Parallel)**：計算結果輸出設定。
 
 ---
 # 📝 內容紀錄
