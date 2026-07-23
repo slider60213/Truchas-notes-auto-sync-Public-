@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-14 02:15
-modified: 2026-06-12 19:14
+modified: 2026-07-24 02:16
 tags:
   - "#Truchas"
   - Truchas/116版
@@ -83,6 +83,8 @@ If you are unfortunate enough to have an old version already installed, please r
 Once installed, enter `wsl -d Truchas-Lab` to log into the default environment. The login interface will display system status and usage instructions.
 
 ![](pics/Pasted%20image%2020260408032744.png)![](pics/Pasted%20image%2020260408034752.png)![](pics/Pasted%20image%2020260408034806.png)
+
+![](pics/Pasted%20image%2020260724021611.png)
 
 You can customize the login command to something else. In PowerShell, enter `notepad $PROFILE` to open the profile (ensure you are not logged into WSL yet). Add the following line at the end:
 
