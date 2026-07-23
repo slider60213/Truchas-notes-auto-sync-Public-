@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-16 21:17
-modified: 2026-07-24 03:06
+modified: 2026-07-24 03:40
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -36,10 +36,10 @@ AND !icontains(file.name, "excalidraw")
 
 
 ### Import LXD
-
+![](pics/Pasted%20image%2020260724033605.png)
 
 ### Export LXD
-
+![](pics/Pasted%20image%2020260724034031.png)
 
 
 
