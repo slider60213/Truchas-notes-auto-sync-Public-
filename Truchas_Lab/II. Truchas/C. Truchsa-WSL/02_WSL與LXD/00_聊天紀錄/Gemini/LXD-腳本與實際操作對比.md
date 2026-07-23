@@ -1522,7 +1522,7 @@ bash: no job control in this shell
 ## Turn 16
 
 ### 👤 User
-
+```
 run_sim() {
 local nprocs=$1
 local inp_file=$2
@@ -1593,6 +1593,7 @@ echo "==========================================================="
 # Execute MakeProblem
 lxc exec "$target_container" -- su - user_student -c "bash -ic 'cd $target_dir && MakeProblem $nprocs $inp_file'"
 }
+```
 
 ### 🤖 Assistant
 

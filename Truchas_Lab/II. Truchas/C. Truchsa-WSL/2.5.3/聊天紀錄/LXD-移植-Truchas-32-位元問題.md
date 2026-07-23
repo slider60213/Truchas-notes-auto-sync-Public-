@@ -703,7 +703,8 @@ $HOME/shared/truchas253_transfer/bin/t-linux.i386.lahey.parallel.opt-2.5.3 -h
 ### 👤 User
 
 我覺得你先看看我的 ~/.bashrc再決定要不要寫
-user_student@truchas-student:~/shared$ cat ~/.bashrc
+```
+user_student@truchas-student :~/shared$ cat ~/.bashrc
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -899,6 +900,7 @@ echo "==========================================================="
 # --- Key: Ensure aliases are removed so functions take effect ---
 unalias gmv 2>/dev/null
 unalias open_win 2>/dev/null
+```
 
 ### 🤖 Assistant
 
@@ -2070,7 +2072,7 @@ gcc -m32 ~/test_32bit.c -o ~/test_32bit
 ## Turn 35
 
 ### 👤 User
-
+```
 user_student@DBM:~$ # 1. 安裝 GCC 32位元編譯支援工具套件
 user_student@DBM:~$ sudo apt-get update && sudo apt-get install -y gcc-multilib
 EOF' > ~/test_32bit.c
@@ -2221,7 +2223,7 @@ user_student@DBM:~$ # 4. 執行測試程式
 user_student@DBM:~$ ~/test_32bit
 -bash: /home/user_student/test_32bit: No such file or directory
 user_student@DBM:~$
-
+```
 ### 🤖 Assistant
 
 這個編譯錯誤非常關鍵：
@@ -3056,6 +3058,7 @@ user_student@DBM:~/shared$
 ### 👤 User
 
 寫入指令先，這是目前的bashrc中有的export
+```
 # --- 1. Path and Environment Variable Definitions ---
 export LAHEY_DIR=/opt/lahey
 export LAM_DIR=/opt/lam-6.5.9
@@ -3072,6 +3075,7 @@ export LD_LIBRARY_PATH=$HOME/shared/truchas253_transfer/lib:$LAHEY_RUNTIME:$LAHE
 export DISPLAY=:0
 export MALLOC_CHECK_=0
 export TMPDIR=/tmp
+```
 
 ### 🤖 Assistant
 
@@ -4758,7 +4762,7 @@ grep -n -C 10 "Unable to open file" ../../tools/scripts/TBrookParse.py
 ### 👤 User
 
 好像是這個檔案 ../../tools/PythonPackages/TBrookParser/POSTPROCESSORutils/getFileObject.py
-"""
+```
 getFileObject
 -----------------------------------------------------------------------------
 Purpose:
@@ -4955,6 +4959,7 @@ except:
 print >> fpwatch, "---> Test failed in some aspect <---"
 print >> fpwatch, "\nNature-Of-Error:", sys.exc_info()[0],"\n"
 if opt.d: raise
+```
 
 ### 🤖 Assistant
 
