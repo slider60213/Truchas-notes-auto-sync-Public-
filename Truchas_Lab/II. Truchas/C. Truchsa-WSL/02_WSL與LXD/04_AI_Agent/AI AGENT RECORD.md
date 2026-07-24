@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-25 02:06
-modified: 2026-07-25 02:30
+modified: 2026-07-25 03:07
 tags:
   - "#Truchas"
 ---
@@ -33,14 +33,19 @@ AND !icontains(file.name, "excalidraw")
 
 ## CHANGE MESH
 
+![](pics/Pasted%20image%2020260725030110.png)
 
+![](pics/Pasted%20image%2020260725030217.png)
 
+![](pics/Pasted%20image%2020260725030337.png)
 
+## CHANGE MESH+RATIO
 
-## CHANGE RATIO
+![](pics/Pasted%20image%2020260725030640.png)
 
+![](pics/Pasted%20image%2020260725030728.png)
 
-
+![](pics/Pasted%20image%2020260725030745.png)
 
 ## AUTO SIM. & FIX
 
