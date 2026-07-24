@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-25 02:06
-modified: 2026-07-25 03:07
+modified: 2026-07-25 03:24
 tags:
   - "#Truchas"
 ---
@@ -48,6 +48,24 @@ AND !icontains(file.name, "excalidraw")
 ![](pics/Pasted%20image%2020260725030745.png)
 
 ## AUTO SIM. & FIX
+
+
+![](pics/Pasted%20image%2020260725032231.png)
+
+
+![](pics/Pasted%20image%2020260725032309.png)
+
+
+![](pics/Pasted%20image%2020260725032355.png)
+
+
+
+
+
+
+
+
+
 
 Decide total task amount and `.inp` file settings based on the prompt content.
 ![](pics/Pasted%20image%2020260725020956.png)
