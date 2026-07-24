@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-25 02:06
-modified: 2026-07-25 03:40
+modified: 2026-07-25 04:03
 tags:
   - "#Truchas"
 ---
@@ -64,8 +64,11 @@ AND !icontains(file.name, "excalidraw")
 
 ![|525](pics/Pasted%20image%2020260725033816.png)
 
-
-
+### GEMINI vs GEMMA 4 B
+- Gemini-2.5-pro
+![525](pics/Pasted%20image%2020260725040050.png)
+- Gemma-4B
+![525](pics/Pasted%20image%2020260725040243.png)
 
 Decide total task amount and `.inp` file settings based on the prompt content.
 ![525](pics/Pasted%20image%2020260725020956.png)
