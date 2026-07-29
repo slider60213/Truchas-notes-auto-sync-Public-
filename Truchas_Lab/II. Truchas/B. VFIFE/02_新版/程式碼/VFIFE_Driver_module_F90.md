@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-27 13:23
-modified: 2026-06-09 03:43
+modified: 2026-07-30 02:37
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -20,14 +20,13 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 📌 摘要
 
+主要流程：VFIFE_Driver_module.F90
 參數讀取： [VFIFE_Input_module_F90](VFIFE_Input_module_F90.md)
 初始化： [VFIFE_Setup_module_F90](VFIFE_Setup_module_F90.md)
-內力：[VFIFE_Internal_Force_module_F90](VFIFE_Internal_Force_module_F90.md)
-壓力：[VFIFE_Pressure_module_F90](VFIFE_Pressure_module_F90.md)
-外力：[VFIFE_External_Force_module_F90](VFIFE_External_Force_module_F90.md)
-求解：[VFIFE_Solver_module_F90](VFIFE_Solver_module_F90.md)
-小工具： [VFIFE_Utils_module_F90](VFIFE_Utils_module_F90.md)
-變數定義： [VFIFE_Data_module_F90](VFIFE_Data_module_F90.md)
+運動狀態更新：VFIFE_Motion_module.F 90
+流固交互：VFIFE_FSCoupled_module.F 90
+工具庫： [VFIFE_Utils_module_F90](VFIFE_Utils_module_F90.md)
+變數宣告： [VFIFE_Data_module_F90](VFIFE_Data_module_F90.md)
 
 
 ---

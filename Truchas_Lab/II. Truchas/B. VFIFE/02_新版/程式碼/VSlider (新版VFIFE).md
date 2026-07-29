@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-07-27 23:21
-modified: 2026-07-30 02:13
+modified: 2026-07-30 02:20
 tags:
   - "#Truchas"
 ---
@@ -50,9 +50,10 @@ AND !icontains(file.name, "excalidraw")
 ## 📝 內容紀錄
 
 1. 材料編號：現在會自動創建材料編號 V5_mat_id，數值是 inp 檔中的材料數量再+1，因此 inp 檔材料設定不可跳號。
+2. 固體參數：現在會讀取與 .inp 檔同名的 .V5 檔。 （ABC.inp  $\Rightarrow$ ABC.V5）
 
 
-2. 固-流位置對照：
+3. 固-流位置對照：
 	透過 AABB 篩選出 V5固體所在的位置，並且轉換成流體座標的網格編號
 	方便調整 VOF、速度或未來其他操作
 	![](pics/Pasted%20image%2020260730020933.png)
