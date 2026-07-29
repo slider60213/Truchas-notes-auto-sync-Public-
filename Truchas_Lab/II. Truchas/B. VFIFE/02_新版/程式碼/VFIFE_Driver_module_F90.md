@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-27 13:23
-modified: 2026-07-30 02:37
+modified: 2026-07-30 03:20
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -20,13 +20,7 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 📌 摘要
 
-主要流程：VFIFE_Driver_module.F90
-參數讀取： [VFIFE_Input_module_F90](VFIFE_Input_module_F90.md)
-初始化： [VFIFE_Setup_module_F90](VFIFE_Setup_module_F90.md)
-運動狀態更新：VFIFE_Motion_module.F 90
-流固交互：VFIFE_FSCoupled_module.F 90
-工具庫： [VFIFE_Utils_module_F90](VFIFE_Utils_module_F90.md)
-變數宣告： [VFIFE_Data_module_F90](VFIFE_Data_module_F90.md)
+
 
 
 ---
@@ -63,129 +57,155 @@ AND !icontains(file.name, "excalidraw")
 ---
 # 👨‍💻 以後
 
-新的架構將改為「現時計算、即時更新」，確保進入迴圈時 `xc` 就是 t=n 的位置，結束時 `xc` 更新至 t=n+1：
-**讓程式碼流程符合「當前狀態** → **計算受力** → **更新位置」的直觀邏輯。**
-```
-subroutine esolv_refactored(...)
-  ! 1. 初始化：xc 已在進入迴圈前更新至起始狀態
-  do 2222 nstep = 1, maxstp
-    ! --- 物理分析階段 (Physics at t=n) ---
-    
-    ! (A) 計算內力 (直接使用當前步已就緒的 xc)
-    ! 不再需要在迴圈開頭執行 xc = xct + d 的組合
-    call fintiso3(..., xc, ...)
 
-    ! (B) 流固耦合受力與外力計算
-    ! 直接以當前 xc 計算 pforce 與 fextl
-    call fextl(..., xc, ...)
-    ! 執行壓力積分...
-
-    ! --- 運動積分階段 (Solve for t=n+1) ---
-
-    ! (C) 求解 F=ma
-    ! 根據當前合力計算加速度，並求得位移增量 dp (從 t 到 t+1)
-    ! dp = ... 
-
-    ! --- 狀態更新階段 (Update to t=n+1) ---
-
-    ! (D) 更新總位移與瞬時座標
-    dt1 = dt1 + dp
-    xc = xc_initial + dt1  ! 立即更新 xc 到下一步的位置
-
-    ! (E) 重置途徑單元基準 (Path Element Reset)
-    ! 為了維持 VFIFE 途徑單元理論，將 xc 固化為新的參考基準
-    xct = xc
-    d = 0  ! 在此架構下相對增量重置為0，因為 xc 已即時更新
-
-    ! (F) 數據輸出 (此時輸出的是 t=n+1 的最終狀態)
-    if (mod(nstep, iprob) == 0) call plot_Tecplot(...)
-  end do
-end subroutine
-```
 
 ---
 # 📝 內容紀錄
 
 ``` fortran
 MODULE VFIFE_Driver_module
+
+   USE VFIFE_Input_module,     only: read_data, check_data
+   USE VFIFE_Setup_module,     only: V5Setup
+   USE VFIFE_Motion_module,    only: V5_solid_solver
+   USE VFIFE_FSCoupled_module
+
+   ! Basic Modules of VFIFE
    USE VFIFE_Data_module
-   USE VFIFE_Input_module
-   USE VFIFE_Setup_module
-
-
-   ! USE VFIFE_Internal_Force_module
-   ! USE VFIFE_External_Force_module
-   ! USE VFIFE_Pressure_module
-   ! USE VFIFE_Solver_module
    USE VFIFE_Utils_module
 
 
-   !SHANE 記得把 input_file 開回來
-   !USE output_module,             ONLY: input_file
+   ! Truchas
+   use mesh_module,            only: Cell
+   use parameter_module,       only: ncells, nfc, ndim
+   use output_module,          only: getlun, freelun, input_file
+   use time_step_module,       only: cycle_number, t2
+
+
+
 
    IMPLICIT NONE
 
    PRIVATE
-   PUBLIC :: EXECUTE_VFIFE_SIMULATION
+   PUBLIC :: V5_Initialize
+   PUBLIC :: EXECUTE_V5_SIMULATION
 
-   !SHANE 記得把 input_file 開回來之後刪掉這行
-   character(LEN = 256),  public :: input_file
+
 
 CONTAINS
 
-
-   SUBROUTINE EXECUTE_VFIFE_SIMULATION()
+   ! =========================================================
+   ! VFIFE 初始化: 讀取輸入資料與檢查、計算幾何、質量與表面判定
+   ! =========================================================
+   SUBROUTINE V5_Initialize()
       IMPLICIT NONE
-      INTEGER                      :: i_err, u_inp
 
       WRITE(*,*) ">>> [VFIFE] Starting Simulation Workflow..."
-      !input_file='V5_New_Dat_Format.inp'
-      input_file='Code_devlope_test.inp'
+      IF (.NOT. is_V5_initialized) THEN
 
-      ! 1. Get input file name from output_module (or hardcoded for now)
-      IF (LEN_TRIM(input_file) == 0) THEN
-         WRITE(*,*) "Fatal: No input file specified in output_module."
-         STOP
+         ! 衍生 .V5 檔名
+         V5_dat_name = input_file(1:LEN_TRIM(input_file)-4) // '.V5'
+         WRITE(*,*) " [V5] V5 Solid logic will read from: ", TRIM(V5_dat_name)
+
+         ! 讀取輸入資料與檢查
+         CALL read_data(V5_dat_name)
+         WRITE(*,*) ' [V5] read_data finish'
+
+         CALL check_data()
+         WRITE(*,*) ' [V5] check_data finish'
+
+
+         ! 剛體模式：不會變形，靜態初始化質量、面判定與 AABB 包夾盒 (只需算一次)
+         IF (.NOT. is_V5_deformable) THEN
+            ! 計算幾何、質量與表面判定
+            CALL V5Setup()
+            WRITE(*,*) ' [V5] (Rigid)V5Setup finish at V5_time:', V5_time
+         END IF
+
+         ! 計算 V5solid_vof_t0 當作初始值
+         ! Check allocated or not
+         WRITE(*,*) ' [V5] Checking V5solid_vof allocation state...'
+         IF (.NOT. ALLOCATED(V5solid_vof_t0)) THEN
+            WRITE(*,*) ' [V5] Allocating V5solid_vof_t0 memory...'
+            ALLOCATE(V5solid_vof_t0(ncells))
+            V5solid_vof_t0 = 0.0_real_kind
+         END IF
+
+         CALL compute_V5solid_vof(V5solid_vof_t0)
+         CALL Update_Fluid_Solid_VOF(V5solid_vof_t0)
+         WRITE(*,*) " [V5] compute and update V5solid_vof_t0 finish"
+         WRITE(*,*) " [V5] V5solid_vof_t0 = ", sum(V5solid_vof_t0)
+
+         ! 標記初始化完成
+         is_V5_initialized = .TRUE.
       END IF
-
-      ! 2. Open input file
-      OPEN(NEWUNIT=u_inp, FILE=TRIM(input_file), STATUS='OLD', IOSTAT=i_err)
-      IF (i_err /= 0) THEN
-         WRITE(*, '("Fatal: Cannot open [", A, "].")') TRIM(input_file)
-         STOP
-      END IF
-
-      ! 3. Derive .dat file name from .inp file name
-      V5_dat_name = input_file(1:LEN_TRIM(input_file)-4) // '.dat'
-      WRITE(*,*) " [DEBUG] V5 Solid logic will read from: ", TRIM(V5_dat_name)
-
-      ! 4. Read input data and initialize simulation state
-      WRITE(*,*) ' Shane: read_dat start'
-      CALL read_dat(V5_dat_name)
-      CALL check_dat()  ! Optional: Output read data for verification
-      WRITE(*,*) ' Shane: read_dat finish'
-
-      ! 5. Compute Geometry, mass, face_judge, etc.
-      WRITE(*,*) ' Shane: nodemass start'
-      CALL nodemass()
-      CALL face_judgement()
-      WRITE(*,*) ' Shane: nodemass finish'
+   END SUBROUTINE
 
 
+   ! ==================================================================
+   ! VFIFE 主控制工作流
+   ! ==================================================================
+   SUBROUTINE EXECUTE_V5_SIMULATION()
 
-      ! 6. Main dynamic loop
-      WRITE(*,*) ' Shane: dynamic start'
-      CALL fintiso3()
-      ! CALL dynamic()
-      WRITE(*,*) ' Shane: dynamic finish'
+      IMPLICIT NONE
+      INTEGER               :: step_count = 0
+      REAL(8), SAVE         :: V5_DeltaT=0.0d0
+
+      if (cycle_number > 1 .and. is_V5_initialized) then
 
 
-      ! 7. Close input file and finalize
-      CLOSE(u_inp)
-      WRITE(*,*) ">>> [VFIFE] Simulation Completed."
-   END SUBROUTINE EXECUTE_VFIFE_SIMULATION
+         ! 在達到流體新時間步 t2 之前，持續迭代進行計算
+         step_count = 0  ! 請確認開頭宣告統一使用 step_count
+
+
+         ! 在達到流體新時間步 t2 之前，持續迭代進行計算 (動態微調最後一步 dt)
+         DO WHILE (V5_time < t2 - 1.0e-12_real_kind)
+
+            ! 0. 動態微調固體計算的 dt，防止最後一步 dt 過大
+            V5_DeltaT = MIN(V5_dt, t2 - V5_time)
+            V5_time    = V5_time + V5_DeltaT
+            step_count = step_count + 1
+
+            ! 1. 彈性體：會變形，每個時間步皆需更新幾何與 AABB 包夾盒
+            IF (is_V5_deformable) THEN
+               CALL V5Setup()
+               WRITE(*,*) ' [V5] (Deformable) V5Setup finish at V5_time:', V5_time
+            END IF
+
+            ! 2. 獲取流體壓力 (映射至固體節點)
+            CALL Get_Fluid_Pressure()
+            WRITE(*,*) ' [V5] Get_Fluid_Pressure finish at V5_time:', V5_time
+
+            ! 3. 呼叫固體求解器 (Solid Solver) 推進運動學變數
+            CALL V5_solid_solver(V5_DeltaT)
+            WRITE(*,*) ' [V5] V5_solid_solver finish at V5_time:', V5_time
+
+         END DO
+
+
+         WRITE(*,*) ' [V5] V5_time:', V5_time, 'fluid time:',t2
+         WRITE(*,*) ' [V5] V5 catch up to fluid time step'
+         WRITE(*,*) ' [V5] Start Fluid-Solid coupling:'
+
+         ! 將固體的VOF與速度投影到流體網格���為流固資訊對接����準備
+         CALL update_fluid_mapping()
+         WRITE(*,*) ' [V5] update_fluid_mapping finish'
+
+         ! 依照最新 VOF 與固體速度，將速度反饋給流���
+         CALL V5Solid_Feedback()
+         WRITE(*,*) ' [V5] V5Solid_Feedback finish'
+
+      end if
+      ! DEALLOCATE
+
+
+      WRITE(*,*) " [V5] Simulation Completed"
+
+   END SUBROUTINE EXECUTE_V5_SIMULATION
+
 
 END MODULE VFIFE_Driver_module
+
 
 
 ```

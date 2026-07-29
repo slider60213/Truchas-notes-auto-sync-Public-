@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-04 03:08
-modified: 2026-06-09 03:38
+modified: 2026-07-30 03:21
 tags:
   - "#Truchas"
 ---
@@ -33,113 +33,268 @@ AND !icontains(file.name, "excalidraw")
 ``` fortran
 MODULE VFIFE_Data_module
 
+   ! Truchas
+   USE kind_module, ONLY: int_kind, real_kind, log_kind
    IMPLICIT NONE
 
-   CHARACTER(LEN=256)           :: V5_dat_name
+   PUBLIC :: Link_VFIFE_Containers
 
    ! ==========================================================
-   ! 全域控制變數與常數
+   ! 1. VFIFE 控制參數與旗標
    ! ==========================================================
-   INTEGER, SAVE :: nnd          ! 總節點數 (CARD 6 算出來的)
-   INTEGER, SAVE :: nel          ! 總單元數 (CARD 7 算出來的)
-   INTEGER, SAVE :: ndof         ! 每個節點的自由度 (通常是 3)
-   INTEGER, SAVE :: nyDisto      ! 單元扭曲判定標記
-   REAL(8), SAVE :: acctime      ! 累積物理時間
+   LOGICAL(KIND=log_kind), SAVE :: V5Slider
+   LOGICAL, SAVE                :: is_V5_initialized = .FALSE.
+   LOGICAL, SAVE                :: is_V5_deformable = .FALSE.
+   CHARACTER(LEN=512), SAVE     :: V5_dat_name
+   CHARACTER(LEN=512), SAVE     :: project_name
+   INTEGER, SAVE                :: Deformable_Body
+   INTEGER, SAVE                :: Check_V5_Loading
+   INTEGER, SAVE                :: V5_mat_id  ! 會在 MATERIAL_INPUT 中設定
+   INTEGER, SAVE, ALLOCATABLE   :: V5_ingbr(:) ! ncells
 
-   ! ==========================================================
-   ! 歷史與材料狀態陣列 (從舊 SOLID_module 移植過來)
-   ! ==========================================================
-   REAL(8), ALLOCATABLE, SAVE :: xct(:), yct(:), zct(:)  ! 當前收斂幾何座標
-   REAL(8), ALLOCATABLE, SAVE :: elplas(:)               ! 塑性應變歷史
-   REAL(8), ALLOCATABLE, SAVE :: sigmaP(:)               ! 舊時步應力
-   REAL(8), ALLOCATABLE, SAVE :: epslonP(:)              ! 舊時步應變
-   REAL(8), ALLOCATABLE, SAVE :: PLalphaP(:)             ! 塑性內變量 Alpha
-   REAL(8), ALLOCATABLE, SAVE :: PLrP(:)                 ! 塑性內變量 r
-   REAL(8), ALLOCATABLE, SAVE :: pstress(:,:)            ! 主應力陣列 (3, nel)
+   ! 全域網格與自由度計數器
+   INTEGER, SAVE, TARGET        :: nnd          ! 總節點數
+   INTEGER, SAVE, TARGET        :: nel          ! 總單元數
+   INTEGER, SAVE                :: ndof = 3     ! 3D 空間自由度
 
+   ! 時間與收斂控制參數
+   INTEGER, SAVE                :: minstp
+   INTEGER, SAVE                :: maxstp
+   REAL(8), SAVE, TARGET        :: V5_dt
+   REAL(8), SAVE                :: V5_time = 0.0d0
+   REAL(8), SAVE                :: alpha
+   REAL(8), SAVE                :: toler
 
-   ! CARD 1
-   CHARACTER(LEN=512) :: project_name, temp_str
-   INTEGER :: Check_V5_Loading  ! 控制 V5_Dat_Check  輸出的開關
-   INTEGER :: p ! 判斷 Project_Title 是否存在
-
-   ! ==========================================================
-   ! 時間與收斂控制變數 (來自 CARD 2)
-   ! ==========================================================
-   INTEGER, SAVE :: minstp           ! 起始時步 (Start_Step)
-   INTEGER, SAVE :: maxstp           ! 最大時步 (Max_Step)
-   REAL(8), SAVE :: delta_T          ! 時步大小 (Time_Step_Delta)
-   REAL(8), SAVE :: alpha            ! 虛擬阻尼常數 (Damping_Alpha)
-   REAL(8), SAVE :: toler            ! 收斂容許誤差 (Convergence_Toler)
-
-   ! CARD 3
+   ! 控制卡參數 (CARD 3 & 4)
    INTEGER, SAVE :: ifbody, iacc, iforce2, iforce3, iforce4, isequel
-
-   ! CARD 4
-   INTEGER, SAVE :: iprob, iprobA, numout , isee, iplane, icontact
+   INTEGER, SAVE :: iprob, iprobA, numout, isee, iplane, icontact
    REAL(8), SAVE :: thick
 
-   ! ==========================================================
-   ! 節點層級 (Node-level) 全域動態陣列 -> 來自原 CARD 6
-   ! ==========================================================
-   REAL(8), ALLOCATABLE, SAVE :: x_coord(:,:)     ! (3, nnd) 節點座標
-   REAL(8), ALLOCATABLE, SAVE :: rifix(:,:)       ! (3, nnd) 固定邊界條件
-   REAL(8), ALLOCATABLE, SAVE :: d(:,:), dn(:,:), dnt(:,:)
-   REAL(8), ALLOCATABLE, SAVE :: vt(:,:), at(:,:)
-   REAL(8), ALLOCATABLE, SAVE :: force(:,:), fsum(:,:) ! (3, nnd)
-
+   ! 材料屬性 (CARD 8)
+   INTEGER, SAVE :: nummat
+   INTEGER, SAVE :: MAX_MAT_PARAMS = 20
+   REAL(8), ALLOCATABLE, SAVE :: e(:,:) ! (MAX_MAT_PARAMS, nummat)
 
    ! ==========================================================
-   ! 單元層級 (Element-level) 全域動態陣列 -> 來自原 CARD 7 拆分
+   ! 2. 節點層級 (Node-level) 全域實體陣列 (TARGET)
    ! ==========================================================
-   INTEGER, ALLOCATABLE, SAVE :: elem_topo(:,:)   ! (5, nel) -> [ID, N1, N2, N3, N4]
-   INTEGER, ALLOCATABLE, SAVE :: elem_mat(:,:)    ! (5, nel) -> 材料性質相關整數
-   REAL(8), ALLOCATABLE, SAVE :: elem_vol(:)      ! (nel)    -> 單元體積
-   REAL(8), ALLOCATABLE, SAVE :: elem_rho(:)      ! (nel)    -> 單元密度
-   REAL(8), ALLOCATABLE, SAVE :: elem_mass(:)      ! (nel) 各四面體單元的總質量
-   REAL(8), ALLOCATABLE, SAVE :: elem_mass_per_node(:) ! (nel) 各四面體單元平分給四個節點的質量
-   REAL(8), ALLOCATABLE, SAVE :: node_mass(:)     ! (nnd) 每個節點累積的總質量
-   INTEGER, ALLOCATABLE, SAVE :: face_judge(:,:)   ! (4, nel) -> [F1, F2, F3, F4] 單元面判定矩陣
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: x_coord(:,:)     ! (3, nnd) 瞬時幾何座標
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: x_coord0(:,:)    ! (3, nnd) 初始基準幾何座標
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: rifix(:,:)       ! (3, nnd) 固定邊界條件
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: d(:,:)           ! (3, nnd) 累積位移
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: dn(:,:)          ! (3, nnd)
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: dnt(:,:)         ! (3, nnd)
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: vt(:,:)          ! (3, nnd) 節點速度
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: at(:,:)          ! (3, nnd) 節點加速度
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: force(:,:)       ! (3, nnd) 節點合外力 (包含流體作用力)
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: fsum(:,:)        ! (3, nnd) 內外力合力累積陣列
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: node_mass(:)     ! (nnd) 每個節點累積的總質量
+
+   ! ==========================================================
+   ! 3. 單元層級 (Element-level) 全域實體陣列 (TARGET)
+   ! ==========================================================
+   INTEGER, ALLOCATABLE, SAVE, TARGET :: elem_topo(:,:)         ! (5, nel) -> [ID, N1, N2, N3, N4]
+   INTEGER, ALLOCATABLE, SAVE, TARGET :: elem_mat(:,:)          ! (5, nel) -> 材料性質指標
+   INTEGER, ALLOCATABLE, SAVE, TARGET :: face_judge(:,:)        ! (4, nel) -> 單元面判定矩陣 (1:外露面)
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_vol(:)            ! (nel)    -> 單元體積
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_rho(:)            ! (nel)    -> 單元密度
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_mass(:)           ! (nel)    -> 單元總質量
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_mass_per_node(:)  ! (nel)    -> 單元分配至頂點的質量(OMP用)
+
+   ! 單元幾何資訊
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_vertices(:,:,:)   ! (3, 4, nel) 4個頂點座標
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_facecenter(:,:,:) ! (3, 4, nel) 4個面的形心座標
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_center(:,:)       ! (3, nel)    單元質心座標
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_area(:,:)         ! (4, nel)    4個��的面積
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_normal(:,:,:)     ! (3, 4, nel) 4個面指向單元外的單位法向量
+
+   ! 歷���������狀態物理量 (CARD 7 & 塑性歷�����)
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: rnode(:,:)             ! (10, nel) 拓樸材料綜合矩陣
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: sigma3D(:,:)           ! (6, nel)  現時步應力陣列
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: sigmaP(:,:)            ! (6, nel)  舊時步歷史應力
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: epslonP(:,:)           ! (6, nel)  舊時步歷史應變
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: pstress(:,:)           ! (3, nel)  主應力矩陣
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elplas(:)              ! (nel) 塑性歷史狀態
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: PLalphaP(:)            ! (nel) 塑性內變量 Alpha
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: PLrP(:)                ! (nel) 塑性內變量 r
+
+   ! ==========================================================
+   ! 4. 流體 / 固體 VOF 與表面採樣變數
+   ! ==========================================================
+   REAL(real_kind), ALLOCATABLE, SAVE :: V5solid_vof(:)
+   REAL(real_kind), ALLOCATABLE, SAVE :: V5solid_vof_t0(:)
+   REAL(8), SAVE :: V5_minX(3), V5_maxX(3)
+   INTEGER, SAVE :: V5_fluid_istart, V5_fluid_iend
+   INTEGER, SAVE :: V5_fluid_jstart, V5_fluid_jend
+   INTEGER, SAVE :: V5_fluid_kstart, V5_fluid_kend
+
+   INTEGER, SAVE :: num_surf_faces = 0
+   REAL(8), ALLOCATABLE, SAVE :: surf_node1(:,:)
+   REAL(8), ALLOCATABLE, SAVE :: surf_node2(:,:)
+   REAL(8), ALLOCATABLE, SAVE :: surf_node3(:,:)
+
+   ! --- 流體網格 -> 固體節點/元素 的靜態反向鏈結串列 (Head-Next Structure) ---
+   INTEGER(int_kind), ALLOCATABLE :: cell_node_head(:)  ! 大小: ncells (儲存第一個節點ID)
+   INTEGER(int_kind), ALLOCATABLE :: node_next(:)       ! 大小: num_solid_nodes (下一個節點ID)
+
+   INTEGER(int_kind), ALLOCATABLE :: cell_elem_head(:)  ! 大小: ncells (儲存第一個元素ID)
+   INTEGER(int_kind), ALLOCATABLE :: elem_next(:)       ! 大小: max_elem_links (串列鏈結)
+   INTEGER(int_kind), ALLOCATABLE :: elem_link_id(:)    ! 紀錄鏈結節點對應的實際 Element ID
+   INTEGER(int_kind) :: elem_link_count
 
 
-   ! CARD 7
-   ! --- 現代化動態陣列宣告 --- nel*#
-   REAL(8), ALLOCATABLE, SAVE :: rnode(:,:)    ! 10*nel
-   REAL(8), ALLOCATABLE, SAVE :: sigma3D(:,:)  ! 6*nel
-   REAL(8), ALLOCATABLE, SAVE :: xmass(:), pint(:)  ! 27*nel, 24*nel
+   REAL(KIND=real_kind), ALLOCATABLE :: V5solid_vel(:, :) ! (3, ncells) 固體回傳到流體的速度
 
-   ! CARD 8
-   INTEGER, SAVE :: nummat ! 材料種類數量
-   INTEGER, SAVE :: MAX_MAT_PARAMS=20
-   REAL(8), ALLOCATABLE, SAVE :: e(:,:) ! (MAX_MAT_PARAMS, nummat) -> 材料屬性
+   !=======================================================================
+   ! 流固耦合 - 壓力採樣控制參數
+   ! num_p_samples = 1 : 採樣面心 (預設，運算速度最快)
+   ! num_p_samples = 3 : 採樣 3 個頂點
+   ! num_p_samples = 4 : 採樣面心 + 3 個頂點
+   ! num_p_samples = N : 支援任意 N 點通用重心座標採樣
+   !=======================================================================
+   INTEGER(int_kind) :: num_p_samples = 1
 
+   ! =====================================================================
+   ! 滑動塊體 (Slider) 與流體網格映射 (RBF + AABB) 相關變數
+   ! =====================================================================
+   ! Slider_influence_ratio: 滑動塊體影響範圍權重係數
+   ! 預設值: 1.0_real_kind (即 100% 原範圍；若改為 1.2_real_kind 代表放大 20% 影響範圍)
+   real(real_kind) :: Slider_influence_ratio = 1.2_real_kind
 
-   ! CARD 10: 雖然有讀取，但目前沒用到
-   INTEGER, SAVE :: nptsG  ! 重力時序資料數
-   REAL(8), ALLOCATABLE, SAVE :: grav_table(:,:)  ! (nptsG, 2) -> Time, Value
-
-   ! CARD 15
-   INTEGER, SAVE :: numif, current_pts, max_pts  ! 重力點數、受力歷史總數
-   REAL(8), ALLOCATABLE, SAVE :: force_table(:,:,:) ! (numif, max_pts, 2)
-
-   ! CARD 18
-   INTEGER, SAVE :: i_node, i_dir, i_hist  ! 外力點數、受力歷史總數
-   INTEGER, ALLOCATABLE, SAVE :: force_node_map(:,:) ! (3, nnd) -> Dir, Hist_ID
-
-   ! CARD Output
-   INTEGER, ALLOCATABLE, SAVE :: out_node(:), out_type(:), out_dir(:)
-
-   ! CHECK
-   INTEGER :: unit_check ! 檔案單元編號 (Logical Unit Number)
+   ! base_support_radius: 基準 RBF 緊支撐影響半徑
+   real(real_kind) :: base_support_radius
 
 
+   ! ==========================================================
+   ! 剛體 6-DOF 狀態變數 (Rigid Body 6-DOF State Variables)
+   ! ==========================================================
+   REAL(8), SAVE :: Rigid_mass                   ! 剛體總質量 (M)
+   REAL(8), SAVE :: Rigid_CoM(3)                 ! 當前質心空間座標 (x_CoM)
+   REAL(8), SAVE :: Rigid_CoM0(3)                ! 初始質心空間座標 (x_CoM0)
+   REAL(8), SAVE :: Rigid_vel(3)                 ! 質心平移速度 (v_CoM)
+   REAL(8), SAVE :: Rigid_acc(3)                 ! 質心平移加速度 (a_CoM)
+
+   REAL(8), SAVE :: Rigid_Ibody(3,3)             ! Body Frame ��之恆定轉動慣量矩陣
+   REAL(8), SAVE :: Rigid_invIbody(3,3)          ! Body Frame 下轉動慣量矩陣之逆矩陣
+   REAL(8), SAVE :: Rigid_omega_body(3)          ! Body Frame 下之角速度
+   REAL(8), SAVE :: Rigid_omega_global(3)        ! Global Frame 下之角速度
+   REAL(8), SAVE :: Rigid_alpha_body(3)          ! Body Frame 下之角加速度
+
+   REAL(8), SAVE :: Rigid_quat(4)                ! 當前姿態四元數 [q0, q1, q2, q3]
+   REAL(8), SAVE :: Rigid_Rmat(3,3)              ! 當前姿態旋轉矩陣 (R)
+   REAL(8), SAVE :: Rigid_Ftotal(3)              ! 質心總合外力 (F_total)
+   REAL(8), SAVE :: Rigid_Ttotal(3)              ! 質心總合外力矩 (T_total, Global Frame)
+
+   ! ==========================================================
+   ! 5. 衍生型別容器 (Container DDT) 與全域物件
+   ! ==========================================================
+   TYPE :: NodeContainer
+      REAL(8), POINTER :: xc(:,:)        => NULL() ! 指向 x_coord (3, nnd)
+      REAL(8), POINTER :: xc0(:,:)       => NULL() ! 指向 x_coord0 (3, nnd)
+      REAL(8), POINTER :: d(:,:)         => NULL() ! 指向 d (3, nnd)
+      REAL(8), POINTER :: dn(:,:)        => NULL() ! 指向 dn (3, nnd)
+      REAL(8), POINTER :: dnt(:,:)       => NULL() ! 指向 dnt (3, nnd)
+      REAL(8), POINTER :: vt(:,:)        => NULL() ! 指向 vt (3, nnd)
+      REAL(8), POINTER :: at(:,:)        => NULL() ! 指向 at (3, nnd)
+      REAL(8), POINTER :: force(:,:)     => NULL() ! 指向 force (3, nnd)
+      REAL(8), POINTER :: fsum(:,:)      => NULL() ! 指向 fsum (3, nnd)
+      REAL(8), POINTER :: mass(:)        => NULL() ! 指向 node_mass (nnd)
+      REAL(8), POINTER :: fix(:,:)       => NULL() ! 指向 rifix (3, nnd)
+   END TYPE NodeContainer
+
+   TYPE :: ElementContainer
+      INTEGER, POINTER :: topo(:,:)          => NULL() ! 指向 elem_topo (5, nel)
+      INTEGER, POINTER :: mat(:,:)           => NULL() ! 指向 elem_mat (5, nel)
+      INTEGER, POINTER :: face_judge(:,:)    => NULL() ! 指向 face_judge (4, nel)
+      REAL(8), POINTER :: rnode(:,:)         => NULL() ! 指向 rnode (10, nel)
+      REAL(8), POINTER :: vol(:)             => NULL() ! 指向 elem_vol (nel)
+      REAL(8), POINTER :: rho(:)             => NULL() ! 指向 elem_rho (nel)
+      REAL(8), POINTER :: mass(:)            => NULL() ! 指向 elem_mass (nel)
+      REAL(8), POINTER :: vertices(:,:,:)    => NULL() ! 指向 elem_vertices (3, 4, nel)
+      REAL(8), POINTER :: facecenter(:,:,:)  => NULL() ! 指向 elem_facecenter (3, 4, nel)
+      REAL(8), POINTER :: center(:,:)        => NULL() ! 指向 elem_center (3, nel)
+      REAL(8), POINTER :: area(:,:)          => NULL() ! 指向 elem_area (4, nel)
+      REAL(8), POINTER :: normal(:,:,:)      => NULL() ! 指向 elem_normal (3, 4, nel)
+      REAL(8), POINTER :: sigma3D(:,:)       => NULL() ! 指向 sigma3D (6, nel)
+      REAL(8), POINTER :: sigmaP(:,:)        => NULL() ! 指向 sigmaP (6, nel)
+      REAL(8), POINTER :: epslonP(:,:)       => NULL() ! 指向 epslonP (6, nel)
+      REAL(8), POINTER :: pstress(:,:)       => NULL() ! 指向 pstress (3, nel)
+      REAL(8), POINTER :: elplas(:)          => NULL() ! 指向 elplas (nel)
+      REAL(8), POINTER :: PLalphaP(:)        => NULL() ! 指向 PLalphaP (nel)
+      REAL(8), POINTER :: PLrP(:)            => NULL() ! 指向 PLrP (nel)
+   END TYPE ElementContainer
+
+   TYPE(NodeContainer), SAVE    :: Nodes
+   TYPE(ElementContainer), SAVE :: Elements
 
 CONTAINS
 
+   ! ==========================================================
+   ! [Link Containers] 將全域扁平陣列綁定至節點與單元指針容器
+   ! ==========================================================
+   SUBROUTINE Link_VFIFE_Containers()
+      IMPLICIT NONE
 
+      ! --- 1. 綁定節點容器 (Nodes) ---
+      IF (ALLOCATED(x_coord))  Nodes%xc    => x_coord
+      IF (ALLOCATED(x_coord0)) Nodes%xc0   => x_coord0
+      IF (ALLOCATED(d))        Nodes%d     => d
+      IF (ALLOCATED(dn))       Nodes%dn    => dn
+      IF (ALLOCATED(dnt))      Nodes%dnt   => dnt
+      IF (ALLOCATED(vt))       Nodes%vt    => vt
+      IF (ALLOCATED(at))       Nodes%at    => at
+      IF (ALLOCATED(force))    Nodes%force => force
+      IF (ALLOCATED(fsum))     Nodes%fsum  => fsum
+      IF (ALLOCATED(node_mass))Nodes%mass  => node_mass
+      IF (ALLOCATED(rifix))    Nodes%fix   => rifix
 
+      ! --- 2. 綁定單元容器 (Elements) ---
+      IF (ALLOCATED(elem_topo))       Elements%topo       => elem_topo
+      IF (ALLOCATED(elem_mat))        Elements%mat        => elem_mat
+      IF (ALLOCATED(elem_vol))        Elements%vol        => elem_vol
+      IF (ALLOCATED(elem_mass))       Elements%mass       => elem_mass
+      IF (ALLOCATED(elem_center))     Elements%center     => elem_center
+      IF (ALLOCATED(elem_vertices))   Elements%vertices   => elem_vertices
+      IF (ALLOCATED(elem_facecenter)) Elements%facecenter => elem_facecenter
+      IF (ALLOCATED(elem_area))       Elements%area       => elem_area
+      IF (ALLOCATED(elem_normal))     Elements%normal     => elem_normal
+      IF (ALLOCATED(face_judge))      Elements%face_judge => face_judge
+      IF (ALLOCATED(sigma3D))         Elements%sigma3D    => sigma3D
+      IF (ALLOCATED(sigmaP))          Elements%sigmaP     => sigmaP
+      IF (ALLOCATED(epslonP))         Elements%epslonP    => epslonP
+      IF (ALLOCATED(pstress))         Elements%pstress    => pstress
+      IF (ALLOCATED(elplas))          Elements%elplas     => elplas
+      IF (ALLOCATED(PLalphaP))        Elements%PLalphaP   => PLalphaP
+      IF (ALLOCATED(PLrP))            Elements%PLrP       => PLrP
 
+   END SUBROUTINE Link_VFIFE_Containers
 END MODULE VFIFE_Data_module
+
+
+ ! =========================================================================
+ ! [備忘紀錄] 未納入 NodeContainer / ElementContainer 指針容器的全域變數清單
+ ! =========================================================================
+ ! 1. 控制旗標與純量參數 (全域共享，無須納入空間性點/單元容器):
+ !    - V5Slider, is_V5_deformable, is_V5_initialized
+ !    - V5_dat_name, project_name, Check_V5_Loading
+ !    - nnd, nel, ndof
+ !    - minstp, maxstp, V5_dt, alpha, toler
+ !    - nummat, MAX_MAT_PARAMS
+ !
+ ! 2. 材料性質陣列 (Material-level):
+ !    - e(:,:)                      ! (MAX_MAT_PARAMS, nummat) 材料參數表
+ !
+ ! 3. 節點層級未收錄陣列 (暫時保留全域獨立存取):
+ !
+ ! 4. 單元層級未收錄陣列 (暫時保留全域獨立存取):
+ !
+ ! 5. 流體 / 固體 VOF 與幾何包夾採樣��數 (隸屬於 FSI/VOF 獨立處理範疇):
+ !    - V5solid_vof(:), V5solid_vof_t0(:)
+ !    - V5_minX(3), V5_maxX(3)
+ !    - V5_fluid_istart, V5_fluid_iend, V5_fluid_jstart, V5_fluid_jend, V5_fluid_kstart, V5_fluid_kend
+ !    - num_surf_faces, surf_node1(:,:), surf_node2(:,:), surf_node3(:,:)
+ ! =========================================================================
+
 
 ```
 ---

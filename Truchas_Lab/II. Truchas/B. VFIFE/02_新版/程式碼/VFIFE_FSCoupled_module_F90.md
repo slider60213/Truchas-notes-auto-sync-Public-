@@ -1,0 +1,850 @@
+---
+type: 📝 Research
+created: 2026-07-30 03:10
+modified: 2026-07-30 03:22
+tags:
+  - "#Truchas"
+---
+## 📂 本文關聯檔案索引
+```dataview
+LIST
+WHERE contains(this.file.outlinks, file.link)
+AND !icontains(file.name, ".png")
+AND !icontains(file.name, ".jpg") 
+AND !icontains(file.name, ".pdf")
+AND !icontains(file.name, "excalidraw")
+```
+
+---
+# 📌 摘要
+
+
+---
+# 🦖 以前
+
+
+---
+# 👨‍💻 以後
+
+
+---
+# 📝 內容紀錄
+
+``` fortran
+MODULE VFIFE_FSCoupled_module
+
+   ! Basic Modules of VFIFE
+   USE VFIFE_Data_module
+   USE VFIFE_Utils_module
+
+   ! Truchas
+   USE kind_module,           ONLY : int_kind, real_kind
+   USE mesh_module,           ONLY : Mesh, Cell
+   USE mesh_gen_module,       ONLY : x_axis, y_axis, z_axis, MAKE_LOCAL
+   USE parameter_module,      ONLY : ncells, nfc, Nx_tot, nmat
+   USE zone_module,           ONLY : Zone
+   USE fluid_data_module,     ONLY : fluidVof
+   USE matl_utilities,        ONLY : MATL_GET, UPDATE_MATL
+
+   IMPLICIT NONE
+
+   PRIVATE
+   PUBLIC :: Get_Fluid_Pressure
+   PUBLIC :: compute_V5solid_vof
+   PUBLIC :: Update_Fluid_Solid_VOF
+   PUBLIC :: build_fluid_to_solid_mapping
+   PUBLIC :: update_fluid_mapping
+   PUBLIC :: V5Solid_Feedback
+
+
+
+
+CONTAINS
+
+   !=======================================================================
+   ! Subroutine: Get_Fluid_Pressure
+   ! Purpose   : 遍歷固體外露邊界面 (num_surf_faces)，利用通用重心座標權重
+   !             採樣流體網格壓力，並轉化為外露邊界節點上的等效外力 (Nodes%force)。
+   !
+   ! [前置條件]
+   !    1. 呼叫前必須先執行過 build_surface_cache() 建立外露面座標快取。
+   !    2. 可透過全域變數 num_p_samples 設定任意數量的採樣點。
+   !
+   ! [重心座標幾何分配原理]
+   !    採樣點座標 p_sample = w1*v1 + w2*v2 + w3*v3，其中 w1 + w2 + w3 = 1.0
+   !    - num_p_samples = 1 : w = (1/3, 1/3, 1/3) [面心 Centroid]
+   !    - num_p_samples = 3 : w = 頂點矩陣 [頂點 Vertex Sampling]
+   !    - num_p_samples = 4 : 面心 + 3 頂點組合
+   !    - num_p_samples = N : 通用線性分佈採樣
+   !
+   ! [使用範例]
+   !    num_p_samples = 4  ! 設定為 4 點採樣
+   !    CALL Get_Fluid_Pressure()
+   !=======================================================================
+   SUBROUTINE Get_Fluid_Pressure()
+
+      IMPLICIT NONE
+
+      ! --- 區域變數 ---
+      INTEGER(KIND=int_kind) :: i, j, f_idx, k, n, ngbr, counter, ic, jc, kc
+      INTEGER(KIND=int_kind) :: n1, n2, n3, n_pts
+      REAL(KIND=real_kind), ALLOCATABLE :: w(:, :) ! 重心座標權重陣列 (3, n_pts)
+      REAL(KIND=real_kind)   :: p_sample(3), v1(3), v2(3), v3(3), norm(3)
+      REAL(KIND=real_kind)   :: area, P_sum, p_sample_val, P_face, f_node(3)
+      REAL(KIND=real_kind)   :: t
+      REAL(KIND=real_kind)   :: total_force_check(3)
+      LOGICAL                :: cell_found
+
+      ! 1. 邊界條件檢查：若無外露面則直接跳過主計算，保持單一出口
+      IF (num_surf_faces > 0) THEN
+         total_force_check = 0.0_real_kind
+
+         ! 防呆與維度初始化
+         n_pts = MAX(1, num_p_samples)
+         IF (.NOT. ALLOCATED(w)) ALLOCATE(w(3, n_pts))
+
+         ! =========================================================
+         ! 動態建構通用重心座標權重矩陣 w(3, n_pts)
+         ! =========================================================
+         IF (n_pts == 1) THEN
+            ! 1 點：面心 (1/3, 1/3, 1/3)
+            w(:, 1) = [1.0_real_kind/3.0_real_kind, 1.0_real_kind/3.0_real_kind, 1.0_real_kind/3.0_real_kind]
+         ELSE IF (n_pts == 3) THEN
+            ! 3 點：三個頂點 (1,0,0), (0,1,0), (0,0,1)
+            w(:, 1) = [1.0_real_kind, 0.0_real_kind, 0.0_real_kind]
+            w(:, 2) = [0.0_real_kind, 1.0_real_kind, 0.0_real_kind]
+            w(:, 3) = [0.0_real_kind, 0.0_real_kind, 1.0_real_kind]
+         ELSE IF (n_pts == 4) THEN
+            ! 4 點：面心 + 3 頂點
+            w(:, 1) = [1.0_real_kind/3.0_real_kind, 1.0_real_kind/3.0_real_kind, 1.0_real_kind/3.0_real_kind]
+            w(:, 2) = [1.0_real_kind, 0.0_real_kind, 0.0_real_kind]
+            w(:, 3) = [0.0_real_kind, 1.0_real_kind, 0.0_real_kind]
+            w(:, 4) = [0.0_real_kind, 0.0_real_kind, 1.0_real_kind]
+         ELSE
+            ! N 點：1 個面心 + (N-1) 個頂點權重線性插值分佈
+            w(:, 1) = [1.0_real_kind/3.0_real_kind, 1.0_real_kind/3.0_real_kind, 1.0_real_kind/3.0_real_kind]
+            DO k = 2, n_pts
+               t = REAL(k - 2, KIND=real_kind) / REAL(n_pts - 2, KIND=real_kind)
+               w(1, k) = (1.0_real_kind - t)
+               w(2, k) = t * 0.5_real_kind
+               w(3, k) = t * 0.5_real_kind
+            END DO
+         END IF
+
+         ! =========================================================
+         ! 主運算迴圈：遍歷外露面
+         ! =========================================================
+         f_idx = 0
+         DO i = 1, nel
+            DO j = 1, 4
+               IF (face_judge(j, i) /= 1) CYCLE
+
+               f_idx = f_idx + 1
+
+               ! 1. 取得外露面 3 個頂點座標 (自快取)
+               v1 = surf_node1(:, f_idx)
+               v2 = surf_node2(:, f_idx)
+               v3 = surf_node3(:, f_idx)
+
+               ! 取得對應的全域節點 ID (由四面體 Topo 提取，elem_topo 2:5 對應 N1:N4)
+               SELECT CASE (j)
+                CASE (1); n1 = elem_topo(3, i); n2 = elem_topo(4, i); n3 = elem_topo(5, i) ! Face 1: (N2, N3, N4)
+                CASE (2); n1 = elem_topo(2, i); n2 = elem_topo(5, i); n3 = elem_topo(4, i) ! Face 2: (N1, N4, N3)
+                CASE (3); n1 = elem_topo(2, i); n2 = elem_topo(3, i); n3 = elem_topo(5, i) ! Face 3: (N1, N2, N4)
+                CASE (4); n1 = elem_topo(2, i); n2 = elem_topo(4, i); n3 = elem_topo(3, i) ! Face 4: (N1, N3, N2)
+               END SELECT
+
+               ! 從容器直接讀取幾何資料
+               area    = Elements%area(j, i)
+               norm(:) = Elements%normal(:, j, i)
+
+               ! 2. 通用多點採樣與壓力積分
+               P_face = 0.0_real_kind
+
+               DO k = 1, n_pts
+                  ! 利用重心座標無縫生成採樣點位置
+                  p_sample(:) = w(1, k)*v1(:) + w(2, k)*v2(:) + w(3, k)*v3(:)
+
+                  ! 快速定位流體網格 (O(1))
+                  ic = find_cell_index(p_sample(1), x_axis, Nx_tot(1))
+                  jc = find_cell_index(p_sample(2), y_axis, Nx_tot(2))
+                  kc = find_cell_index(p_sample(3), z_axis, Nx_tot(3))
+
+                  cell_found = .FALSE.
+                  n = 0
+
+                  IF (ic >= V5_fluid_istart .AND. ic <= V5_fluid_iend .AND. &
+                     jc >= V5_fluid_jstart .AND. jc <= V5_fluid_jend .AND. &
+                     kc >= V5_fluid_kstart .AND. kc <= V5_fluid_kend) THEN
+                     n = ic + (jc - 1) * Nx_tot(1) + (kc - 1) * Nx_tot(1) * Nx_tot(2)
+                     cell_found = .TRUE.
+                  END IF
+
+                  p_sample_val = 0.0_real_kind
+
+                  ! 採樣流體壓力 (若 VOF < 0.3 則由鄰近 Cell 平均)
+                  IF (cell_found .AND. n > 0) THEN
+                     counter = 0
+                     P_sum = 0.0_real_kind
+
+                     IF (fluidVof(n) >= 0.3_real_kind) THEN
+                        counter = counter + 1
+                        P_sum = P_sum + Zone(n)%P
+                     ELSE
+                        DO ngbr = 1, nfc
+                           IF (Mesh(n)%Ngbr_cell(ngbr) > 0) THEN
+                              IF (fluidVof(Mesh(n)%Ngbr_cell(ngbr)) >= 0.3_real_kind) THEN
+                                 counter = counter + 1
+                                 P_sum = P_sum + Zone(Mesh(n)%Ngbr_cell(ngbr))%P
+                              END IF
+                           END IF
+                        END DO
+                     END IF
+
+                     IF (counter > 0) THEN
+                        p_sample_val = P_sum / REAL(counter, KIND=real_kind)
+                     ELSE
+                        p_sample_val = Zone(n)%P
+                     END IF
+                  END IF
+
+                  ! 累加採樣點壓力
+                  P_face = P_face + p_sample_val
+               END DO
+
+               ! 3. 採樣點算術平均取得面上代表壓力
+               P_face = P_face / REAL(n_pts, KIND=real_kind)
+
+               ! 在 P_face 算術平均之後、計算 f_node 之前執行
+               ! 修改位置：Get_Fluid_Pressure 內，P_face = P_face / REAL(n_pts, KIND=real_kind) 之後
+               IF (f_idx <= 2) THEN
+                  WRITE(*, '(A,I0,A,I0,A,F10.2,A,I0,A,3I4)') &
+                     '   [Pressure Check] Face: ', f_idx, &
+                     ' | Cell: ', n, ' | P_face: ', P_face, &
+                     ' | Counter: ', counter, ' | (ic,jc,kc): ', ic, jc, kc
+               END IF
+
+               ! 4. 流體壓力產生的法向外力 F = - P * A * n，均分至 3 個頂點
+               f_node(:) = (-P_face * area / 3.0_real_kind) * norm(:)
+
+               ! 累加至全域節點外力容器
+               Nodes%force(:, n1) = Nodes%force(:, n1) + f_node(:)
+               Nodes%force(:, n2) = Nodes%force(:, n2) + f_node(:)
+               Nodes%force(:, n3) = Nodes%force(:, n3) + f_node(:)
+
+               ! 累加驗證受力
+               total_force_check(:) = total_force_check(:) + f_node(:) * 3.0_real_kind
+
+            END DO
+         END DO
+
+         ! 安全釋放動態記憶體
+         IF (ALLOCATED(w)) DEALLOCATE(w)
+      END IF
+
+      ! =========================================================
+      ! [驗證輸出] 可於偵錯階段開啟，確認流體總合外力計算是否正確
+      ! =========================================================
+      WRITE(*, '(A,I3,A,3E14.6)') " [Get_Fluid_Pressure] Total Samples/Face:", n_pts, &
+         " | Total Resultant Force (X,Y,Z):", total_force_check
+
+   END SUBROUTINE Get_Fluid_Pressure
+
+
+
+
+
+
+   !=======================================================================
+   ! Purpose: Compute Solid Volume Fraction (Solid VOF) on Rectilinear
+   !          Fluid Mesh using Sub-voxel Sampling inside AABB range.
+   !=======================================================================
+   SUBROUTINE compute_V5solid_vof(V5solid_vof)
+
+      IMPLICIT NONE
+
+      ! --- Argument List ---
+      REAL(real_kind), INTENT(OUT) :: V5solid_vof(Nx_tot(1)*Nx_tot(2)*Nx_tot(3))
+
+      ! --- Local Variables ---
+      INTEGER(int_kind) :: i, j, k, icell
+      INTEGER(int_kind) :: sub_i, sub_j, sub_k
+      INTEGER(int_kind), PARAMETER :: Nsub = 5 ! 單軸採樣點數 (Nsub^3 個點)
+      REAL(real_kind) :: dx_local, dy_local, dz_local
+      REAL(real_kind) :: dx_sub, dy_sub, dz_sub
+      REAL(real_kind) :: cell_x_min, cell_y_min, cell_z_min
+      REAL(real_kind) :: p_sub(3)
+      INTEGER(int_kind) :: inside_count
+      REAL(real_kind), PARAMETER :: total_sub_pts = REAL(Nsub * Nsub * Nsub, real_kind)
+
+      ! 1. 全域初始化為 0.0
+      V5solid_vof = 0.0_real_kind
+
+      ! 2. 僅在 AABB 包夾盒範圍內做動態 dx, dy, dz 的 VOF 採樣計算
+      !$OMP PARALLEL DO DEFAULT(NONE) &
+      !$OMP PRIVATE(i, j, k, icell, cell_x_min, cell_y_min, cell_z_min) &
+      !$OMP PRIVATE(dx_local, dy_local, dz_local, dx_sub, dy_sub, dz_sub) &
+      !$OMP PRIVATE(sub_i, sub_j, sub_k, p_sub, inside_count) &
+      !$OMP SHARED(V5_fluid_istart, V5_fluid_iend, V5_fluid_jstart, V5_fluid_jend, V5_fluid_kstart, V5_fluid_kend, Nx_tot) &
+      !$OMP SHARED(x_axis, y_axis, z_axis, V5solid_vof, Cell)
+      DO k = V5_fluid_kstart, V5_fluid_kend
+         cell_z_min = z_axis(k)
+         dz_local   = z_axis(k+1) - z_axis(k)
+         dz_sub     = dz_local / REAL(Nsub, real_kind)
+
+         DO j = V5_fluid_jstart, V5_fluid_jend
+            cell_y_min = y_axis(j)
+            dy_local   = y_axis(j+1) - y_axis(j)
+            dy_sub     = dy_local / REAL(Nsub, real_kind)
+
+            DO i = V5_fluid_istart, V5_fluid_iend
+               cell_x_min = x_axis(i)
+               dx_local   = x_axis(i+1) - x_axis(i)
+               dx_sub     = dx_local / REAL(Nsub, real_kind)
+
+               ! 計算流體 1D Cell Index
+               icell = i + (j - 1) * Nx_tot(1) + (k - 1) * Nx_tot(1) * Nx_tot(2)
+
+               inside_count = 0
+
+               ! 子網格 (Sub-voxel) 採樣
+               DO sub_k = 1, Nsub
+                  p_sub(3) = cell_z_min + (REAL(sub_k, real_kind) - 0.5_real_kind) * dz_sub
+                  DO sub_j = 1, Nsub
+                     p_sub(2) = cell_y_min + (REAL(sub_j, real_kind) - 0.5_real_kind) * dy_sub
+                     DO sub_i = 1, Nsub
+                        p_sub(1) = cell_x_min + (REAL(sub_i, real_kind) - 0.5_real_kind) * dx_sub
+
+                        IF (is_point_inside_solid(p_sub)) THEN
+                           inside_count = inside_count + 1
+                        END IF
+
+                     END DO
+                  END DO
+               END DO
+
+               V5solid_vof(icell) = REAL(inside_count, real_kind) / total_sub_pts
+
+
+               ! 驗證程式碼：僅印出 i, j, k 三個方向最中間區域 (中心點前後各 1 格) 的資訊與 VOF 數值
+               IF (ABS(i - (V5_fluid_istart + V5_fluid_iend)/2) <= 1 .AND. &
+                  ABS(j - (V5_fluid_jstart + V5_fluid_jend)/2) <= 1 .AND. &
+                  ABS(k - (V5_fluid_kstart + V5_fluid_kend)/2) <= 1) THEN
+
+                  !$OMP CRITICAL(vof_write_lock)
+                  WRITE(*, '(A,I8,A,3I5,A,F8.4,A,3F8.3,A,2F8.3,A,2F8.3,A,2F8.3,A)') &
+                     "  [AABB VOF] Cell ID:", icell, &
+                     " | (i,j,k):", i, j, k, &
+                     " | VOF:", V5solid_vof(icell), &
+                     " | Centroid:(", Cell(icell)%Centroid(1), Cell(icell)%Centroid(2), Cell(icell)%Centroid(3), &
+                     ") | X:[", x_axis(i), x_axis(i+1), &
+                     "] Y:[", y_axis(j), y_axis(j+1), &
+                     "] Z:[", z_axis(k), z_axis(k+1), "]"
+                  !$OMP END CRITICAL(vof_write_lock)
+
+               END IF
+            END DO
+         END DO
+      END DO
+      !$OMP END PARALLEL DO
+
+   END SUBROUTINE compute_V5solid_vof
+
+
+   !=======================================================================
+   ! Subroutine: Update_Fluid_Solid_VOF
+   ! Purpose: 將 VFIFE 算出的固體 VOF 同步回 Truchas Matl 數據庫並確保總合守恆
+   !=======================================================================
+   SUBROUTINE Update_Fluid_Solid_VOF(solid_vof)
+      USE kind_module,      ONLY: int_kind, real_kind
+      USE parameter_module, ONLY: nmat
+      USE matl_utilities,   ONLY: MATL_GET, UPDATE_MATL
+      IMPLICIT NONE
+
+      ! 補回傳入參數宣告
+      REAL(KIND=real_kind), INTENT(IN) :: solid_vof(:)
+
+      ! 區域變數
+      REAL(KIND=real_kind), ALLOCATABLE :: VF_New(:,:)
+      REAL(KIND=real_kind) :: fluid_sum, factor, vof_val
+      INTEGER(KIND=int_kind) :: i, j, k, global_id, local_id, m, solid_mat_idx
+
+      solid_mat_idx = V5_mat_id
+
+      ALLOCATE(VF_New(0:nmat, ncells))
+      VF_New = 0.0_real_kind
+
+      CALL MATL_GET(VOF = VF_New(1:nmat, :))
+
+      DO k = V5_fluid_kstart, V5_fluid_kend
+         DO j = V5_fluid_jstart, V5_fluid_jend
+            DO i = V5_fluid_istart, V5_fluid_iend
+
+               global_id = i + (j - 1) * Nx_tot(1) + (k - 1) * Nx_tot(1) * Nx_tot(2)
+               local_id = MAKE_LOCAL(global_id, ncells)
+
+               IF (local_id /= -1 .AND. local_id <= ncells) THEN
+                  vof_val = solid_vof(global_id) ! 使用傳入的 solid_vof
+
+                  VF_New(solid_mat_idx, local_id) = vof_val
+
+                  fluid_sum = 0.0_real_kind
+                  DO m = 1, nmat
+                     IF (m /= solid_mat_idx) THEN
+                        fluid_sum = fluid_sum + VF_New(m, local_id)
+                     END IF
+                  END DO
+
+                  IF (fluid_sum > 1.0e-12_real_kind) THEN
+                     factor = (1.0_real_kind - vof_val) / fluid_sum
+                     DO m = 1, nmat
+                        IF (m /= solid_mat_idx) THEN
+                           VF_New(m, local_id) = VF_New(m, local_id) * factor
+                        END IF
+                     END DO
+                  ELSE
+                     IF (solid_mat_idx /= 1) THEN
+                        VF_New(1, local_id) = 1.0_real_kind - vof_val
+                     END IF
+                  END IF
+
+               END IF
+
+            END DO
+         END DO
+      END DO
+
+      IF (solid_mat_idx > 0) THEN
+         WRITE(*, '(A, F10.4)') " Check Solid VOF Max Value in VF_New: ", &
+            MAXVAL(VF_New(solid_mat_idx, :))
+      END IF
+
+      CALL UPDATE_MATL(VF_New)
+      DEALLOCATE(VF_New)
+
+   END SUBROUTINE Update_Fluid_Solid_VOF
+
+   !=======================================================================
+   ! Subroutine: build_fluid_to_solid_mapping
+   ! Purpose   : 反向建立流體網格 (Fluid Cell) �����含哪些固體節點 (Solid Nodes)
+   !             與固體元素 (Solid Elements) 的 Head-Next 靜態鏈結串列。
+   !
+   ! [呼叫方式]
+   !   CALL build_fluid_to_solid_mapping(Nodes, Elements)
+   !
+   ! [執行後更新的全域變數 (OUTPUT)]
+   !   1. cell_node_head(icell) : 第 icell 個流體網格包含的第一個固體節點 ID
+   !   2. node_next(inode)      : 同一網格中，下一個固體節點 ID (0 表示結束)
+   !   3. cell_elem_head(icell) : 第 icell 個流體網格包含的第一個鏈結索引
+   !   4. elem_link_id(link_id) : 該鏈結索引對應到的真實固體元素 ID (ielem)
+   !   5. elem_next(link_id)    : 同一網格中���下一個鏈結索引 (0 表示結��)
+   !
+   ! [後續使用範例 (如何在流體網格中讀取對應固體資料)]
+   !
+   !   ! --- 範例 A: 取得第 icell 個流體網格內的所有固體節點 ---
+   !   curr_node = cell_node_head(icell)
+   !   DO WHILE (curr_node > 0)
+   !      ! curr_node 即為固體節點 ID，���直接存取 Nodes 容器：
+   !      ! node_x = Nodes%xc(1, curr_node)
+   !      ! node_v = Nodes%vt(:, curr_node)
+   !
+   !      curr_node = node_next(curr_node) ! 移動至下一個節點
+   !   END DO
+   !
+   !   ! --- 範例 B: 取得與第 icell 個流體網格相交��所���固體元素 ---
+   !   curr_link = cell_elem_head(icell)
+   !   DO WHILE (curr_link > 0)
+   !      ielem = elem_link_id(curr_link) ! ielem 即為固體元素 ID，可存取 Elements 容器：
+   !      ! elem_vol = Elements%vol(ielem)
+   !      ! elem_rho = Elements%rho(ielem)
+   !
+   !      curr_link = elem_next(curr_link) ! 移動至下一個鏈結
+   !   END DO
+   !=======================================================================
+   SUBROUTINE build_fluid_to_solid_mapping(Nodes, Elements)
+
+      IMPLICIT NONE
+
+      ! --- Argument List ---
+      TYPE(NodeContainer),    INTENT(IN) :: Nodes
+      TYPE(ElementContainer), INTENT(IN) :: Elements
+
+      ! --- Local Variables ---
+      INTEGER(int_kind) :: inode, ielem, icell, num_nodes, num_elems
+      INTEGER(int_kind) :: i, j, k
+      INTEGER(int_kind) :: istart, iend, jstart, jend, kstart, kend
+      REAL(real_kind)   :: elem_min(3), elem_max(3)
+
+      num_nodes = SIZE(Nodes%xc, 2)
+      num_elems = SIZE(Elements%topo, 2)
+
+      ! -------------------------------------------------------------------
+      ! PART 1: 建立 流體網格 -> 固體節點 (Solid Nodes) 的反向映射
+      ! -------------------------------------------------------------------
+      cell_node_head = 0
+      node_next      = 0
+
+      DO inode = 1, num_nodes
+         ! 1. 利用 Nodes%xc(:, inode) 找出該固體節點落在哪一個流體網格 (i, j, k)
+         i = find_cell_index(Nodes%xc(1, inode), x_axis, Nx_tot(1))
+         j = find_cell_index(Nodes%xc(2, inode), y_axis, Nx_tot(2))
+         k = find_cell_index(Nodes%xc(3, inode), z_axis, Nx_tot(3))
+
+         ! 2. 安全檢測：確保固體節點落在流體計算域之內
+         IF (i >= 1 .AND. i <= Nx_tot(1) .AND. &
+            j >= 1 .AND. j <= Nx_tot(2) .AND. &
+            k >= 1 .AND. k <= Nx_tot(3)) THEN
+
+            icell = i + (j - 1) * Nx_tot(1) + (k - 1) * Nx_tot(1) * Nx_tot(2)
+
+            ! 3. 插入 Head-Next 靜態鏈結串列
+            node_next(inode) = cell_node_head(icell)
+            cell_node_head(icell) = inode
+         END IF
+      END DO
+
+      ! -------------------------------------------------------------------
+      ! PART 2: 建立 流體網格 -> 固體元素 (Solid Elements) 的反向映射
+      ! -------------------------------------------------------------------
+      cell_elem_head  = 0
+      elem_next       = 0
+      elem_link_id    = 0
+      elem_link_count = 0
+
+      DO ielem = 1, num_elems
+         ! 1. 直接從 Elements%vertices(:,:,ielem) 計算該元素的 AABB
+         elem_min = MINVAL(Elements%vertices(:,:,ielem), DIM=2)
+         elem_max = MAXVAL(Elements%vertices(:,:,ielem), DIM=2)
+
+         ! 2. 取得該元素 AABB 涵蓋的流體網格範圍，並約束於有效流體網格內 [1, Nx_tot]
+         istart = MAX(1, MIN(Nx_tot(1), find_cell_index(elem_min(1), x_axis, Nx_tot(1))))
+         iend   = MAX(1, MIN(Nx_tot(1), find_cell_index(elem_max(1), x_axis, Nx_tot(1))))
+
+         jstart = MAX(1, MIN(Nx_tot(2), find_cell_index(elem_min(2), y_axis, Nx_tot(2))))
+         jend   = MAX(1, MIN(Nx_tot(2), find_cell_index(elem_max(2), y_axis, Nx_tot(2))))
+
+         kstart = MAX(1, MIN(Nx_tot(3), find_cell_index(elem_min(3), z_axis, Nx_tot(3))))
+         kend   = MAX(1, MIN(Nx_tot(3), find_cell_index(elem_max(3), z_axis, Nx_tot(3))))
+
+         ! 3. 註冊元素至所涵蓋的所有流體網格中
+         DO k = kstart, kend
+            DO j = jstart, jend
+               DO i = istart, iend
+                  icell = i + (j - 1) * Nx_tot(1) + (k - 1) * Nx_tot(1) * Nx_tot(2)
+
+                  elem_link_count = elem_link_count + 1
+                  elem_link_id(elem_link_count) = ielem
+                  elem_next(elem_link_count)    = cell_elem_head(icell)
+                  cell_elem_head(icell)         = elem_link_count
+               END DO
+            END DO
+         END DO
+      END DO
+
+   END SUBROUTINE build_fluid_to_solid_mapping
+
+   !===========================================================================
+   ! Subroutine / Function: RBF Interpolation Utilities
+   ! Module               : VFIFE_utils_module
+   ! Purpose              : 提供基於 Wendland C2 緊支撐核函數與 AABB 篩選的 RBF 速度插值工具。
+   !
+   ! [使用說明]
+   !   1. wendland_c2_kernel:
+   !      - 輸入正規化距離 r (0.0 <= r <= 1.0)，回傳權重值。
+   !      - 具備 PURE 與 ELEMENTAL 屬性，支援向量化運算。
+   !
+   !   2. interpolate_rbf_velocity:
+   !      - 傳入流體網格中心座標 xc_cell(3)、特徵邊長 cell_h_size 及影響倍率。
+   !      - 內部自動進行 AABB 包絡盒快速判定，並以距離平方 (dist_sq) 篩選固體節點，
+   !        將固體節點速度 Nodes%vt 插值至流體網格。
+   !
+   ! [依賴關係]
+   !   - USE VFIFE_Data_module (取得 int_kind, real_kind, Nodes, V5_minX, V5_maxX)
+   !===========================================================================
+
+   ! =====================================================================
+   ! 工具 1: Wendland C2 緊支撐核函數 (ELEMENTAL 支援向量化)
+   ! =====================================================================
+   PURE ELEMENTAL FUNCTION wendland_c2_kernel(r) RESULT(phi)
+
+      IMPLICIT NONE
+      REAL(KIND=real_kind), INTENT(IN) :: r
+      REAL(KIND=real_kind)             :: phi
+
+      IF (r >= 0.0_real_kind .AND. r <= 1.0_real_kind) THEN
+         phi = ((1.0_real_kind - r)**4) * (4.0_real_kind * r + 1.0_real_kind)
+      ELSE
+         phi = 0.0_real_kind
+      END IF
+   END FUNCTION wendland_c2_kernel
+
+
+   ! =====================================================================
+   ! 工具 2: RBF + AABB 速度插值 Subroutine (距離平方優化版)
+   ! =====================================================================
+   SUBROUTINE interpolate_rbf_velocity(xc_cell, cell_h_size, slider_ratio, vel_interp)
+
+      IMPLICIT NONE
+
+      ! --- 輸入與輸出宣告 ---
+      REAL(KIND=real_kind), INTENT(IN) :: xc_cell(3)
+      REAL(KIND=real_kind), INTENT(IN) :: cell_h_size
+      REAL(KIND=real_kind), INTENT(IN) :: slider_ratio
+      REAL(KIND=real_kind), INTENT(OUT) :: vel_interp(3)
+
+      ! --- 區域變數 ---
+      REAL(KIND=real_kind) :: expanded_aabb_min(3), expanded_aabb_max(3)
+      REAL(KIND=real_kind) :: center_aabb(3), half_extents(3)
+      REAL(KIND=real_kind) :: R_support, R_support_sq
+      REAL(KIND=real_kind) :: dx, dy, dz, dist_sq, dist, r_norm, weight, sum_weight
+      REAL(KIND=real_kind) :: sum_vel(3)
+      INTEGER(KIND=int_kind) :: n
+
+      vel_interp = 0.0_real_kind
+      sum_vel    = 0.0_real_kind
+      sum_weight = 0.0_real_kind
+
+      ! 1. 計��� RBF 物理影響半徑與其平方
+      R_support    = 1.5_real_kind * cell_h_size * slider_ratio
+      R_support_sq = R_support**2
+
+      ! 2. 依據 R_support 計算膨脹後的 AABB 範圍
+      center_aabb  = 0.5_real_kind * (V5_maxX + V5_minX)
+      half_extents = 0.5_real_kind * (V5_maxX - V5_minX) + R_support
+      expanded_aabb_min = center_aabb - half_extents
+      expanded_aabb_max = center_aabb + half_extents
+
+      ! 3. 快速 AABB 篩選：若 xc_cell 超出膨脹後的 AABB，直接歸零返回
+      IF (xc_cell(1) < expanded_aabb_min(1) .OR. xc_cell(1) > expanded_aabb_max(1) .OR. &
+         xc_cell(2) < expanded_aabb_min(2) .OR. xc_cell(2) > expanded_aabb_max(2) .OR. &
+         xc_cell(3) < expanded_aabb_min(3) .OR. xc_cell(3) > expanded_aabb_max(3)) THEN
+         RETURN
+      END IF
+
+      ! 4. 局部 Wendland C2 RBF 加權插值 (採用距離平方快速篩選)
+      DO n = 1, nnd
+         dx = xc_cell(1) - Nodes%xc(1, n)
+         dy = xc_cell(2) - Nodes%xc(2, n)
+         dz = xc_cell(3) - Nodes%xc(3, n)
+
+         dist_sq = dx**2 + dy**2 + dz**2
+
+         IF (dist_sq <= R_support_sq) THEN
+            ! 僅在確定落於影響半徑內時才開根號計算 r_norm
+            dist   = SQRT(dist_sq)
+            r_norm = dist / R_support
+            weight = wendland_c2_kernel(r_norm)
+
+            sum_weight = sum_weight + weight
+            sum_vel(1) = sum_vel(1) + weight * Nodes%vt(1, n)
+            sum_vel(2) = sum_vel(2) + weight * Nodes%vt(2, n)
+            sum_vel(3) = sum_vel(3) + weight * Nodes%vt(3, n)
+         END IF
+      END DO
+
+      ! 5. 權重歸一化
+      IF (sum_weight > 1.0e-12_real_kind) THEN
+         vel_interp = sum_vel / sum_weight
+      END IF
+
+   END SUBROUTINE interpolate_rbf_velocity
+
+   !===========================================================================
+   ! Subroutine: update_fluid_mapping
+   ! Purpose   : 計算最新固體 AABB、表面快取、VOF（並同步至 Truchas 數據庫），
+   !             最後將固體節點速度插值至流體網格。
+   ! Module    : VFIFE_FSCoupled_module
+   !===========================================================================
+   SUBROUTINE update_fluid_mapping()
+
+      IMPLICIT NONE
+
+      ! --- 區域變數 ---
+      INTEGER(KIND=int_kind) :: i, j, k, icell
+      REAL(KIND=real_kind)   :: xc_cell(3), vel_interp(3)
+      REAL(KIND=real_kind)   :: dx_cell, dy_cell, dz_cell, cell_h_size
+      REAL(KIND=real_kind)   :: total_vof, max_vel
+      INTEGER(KIND=int_kind) :: active_cells
+
+      ! 1. 計算固體最新 AABB 包絡盒，更新 V5_fluid_istart/iend 等網格索引範圍
+      CALL compute_solid_aabb()
+
+      ! 2. 更新外露固體表面快取資訊
+      CALL build_surface_cache()
+
+      ! 3. 動態配置並計算流體網格的 V5solid_vof
+      IF (.NOT. ALLOCATED(V5solid_vof)) THEN
+         ALLOCATE(V5solid_vof(ncells))
+         V5solid_vof = 0.0_real_kind
+      END IF
+
+      CALL compute_V5solid_vof(V5solid_vof)
+
+      ! ---------------------------------------------------
+      ! 將 V5solid_vof 同步寫回 Truchas Matl 數據庫並維持體積守恆
+      ! (傳入固體 VOF 陣列與網格總數 ncells)
+      ! ---------------------------------------------------
+      CALL Update_Fluid_Solid_VOF(V5solid_vof)
+
+      ! ---------------------------------------------------
+      ! V5solid_vof 體積守恆動態診斷輸出 (支援非均勻網格)
+      ! ---------------------------------------------------
+      BLOCK
+         REAL(KIND=real_kind) :: sum_vof, total_solid_vol, dV
+         INTEGER(KIND=int_kind) :: bi, bj, bk, bcell
+
+         sum_vof = 0.0_real_kind
+         total_solid_vol = 0.0_real_kind
+
+         DO bk = V5_fluid_kstart, V5_fluid_kend
+            DO bj = V5_fluid_jstart, V5_fluid_jend
+               DO bi = V5_fluid_istart, V5_fluid_iend
+                  bcell = bi + (bj - 1) * Nx_tot(1) + (bk - 1) * Nx_tot(1) * Nx_tot(2)
+                  IF (V5solid_vof(bcell) > 0.0_real_kind) THEN
+                     dV = (x_axis(bi+1) - x_axis(bi)) * &
+                        (y_axis(bj+1) - y_axis(bj)) * &
+                        (z_axis(bk+1) - z_axis(bk))
+                     sum_vof = sum_vof + V5solid_vof(bcell)
+                     total_solid_vol = total_solid_vol + V5solid_vof(bcell) * dV
+                  END IF
+               END DO
+            END DO
+         END DO
+
+         WRITE(*, '(A)') '=========================================='
+         WRITE(*, '(A)') ' [DEBUG] V5solid_vof VOLUME VERIFICATION'
+         WRITE(*, '(A)') '=========================================='
+         WRITE(*, '(A, F12.4)') ' Sum of V5solid_vof           :', sum_vof
+         WRITE(*, '(A, ES14.6)')' Calculated Solid Volume (m3) :', total_solid_vol
+         WRITE(*, '(A)') '=========================================='
+      END BLOCK
+
+      ! ---------------------------------------------------
+      ! 將固體節點速度 (Nodes%vt) 插值至流體網格 (V5solid_vel)
+      ! ---------------------------------------------------
+      IF (.NOT. ALLOCATED(V5solid_vel)) THEN
+         ALLOCATE(V5solid_vel(3, ncells))
+      END IF
+
+      ! 全域陣列一次性清零 (記憶體層級連續賦值，效能最高)
+      V5solid_vel = 0.0_real_kind
+      total_vof    = 0.0_real_kind
+      max_vel      = 0.0_real_kind
+      active_cells = 0
+
+      !$OMP PARALLEL DO DEFAULT(NONE) &
+      !$OMP PRIVATE(i, j, k, icell, xc_cell, vel_interp, dx_cell, dy_cell, dz_cell, cell_h_size) &
+      !$OMP SHARED(V5_fluid_istart, V5_fluid_iend, V5_fluid_jstart, V5_fluid_jend, V5_fluid_kstart, V5_fluid_kend) &
+      !$OMP SHARED(Nx_tot, x_axis, y_axis, z_axis, V5solid_vof, V5solid_vel, Slider_influence_ratio) &
+      !$OMP REDUCTION(+:total_vof, active_cells) REDUCTION(max:max_vel)
+      DO k = V5_fluid_kstart, V5_fluid_kend
+         DO j = V5_fluid_jstart, V5_fluid_jend
+            DO i = V5_fluid_istart, V5_fluid_iend
+
+               icell = i + (j - 1) * Nx_tot(1) + (k - 1) * Nx_tot(1) * Nx_tot(2)
+
+               ! 僅對有固體涵蓋的網格進行速度插值
+               IF (V5solid_vof(icell) > 0.001_real_kind) THEN
+
+                  ! 1. 計算該非均勻流體網格中心座標與特徵邊長
+                  dx_cell = x_axis(i+1) - x_axis(i)
+                  dy_cell = y_axis(j+1) - y_axis(j)
+                  dz_cell = z_axis(k+1) - z_axis(k)
+
+                  xc_cell(1) = 0.5_real_kind * (x_axis(i) + x_axis(i+1))
+                  xc_cell(2) = 0.5_real_kind * (y_axis(j) + y_axis(j+1))
+                  xc_cell(3) = 0.5_real_kind * (z_axis(k) + z_axis(k+1))
+
+                  ! 計算幾何特徵尺寸 (3D對角線長)
+                  cell_h_size = SQRT(dx_cell**2 + dy_cell**2 + dz_cell**2)
+
+                  ! 2. 呼叫 RBF + AABB 插值常式
+                  CALL interpolate_rbf_velocity(xc_cell, cell_h_size, &
+                     Slider_influence_ratio, vel_interp)
+
+                  ! 3. 賦值至流體網格速度陣列
+                  V5solid_vel(1, icell) = vel_interp(1)
+                  V5solid_vel(2, icell) = vel_interp(2)
+                  V5solid_vel(3, icell) = vel_interp(3)
+
+                  ! 4. 統計量累加
+                  total_vof    = total_vof + V5solid_vof(icell)
+                  active_cells = active_cells + 1
+                  max_vel      = MAX(max_vel, SQRT(SUM(vel_interp**2)))
+
+               END IF
+
+            END DO
+         END DO
+      END DO
+      !$OMP END PARALLEL DO
+
+      ! 5. [診斷輸出] 統計更新結果
+      WRITE(*, '(A, I6, A, F10.4, A, ES12.5, A)') &
+         ' [update_fluid_mapping] Active Solid Cells = ', active_cells, &
+         ' | Sum VOF = ', total_vof, &
+         ' | Max Solid Vel = ', max_vel, ' m/s'
+
+   END SUBROUTINE update_fluid_mapping
+
+
+   !=======================================================================
+   ! Subroutine: V5Solid_Feedback
+   ! Purpose: 依照最新 VOF 與固體插值速����� (V5solid_vel)，將速度加權反饋給流體網格 Zone(icell)%Vc
+   !=======================================================================
+   SUBROUTINE V5Solid_Feedback()
+      IMPLICIT NONE
+
+      ! 宣告區域變數
+      INTEGER(KIND=int_kind) :: i, j, k, icell
+      REAL(KIND=real_kind)   :: V5_s_vof, fluid_vc_tmp(3)
+
+      ! 僅��固體涵蓋的流體網格 AABB 範圍內更新速度
+      !$OMP PARALLEL DO DEFAULT(NONE) &
+      !$OMP PRIVATE(i, j, k, icell, V5_s_vof, fluid_vc_tmp) &
+      !$OMP SHARED(V5_fluid_istart, V5_fluid_iend) &
+      !$OMP SHARED(V5_fluid_jstart, V5_fluid_jend) &
+      !$OMP SHARED(V5_fluid_kstart, V5_fluid_kend) &
+      !$OMP SHARED(Nx_tot, V5solid_vof, V5solid_vel, Zone)
+      DO k = V5_fluid_kstart, V5_fluid_kend
+         DO j = V5_fluid_jstart, V5_fluid_jend
+            DO i = V5_fluid_istart, V5_fluid_iend
+
+               ! 計算 1D 流體網格索引
+               icell = i + (j - 1) * Nx_tot(1) + (k - 1) * Nx_tot(1) * Nx_tot(2)
+               V5_s_vof   = V5solid_vof(icell)
+
+               ! 僅針對有固體佔據的網格做 IBM 速度加權
+               IF (V5_s_vof > 0.01_real_kind) THEN
+
+                  ! 暫存更新前的流體速度
+                  fluid_vc_tmp(:) = Zone(icell)%Vc(:)
+
+                  ! 依照 VOF 進行固體與流體速度的加權混合
+                  Zone(icell)%Vc(1) = V5solid_vel(1, icell) * V5_s_vof &
+                     + fluid_vc_tmp(1) * (1.0_real_kind - V5_s_vof)
+
+                  Zone(icell)%Vc(2) = V5solid_vel(2, icell) * V5_s_vof &
+                     + fluid_vc_tmp(2) * (1.0_real_kind - V5_s_vof)
+
+                  Zone(icell)%Vc(3) = V5solid_vel(3, icell) * V5_s_vof &
+                     + fluid_vc_tmp(3) * (1.0_real_kind - V5_s_vof)
+               END IF
+
+            END DO
+         END DO
+      END DO
+      !$OMP END PARALLEL DO
+
+   END SUBROUTINE V5Solid_Feedback
+
+
+END MODULE VFIFE_FSCoupled_module
+
+```
+
+---
+# 🔗 參考資料
+
+
+---
