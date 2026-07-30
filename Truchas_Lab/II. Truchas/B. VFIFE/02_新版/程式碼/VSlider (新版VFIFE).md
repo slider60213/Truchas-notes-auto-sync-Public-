@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:37
-modified: 2026-07-31 03:02
+modified: 2026-07-31 04:41
 tags:
   - "#Truchas"
   - Truchas/VFIFE
@@ -29,6 +29,7 @@ AND !icontains(file.name, "excalidraw")
 - 初始化:  [VFIFE_Setup_module.F90](VFIFE_Setup_module_F90.md) 
 - 運動狀態更新:  [VFIFE_Motion_module.F90](VFIFE_Motion_module_F90.md) 
 - 流固交互:  [VFIFE_FSCoupled_module.F90](VFIFE_FSCoupled_module_F90.md) 
+- 轉動變形計算輔助: [VFIFE_CMF_module.F90](VFIFE_CMF_module_F90.md)
 - 工具庫:  [VFIFE_Utils_module.F90](VFIFE_Utils_module_F90.md) 
 - 變數宣告:  [VFIFE_Data_module.F90](VFIFE_Data_module_F90.md)  
 
@@ -60,7 +61,8 @@ AND !icontains(file.name, "excalidraw")
 3. 固-流位置對照：
 	透過 AABB 篩選出 V5 固體所在的位置，並且轉換成流體座標的網格編號
 	方便調整 VOF、速度或未來其他操作
-	![](pics/Pasted%20image%2020260730020933.png)
+4. 
+	![](pics/Pasted%20image%2020260731042803.png)
 
 
 

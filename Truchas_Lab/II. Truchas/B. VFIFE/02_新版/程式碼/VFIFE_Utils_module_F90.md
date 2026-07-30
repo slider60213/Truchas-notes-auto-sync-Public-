@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-27 13:25
-modified: 2026-07-30 03:22
+modified: 2026-07-31 04:37
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -175,7 +175,81 @@ CONTAINS
 
    END FUNCTION compute_triangle_solid_angle
 
+   !=======================================================================
+   ! Subroutine: build_surface_cache
+   ! Purpose   : 掃描 VFIFE 固體網格，將所有位於邊界面 (face_judge == 1) 的
+   !             三角形頂點座標抽取至 SoA (Structure of Arrays) 格式快取中。
+   !
+   ! [使用時機]
+   !   1. 模擬初始化階段 (初始化體積率/IBM 採樣前)。
+   !   2. 若固體發生幾何大變形、網格更新節點座標後，需重新呼叫以更新快取。
+   !
+   ! [呼叫方式]
+   !   CALL build_surface_cache()
+   !
+   ! [更新的全域變數 (VFIFE_Data_module)]
+   !   - num_surf_faces  : 外露邊界面總數
+   !   - surf_node1(3,f) : 第 f 個外露面第一個頂點的三維座標 (x, y, z)
+   !   - surf_node2(3,f) : 第 f 個外露面第二個頂點的三維座標 (x, y, z)
+   !   - surf_node3(3,f) : 第 f 個外露面第三個頂點的三維座標 (x, y, z)
+   !=======================================================================
+   SUBROUTINE build_surface_cache()
 
+      IMPLICIT NONE
+      INTEGER :: i, j, f_idx, f
+
+      num_surf_faces = COUNT(face_judge == 1)
+      IF (num_surf_faces == 0) RETURN
+
+      IF (ALLOCATED(surf_node1)) DEALLOCATE(surf_node1, surf_node2, surf_node3)
+      ALLOCATE(surf_node1(3, num_surf_faces))
+      ALLOCATE(surf_node2(3, num_surf_faces))
+      ALLOCATE(surf_node3(3, num_surf_faces))
+
+      f_idx = 0
+      DO i = 1, nel
+         DO j = 1, 4
+            IF (face_judge(j, i) == 1) THEN
+               f_idx = f_idx + 1
+               ! elem_topo(2:5, i) 分別為 (N1, N2, N3, N4)
+               SELECT CASE (j)
+                CASE (1) ! Face 1: 缺 N1 -> 繞行 (N2, N3, N4)，對應 elem_topo (3, 4, 5)
+                  surf_node1(:, f_idx) = x_coord(:, elem_topo(3, i))
+                  surf_node2(:, f_idx) = x_coord(:, elem_topo(4, i))
+                  surf_node3(:, f_idx) = x_coord(:, elem_topo(5, i))
+
+                CASE (2) ! Face 2: 缺 N2 -> 繞行 (N1, N4, N3)，對應 elem_topo (2, 5, 4)
+                  surf_node1(:, f_idx) = x_coord(:, elem_topo(2, i))
+                  surf_node2(:, f_idx) = x_coord(:, elem_topo(5, i))
+                  surf_node3(:, f_idx) = x_coord(:, elem_topo(4, i))
+
+                CASE (3) ! Face 3: 缺 N3 -> 繞行 (N1, N2, N4)，對應 elem_topo (2, 3, 5)
+                  surf_node1(:, f_idx) = x_coord(:, elem_topo(2, i))
+                  surf_node2(:, f_idx) = x_coord(:, elem_topo(3, i))
+                  surf_node3(:, f_idx) = x_coord(:, elem_topo(5, i))
+
+                CASE (4) ! Face 4: 缺 N4 -> 繞行 (N1, N3, N2)，對應 elem_topo (2, 4, 3)
+                  surf_node1(:, f_idx) = x_coord(:, elem_topo(2, i))
+                  surf_node2(:, f_idx) = x_coord(:, elem_topo(4, i))
+                  surf_node3(:, f_idx) = x_coord(:, elem_topo(3, i))
+
+               END SELECT
+            END IF
+         END DO
+      END DO
+      ! 驗證程式碼：印出外露面數量與第一個面的法向量方向驗證
+      WRITE(*, '(A, I8)') ' [Surface Cache] Total boundary faces extracted:', num_surf_faces
+
+      ! --- Surface Cache Winding Order Diagnostics ---
+      WRITE(*,*) "------------------------------------------------------------------------------------------"
+      WRITE(*,*) " [V5 Diagnostics] Checking Surface Cache Winding Order & Normals"
+      WRITE(*,*) "------------------------------------------------------------------------------------------"
+      DO f = 1, num_surf_faces
+         WRITE(*, '(A, I2, A, 3F8.4, A, 3F8.4, A, 3F8.4)') &
+            " Face ", f, " N1:", surf_node1(:,f), " N2:", surf_node2(:,f), " N3:", surf_node3(:,f)
+      END DO
+      WRITE(*,*) "------------------------------------------------------------------------------------------"
+   END SUBROUTINE build_surface_cache
 
 
 
@@ -194,7 +268,7 @@ CONTAINS
    !   p_pt(3)     : REAL(real_kind), INTENT(IN)
    !                 欲判定的 3D 空間點座標 (x, y, z)。
    !
-   ! [傳回值]
+   ! [傳���值]
    !   is_inside   : LOGICAL
    !                 .TRUE.  -> 該點地位於固體內部
    !                 .FALSE. -> 該點地位於固體外部
@@ -317,6 +391,7 @@ CONTAINS
       INTEGER :: Nx, Ny, Nz
       INTEGER :: gi, gj, gk, global_id, local_id
       INTEGER :: local_active_count
+      INTEGER :: V5_NOT_LOCAL_INDEX = -1
 
       Nx = Nx_tot(1)
       Ny = Nx_tot(2)
@@ -349,12 +424,10 @@ CONTAINS
       !$OMP SHARED(nel, face_judge, elem_vertices) &
       !$OMP REDUCTION(min: V5_minX) REDUCTION(max: V5_maxX)
       DO i = 1, nel
-         IF (ANY(face_judge(:, i) == 1)) THEN
-            DO v = 1, 4
-               V5_minX = MIN(V5_minX, elem_vertices(:, v, i))
-               V5_maxX = MAX(V5_maxX, elem_vertices(:, v, i))
-            END DO
-         END IF
+         DO v = 1, 4
+            V5_minX = MIN(V5_minX, elem_vertices(:, v, i))
+            V5_maxX = MAX(V5_maxX, elem_vertices(:, v, i))
+         END DO
       END DO
       !$OMP END PARALLEL DO
 
@@ -367,6 +440,12 @@ CONTAINS
 
       V5_fluid_kstart = MAX(1, find_cell_index(V5_minX(3), z_axis, Nz) - 1)
       V5_fluid_kend   = MIN(Nz, find_cell_index(V5_maxX(3), z_axis, Nz) + 1)
+
+! 驗證程式碼：確認 Z 軸座標對應的網格 Index
+      WRITE(*, '(A, F10.4, A, I6)') ' [AABB Debug] Solid Z min:', V5_minX(3), &
+         ' -> Raw Cell Index:', find_cell_index(V5_minX(3), z_axis, Nz)
+      WRITE(*, '(A, F10.4, A, I6)') ' [AABB Debug] Solid Z max:', V5_maxX(3), &
+         ' -> Raw Cell Index:', find_cell_index(V5_maxX(3), z_axis, Nz)
 
       ! 5. 驗證輸出
       WRITE(*,*) "=========================================="
@@ -397,27 +476,27 @@ CONTAINS
                ! 計算 Truchas 結構化網格全域一維索引 (Row-major / Flat Index)
                global_id = (gk - 1) * Nx * Ny + (gj - 1) * Nx + gi
 
-               ! 關鍵：將全域索引轉換為目前處理器的本地索引
+               ! 關鍵：將全域索引轉換為目���處理器的本地索���
                local_id = MAKE_LOCAL(global_id, ncells)
 
-               ! ! 若網格屬於本處理器，則標記 V5_ingbr 旗標供後續 MSA/det44 篩選使用
-               ! IF (local_id /= -1) THEN
-               !    V5_ingbr(local_id) = 1
-               !    local_active_count = local_active_count + 1
+               ! 若網格屬於本處理器，則標記 V5_ingbr 旗標供後續 MSA/det44 篩選使用
+               IF (local_id /= V5_NOT_LOCAL_INDEX) THEN
+                  V5_ingbr(local_id) = 1
+                  local_active_count = local_active_count + 1
 
-               !    ! 僅印出 i, j, k 三個方向的前 3 格與後 3 格，避免日誌洗版
-               !    IF ((gi <= V5_fluid_istart + 1 .OR. gi >= V5_fluid_iend - 1) .AND. &
-               !       (gj <= V5_fluid_jstart + 1 .OR. gj >= V5_fluid_jend - 1) .AND. &
-               !       (gk <= V5_fluid_kstart + 1 .OR. gk >= V5_fluid_kend - 1)) THEN
+                  ! ! 僅印出 i, j, k 三個方向的前 3 格與後 3 格，避免日誌洗版
+                  ! IF ((gi <= V5_fluid_istart + 1 .OR. gi >= V5_fluid_iend - 1) .AND. &
+                  !    (gj <= V5_fluid_jstart + 1 .OR. gj >= V5_fluid_jend - 1) .AND. &
+                  !    (gk <= V5_fluid_kstart + 1 .OR. gk >= V5_fluid_kend - 1)) THEN
 
-               !       WRITE(*, '(A,I8,A,I8,A,3I5,A,2F10.4,A,2F10.4,A,2F10.4)') &
-               !          "  [Candidate Cell] Local ID:", local_id, " | Global ID:", global_id, &
-               !          " | (i,j,k):", gi, gj, gk, &
-               !          " | X:[", x_axis(gi), x_axis(gi+1), &
-               !          "] Y:[", y_axis(gj), y_axis(gj+1), &
-               !          "] Z:[", z_axis(gk), z_axis(gk+1), "]"
-               !    END IF
-               ! END IF
+                  !    WRITE(*, '(A,I8,A,I8,A,3I5,A,2F10.4,A,2F10.4,A,2F10.4)') &
+                  !       "  [Candidate Cell] Local ID:", local_id, " | Global ID:", global_id, &
+                  !       " | (i,j,k):", gi, gj, gk, &
+                  !       " | X:[", x_axis(gi), x_axis(gi+1), &
+                  !       "] Y:[", y_axis(gj), y_axis(gj+1), &
+                  !       "] Z:[", z_axis(gk), z_axis(gk+1), "]"
+                  ! END IF
+               END IF
 
             END DO
          END DO
@@ -428,67 +507,10 @@ CONTAINS
 
    END SUBROUTINE compute_solid_aabb
 
-   !=======================================================================
-   ! Subroutine: build_surface_cache
-   ! Purpose   : 掃描 VFIFE 固體網格，將所有位於邊界面 (face_judge == 1) 的
-   !             三角形頂點座標抽取至 SoA (Structure of Arrays) 格式快取中。
-   !
-   ! [使用時機]
-   !   1. 模擬初始化階段 (初始化體積率/IBM 採樣前)。
-   !   2. 若固體發生幾何大變形、網格更新節點座標後，需重新呼叫以更新快取。
-   !
-   ! [呼叫方式]
-   !   CALL build_surface_cache()
-   !
-   ! [更新的全域變數 (VFIFE_Data_module)]
-   !   - num_surf_faces  : 外露邊界面總數
-   !   - surf_node1(3,f) : 第 f 個外露面第一個頂點的三維座標 (x, y, z)
-   !   - surf_node2(3,f) : 第 f 個外露面第二個頂點的三維座標 (x, y, z)
-   !   - surf_node3(3,f) : 第 f 個外露面第三個頂點的三維座標 (x, y, z)
-   !=======================================================================
-   SUBROUTINE build_surface_cache()
 
-      IMPLICIT NONE
-      INTEGER :: i, j, f_idx
-
-      num_surf_faces = COUNT(face_judge == 1)
-      IF (num_surf_faces == 0) RETURN
-
-      IF (ALLOCATED(surf_node1)) DEALLOCATE(surf_node1, surf_node2, surf_node3)
-      ALLOCATE(surf_node1(3, num_surf_faces))
-      ALLOCATE(surf_node2(3, num_surf_faces))
-      ALLOCATE(surf_node3(3, num_surf_faces))
-
-      f_idx = 0
-      DO i = 1, nel
-         DO j = 1, 4
-            IF (face_judge(j, i) == 1) THEN
-               f_idx = f_idx + 1
-               ! 根據四面體 Local Face 拓樸提取對應 3 頂點 (elem_topo 2:5 對應 N1:N4)
-               SELECT CASE (j)
-                CASE (1) ! Face 1: (N2, N3, N4) -> elem_topo 欄位 (3, 4, 5)
-                  surf_node1(:, f_idx) = x_coord(:, elem_topo(3, i))
-                  surf_node2(:, f_idx) = x_coord(:, elem_topo(4, i))
-                  surf_node3(:, f_idx) = x_coord(:, elem_topo(5, i))
-                CASE (2) ! Face 2: (N1, N4, N3) -> elem_topo �����位 (2, 5, 4)
-                  surf_node1(:, f_idx) = x_coord(:, elem_topo(2, i))
-                  surf_node2(:, f_idx) = x_coord(:, elem_topo(5, i))
-                  surf_node3(:, f_idx) = x_coord(:, elem_topo(4, i))
-                CASE (3) ! Face 3: (N1, N2, N4) -> elem_topo 欄�������� (2, 3, 5)
-                  surf_node1(:, f_idx) = x_coord(:, elem_topo(2, i))
-                  surf_node2(:, f_idx) = x_coord(:, elem_topo(3, i))
-                  surf_node3(:, f_idx) = x_coord(:, elem_topo(5, i))
-                CASE (4) ! Face 4: (N1, N3, N2) -> elem_topo 欄位 (2, 4, 3)
-                  surf_node1(:, f_idx) = x_coord(:, elem_topo(2, i))
-                  surf_node2(:, f_idx) = x_coord(:, elem_topo(4, i))
-                  surf_node3(:, f_idx) = x_coord(:, elem_topo(3, i))
-               END SELECT
-            END IF
-         END DO
-      END DO
-   END SUBROUTINE build_surface_cache
 
 END MODULE VFIFE_Utils_module
+
 
 
 ```

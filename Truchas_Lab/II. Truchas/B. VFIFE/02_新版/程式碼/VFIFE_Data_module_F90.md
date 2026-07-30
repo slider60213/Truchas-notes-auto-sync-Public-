@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-04 03:08
-modified: 2026-07-30 03:21
+modified: 2026-07-31 04:38
 tags:
   - "#Truchas"
 ---
@@ -47,7 +47,7 @@ MODULE VFIFE_Data_module
    LOGICAL, SAVE                :: is_V5_deformable = .FALSE.
    CHARACTER(LEN=512), SAVE     :: V5_dat_name
    CHARACTER(LEN=512), SAVE     :: project_name
-   INTEGER, SAVE                :: Deformable_Body
+   INTEGER, SAVE                :: Is_Deformable_Body
    INTEGER, SAVE                :: Check_V5_Loading
    INTEGER, SAVE                :: V5_mat_id  ! 會在 MATERIAL_INPUT 中設定
    INTEGER, SAVE, ALLOCATABLE   :: V5_ingbr(:) ! ncells
@@ -105,8 +105,12 @@ MODULE VFIFE_Data_module
    REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_vertices(:,:,:)   ! (3, 4, nel) 4個頂點座標
    REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_facecenter(:,:,:) ! (3, 4, nel) 4個面的形心座標
    REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_center(:,:)       ! (3, nel)    單元質心座標
-   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_area(:,:)         ! (4, nel)    4個��的面積
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_area(:,:)         ! (4, nel)    4個面的面積
    REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_normal(:,:,:)     ! (3, 4, nel) 4個面指向單元外的單位法向量
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_pressure(:,:)     ! (4, nel)    4個面的壓力
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_velocity(:,:,:)   ! (3, 4, nel) 4個面的速度
+   REAL(8), ALLOCATABLE, SAVE, TARGET :: elem_density(:,:)      ! (4, nel)    4個面的密度
+
 
    ! 歷���������狀態物理量 (CARD 7 & 塑性歷�����)
    REAL(8), ALLOCATABLE, SAVE, TARGET :: rnode(:,:)             ! (10, nel) 拓樸材料綜合矩陣
@@ -170,7 +174,7 @@ MODULE VFIFE_Data_module
    ! ==========================================================
    REAL(8), SAVE :: Rigid_mass                   ! 剛體總質量 (M)
    REAL(8), SAVE :: Rigid_CoM(3)                 ! 當前質心空間座標 (x_CoM)
-   REAL(8), SAVE :: Rigid_CoM0(3)                ! 初始質心空間座標 (x_CoM0)
+   REAL(8), SAVE :: Rigid_CoM0(3)                ! 初始質���空間座標 (x_CoM0)
    REAL(8), SAVE :: Rigid_vel(3)                 ! 質心平移速度 (v_CoM)
    REAL(8), SAVE :: Rigid_acc(3)                 ! 質心平移加速度 (a_CoM)
 
@@ -215,6 +219,9 @@ MODULE VFIFE_Data_module
       REAL(8), POINTER :: center(:,:)        => NULL() ! 指向 elem_center (3, nel)
       REAL(8), POINTER :: area(:,:)          => NULL() ! 指向 elem_area (4, nel)
       REAL(8), POINTER :: normal(:,:,:)      => NULL() ! 指向 elem_normal (3, 4, nel)
+      REAL(8), POINTER :: pressure(:,:)      => NULL() ! 新增：指向 elem_pressure (4, nel)
+      REAL(8), POINTER :: velocity(:,:,:)    => NULL() ! 新增：指向 elem_velocity (3, 4, nel)
+      REAL(8), POINTER :: density(:,:)       => NULL() ! 新增：指向 elem_density (4, nel)
       REAL(8), POINTER :: sigma3D(:,:)       => NULL() ! 指向 sigma3D (6, nel)
       REAL(8), POINTER :: sigmaP(:,:)        => NULL() ! 指向 sigmaP (6, nel)
       REAL(8), POINTER :: epslonP(:,:)       => NULL() ! 指向 epslonP (6, nel)
@@ -258,6 +265,9 @@ CONTAINS
       IF (ALLOCATED(elem_facecenter)) Elements%facecenter => elem_facecenter
       IF (ALLOCATED(elem_area))       Elements%area       => elem_area
       IF (ALLOCATED(elem_normal))     Elements%normal     => elem_normal
+      IF (ALLOCATED(elem_pressure))   Elements%pressure   => elem_pressure
+      IF (ALLOCATED(elem_velocity))   Elements%velocity   => elem_velocity
+      IF (ALLOCATED(elem_density))    Elements%density    => elem_density
       IF (ALLOCATED(face_judge))      Elements%face_judge => face_judge
       IF (ALLOCATED(sigma3D))         Elements%sigma3D    => sigma3D
       IF (ALLOCATED(sigmaP))          Elements%sigmaP     => sigmaP
@@ -294,6 +304,7 @@ END MODULE VFIFE_Data_module
  !    - V5_fluid_istart, V5_fluid_iend, V5_fluid_jstart, V5_fluid_jend, V5_fluid_kstart, V5_fluid_kend
  !    - num_surf_faces, surf_node1(:,:), surf_node2(:,:), surf_node3(:,:)
  ! =========================================================================
+
 
 
 ```

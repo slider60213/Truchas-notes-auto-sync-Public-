@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-05-27 13:23
-modified: 2026-07-30 03:20
+modified: 2026-07-31 04:38
 tags:
   - "#Truchas"
   - 電腦/WINDOWS/WSL
@@ -67,7 +67,7 @@ MODULE VFIFE_Driver_module
 
    USE VFIFE_Input_module,     only: read_data, check_data
    USE VFIFE_Setup_module,     only: V5Setup
-   USE VFIFE_Motion_module,    only: V5_solid_solver
+   USE VFIFE_Motion_module
    USE VFIFE_FSCoupled_module
 
    ! Basic Modules of VFIFE
@@ -114,6 +114,11 @@ CONTAINS
          CALL check_data()
          WRITE(*,*) ' [V5] check_data finish'
 
+         ! 指針容器初始化
+         ! 未來 SOUBROUTINE 調用變數就不用逐一引入
+         ! 而是可直接傳入 Nodes, Elements 來作為INPUT
+         call Link_VFIFE_Containers()
+         WRITE(*,*) " [V5] VFIFE_containers init finish"
 
          ! 剛體模式：不會變形，靜態初始化質量、面判定與 AABB 包夾盒 (只需算一次)
          IF (.NOT. is_V5_deformable) THEN
@@ -134,7 +139,22 @@ CONTAINS
          CALL compute_V5solid_vof(V5solid_vof_t0)
          CALL Update_Fluid_Solid_VOF(V5solid_vof_t0)
          WRITE(*,*) " [V5] compute and update V5solid_vof_t0 finish"
-         WRITE(*,*) " [V5] V5solid_vof_t0 = ", sum(V5solid_vof_t0)
+
+         ! 驗證程式碼：計算 VOF 換算體積與 VFIFE 精確體積的比對
+         BLOCK
+            REAL(real_kind) :: vof_cell_vol, total_vof_vol
+            vof_cell_vol = 0.05_real_kind * 0.05_real_kind * 0.05_real_kind
+            total_vof_vol = SUM(V5solid_vof_t0) * vof_cell_vol
+
+            WRITE(*,*) "=========================================="
+            WRITE(*,*) " [V5 VOF Volume Verification]"
+            WRITE(*,*) "  Sum of VOF Ratio (Sum VOF) :", SUM(V5solid_vof_t0)
+            WRITE(*,*) "  Single Cell Volume (dV)    :", vof_cell_vol
+            WRITE(*,*) "  Calculated VOF Volume      :", total_vof_vol
+            WRITE(*,*) "  VFIFE Exact Solid Volume   :", sum(elem_vol)
+            WRITE(*,*) "  Volume Error Ratio (%)     :", (total_vof_vol - sum(elem_vol)) / sum(elem_vol) * 100.0_real_kind
+            WRITE(*,*) "=========================================="
+         END BLOCK
 
          ! 標記初始化完成
          is_V5_initialized = .TRUE.
@@ -158,7 +178,7 @@ CONTAINS
          step_count = 0  ! 請確認開頭宣告統一使用 step_count
 
 
-         ! 在達到流體新時間步 t2 之前，持續迭代進行計算 (動態微調最後一步 dt)
+         ! 在達到流體新時間步 t2 ���前，持續迭代進行計算 (動態微調最後一步 dt)
          DO WHILE (V5_time < t2 - 1.0e-12_real_kind)
 
             ! 0. 動態微調固體計算的 dt，防止最後一步 dt 過大
@@ -172,13 +192,27 @@ CONTAINS
                WRITE(*,*) ' [V5] (Deformable) V5Setup finish at V5_time:', V5_time
             END IF
 
-            ! 2. 獲取流體壓力 (映射至固體節點)
-            CALL Get_Fluid_Pressure()
-            WRITE(*,*) ' [V5] Get_Fluid_Pressure finish at V5_time:', V5_time
 
-            ! 3. 呼叫固體求解器 (Solid Solver) 推進運動學變數
-            CALL V5_solid_solver(V5_DeltaT)
-            WRITE(*,*) ' [V5] V5_solid_solver finish at V5_time:', V5_time
+
+            ! 3. 獲取流體壓力 (映射至固體節點 Nodes%fsum)
+            CALL Get_Fluid_Info()
+            WRITE(*,*) ' [V5] Get_Fluid_Info finish at V5_time:', V5_time
+
+
+            ! 4. 彙整外力 (重力、流體耦合力等)
+            CALL calculate_external_forces()
+
+            ! 5. 計算單元內力與阻尼力
+            CALL calculate_internal_forces()
+
+            ! 6. 顯式時間積分，更新運動學變數 (加速度、速度、位移、座標)
+            CALL update_kinematics(V5_DeltaT)
+
+            ! 7. 模組執行完成驗證訊息
+            WRITE(*, '(A, F10.6, A)') '[VFIFE_MOTION] V5 executed successfully for dt = ', V5_DeltaT, ' s'
+            WRITE(*, '(A, 3F12.6)')   '[VFIFE_VERIFY] Current CoM Pos (m)  : ', Rigid_CoM
+            WRITE(*, '(A, 3F12.6)')   '[VFIFE_VERIFY] Current CoM Vel (m/s): ', Rigid_vel
+            WRITE(*, '(A, F12.8)')    '[VFIFE_VERIFY] Quaternion Norm     : ', SQRT(SUM(Rigid_quat**2))
 
          END DO
 
@@ -205,6 +239,7 @@ CONTAINS
 
 
 END MODULE VFIFE_Driver_module
+
 
 
 

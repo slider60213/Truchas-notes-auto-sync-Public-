@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-04 03:10
-modified: 2026-07-30 03:53
+modified: 2026-07-31 04:38
 tags:
   - "#Truchas"
 ---
@@ -210,6 +210,7 @@ CONTAINS
          opp_vec = popp - pa
          IF (DOT_PRODUCT(normal, opp_vec) > 0.0d0) THEN
             normal = -normal
+            ! 如果跑到這裡，代表該單元的頂點順序 (n1,n2,n3,n4) 可能屬於左手系
          END IF
 
       END SUBROUTINE compute_face_geom
@@ -310,17 +311,18 @@ CONTAINS
    ! =========================================================
    ! [全面修復版] 配合 (4, nel) 與 (3, nnd) 記憶體連續性優化的外接面判斷
    ! =========================================================
+   ! =========================================================
+   ! [全面修復版] 配合 (4, nel) 與 (3, nnd) 記憶體連續性優化的外接面判斷
+   ! =========================================================
    SUBROUTINE face_judgement()
 
       IMPLICIT NONE
       ! ---------------------------------------------------
       ! 局部變數宣告 (Local Variables)
       ! ---------------------------------------------------
-      INTEGER :: i, j, m, current
+      INTEGER :: i, j, m, current, match_count, k
       INTEGER :: n1, n2, n3, n4
       INTEGER :: total_faces
-      ! 幾何計算區域變數
-      REAL(8) :: p1(3), p2(3), p3(3), p4(3), p_center(3)
 
       ! 使用 64 位元整數儲存特徵碼，防止大規模網格的節點數相乘溢位
       INTEGER(8), ALLOCATABLE :: face_keys(:)
@@ -348,16 +350,14 @@ CONTAINS
       ! ---------------------------------------------------
       ! 動態評估安全 Base 與 Key 上限提醒
       ! ---------------------------------------------------
-      ! INT64 最大值約 9.22E18，(Base)^3 不能超過此上限 => Base 上限約 2,097,152
       IF (nnd > 2000000) THEN
          WRITE(*,*) "Warning: [face_judgement] Total nodes (nnd) exceeds 2,000,000 safety threshold."
          WRITE(*,*) "         64-bit integer face_key might overflow!"
       ELSE
          WRITE(*,*) " [face_judgement] Max node limit for 64-bit Face Key:", 2000000, " (Current nnd:", nnd, ")"
       END IF
-      ALLOCATE(face_keys(total_faces))
 
-      ! 對調配置維度，確���與寫入時的 face_mapping(total_faces, 2) 完全一致
+      ALLOCATE(face_keys(total_faces))
       ALLOCATE(face_mapping(total_faces, 2))
       ALLOCATE(sort_index(total_faces))
 
@@ -370,31 +370,28 @@ CONTAINS
       DO i = 1, nel
          m = (i-1)*4
 
-         ! 配合 elem_topo(5, nel) 的結構，第一維度是欄位，第二維度是單元索引
          n1 = elem_topo(2, i)
          n2 = elem_topo(3, i)
          n3 = elem_topo(4, i)
          n4 = elem_topo(5, i)
 
-         ! 面 1 (n1, n2, n3)
-         ! 生成面���唯一特徵編碼 face_key
-         CALL pack_face(n1, n2, n3, face_keys(m+1))
-         ! 記錄 face_key 所對應的單元編號與面編號
+         ! 面 1: 缺 N1 頂點 -> (N2, N3, N4)，右手定則法向量朝外
+         CALL pack_face(n2, n3, n4, face_keys(m+1))
          face_mapping(m+1, 1) = i
          face_mapping(m+1, 2) = 1
 
-         ! 面 2 (n1, n4, n2)
-         CALL pack_face(n1, n4, n2, face_keys(m+2))
+         ! 面 2: 缺 N2 頂點 -> (N1, N4, N3)，右手定則法向量朝外
+         CALL pack_face(n1, n4, n3, face_keys(m+2))
          face_mapping(m+2, 1) = i
          face_mapping(m+2, 2) = 2
 
-         ! 面 3 (n2, n4, n3)
-         CALL pack_face(n2, n4, n3, face_keys(m+3))
+         ! 面 3: 缺 N3 頂點 -> (N1, N2, N4)，右手定則法向量朝外
+         CALL pack_face(n1, n2, n4, face_keys(m+3))
          face_mapping(m+3, 1) = i
          face_mapping(m+3, 2) = 3
 
-         ! 面 4 (n3, n4, n1)
-         CALL pack_face(n3, n4, n1, face_keys(m+4))
+         ! 面 4: 缺 N4 頂點 -> (N1, N3, N2)，右手定則法向量朝外
+         CALL pack_face(n1, n3, n2, face_keys(m+4))
          face_mapping(m+4, 1) = i
          face_mapping(m+4, 2) = 4
       END DO
@@ -411,26 +408,35 @@ CONTAINS
       CALL quicksort_idx(face_keys, sort_index, 1, total_faces)
 
       ! ---------------------------------------------------
-      ! 4. 線性對比鄰居：相同的 64 位元特徵碼代表是共用面
+      ! 4. 線性對比鄰居：相同的 64 位元特徵碼代表是共用面 (完整防群組漏判修復版)
       ! ---------------------------------------------------
       current = 1
-      DO WHILE (current < total_faces)
-         i = sort_index(current)
-         j = sort_index(current+1)
+      DO WHILE (current <= total_faces)
+         j = current + 1
+         ! 尋找連續相同 Key 的面數量
+         DO WHILE (j <= total_faces)
+            IF (face_keys(sort_index(current)) == face_keys(sort_index(j))) THEN
+               j = j + 1
+            ELSE
+               EXIT
+            END IF
+         END DO
 
-         IF (face_keys(i) == face_keys(j)) THEN
-            ! 標記為內部面 (0)
-            ! 寫入時嚴格遵循 face_judge(local_face, elem_id) 的行優先順序
-            face_judge(face_mapping(i, 2), face_mapping(i, 1)) = 0
-            face_judge(face_mapping(j, 2), face_mapping(j, 1)) = 0
-            current = current + 2 ! 匹配成功，成對跳過
-         ELSE
-            current = current + 1 ! 獨有面，維持預設值 1
+         match_count = j - current
+
+         ! 若大於等於 2 個面共用此 Key，代表為內部面，全部標記為 0
+         IF (match_count >= 2) THEN
+            DO k = current, j - 1
+               i = sort_index(k)
+               face_judge(face_mapping(i, 2), face_mapping(i, 1)) = 0
+            END DO
          END IF
+
+         current = j ! 直接跨過整組相同的 Key
       END DO
 
       ! ---------------------------------------------------
-      ! [DEBUG] 驗證輸出程式碼（針對單個或少量單元測試案例）
+      ! [DEBUG] 驗證輸出程式碼
       ! ---------------------------------------------------
       WRITE(*,*) "=========================================="
       WRITE(*,*) " [DEBUG] FACE JUDGEMENT VERIFICATION"
@@ -438,9 +444,8 @@ CONTAINS
       WRITE(*,*) " Total Elements (nel):", nel
       WRITE(*,*) " Total Faces to check:", total_faces
       WRITE(*,*) ""
-      WRITE(*,*) " [1] Generated Face Keys & Pack Verification:"
+
 #ifdef DEBUG_MODE
-      ! 只有在編譯時開啟 -DDEBUG_MODE 才會把這段迴圈編進去
       DO i = 1, total_faces
          WRITE(*, '(A,I5,A,I12,A,I8,A,I2)') &
             "   Face Index ", i, " -> Key: ", face_keys(i), &
@@ -449,49 +454,34 @@ CONTAINS
       END DO
 #endif
 
-      WRITE(*,*) ""
-      WRITE(*,*) " [2] Sorted Index Verification (By Quicksort):"
+      WRITE(*,*) " [1] Sorted Index Verification (By Quicksort):"
       WRITE(*, '(A,16I4)') "   sort_index = ", sort_index(1:min(16, size(sort_index)))
-
       WRITE(*,*) ""
-      WRITE(*,*) " [3] Final Face Judgement Output:"
-#ifdef DEBUG_MODE
-      ! 只有在編譯時開啟 -DDEBUG_MODE 才會把這段迴圈編進去
-      DO i = 1, nel
-         WRITE(*, '(A,I5,A,4I3)') &
-            "   Element ", i, &
-            " -> face_judge(1:4) = ", face_judge(:, i)
-      END DO
-#endif
 
-      WRITE(*,*) ""
-      WRITE(*,*) " [3] Final Topo Topology Summary:"
-      ! 利用 Fortran 內建的 COUNT 矩陣函數，瞬���算出一共有���少個 0 與 1
       i = COUNT(face_judge == 1) ! 外接面總數
       j = COUNT(face_judge == 0) ! 內部面總數
 
+      WRITE(*,*) " [2] Final Topo Topology Summary:"
       WRITE(*, '(A,I8)') "   Total External Boundary Faces (Value 1): ", i
       WRITE(*, '(A,I8)') "   Total Internal Connected Faces (Value 0): ", j
       WRITE(*, '(A,I8)') "   Verification Sum (Must equal total_faces):", i + j
-
       WRITE(*,*) "=========================================="
 
+      ! ---------------------------------------------------
+      ! 5. 釋放局部動態記憶體 (避免 Memory Leak)
+      ! ---------------------------------------------------
+      IF (ALLOCATED(face_keys))    DEALLOCATE(face_keys)
+      IF (ALLOCATED(face_mapping)) DEALLOCATE(face_mapping)
+      IF (ALLOCATED(sort_index))   DEALLOCATE(sort_index)
 
-      ! ---------------------------------------------------
-      ! 5. 釋放局部動態記憶體 (安全防護機制)
-      ! ---------------------------------------------------
-      !IF (ALLOCATED(face_keys))    DEALLOCATE(face_keys)
-      !IF (ALLOCATED(face_mapping)) DEALLOCATE(face_mapping)
-      !IF (ALLOCATED(sort_index))   DEALLOCATE(sort_index)
       WRITE(*,*) " [V5] Column-major Cache-optimized Face Judgement completed."
 
    CONTAINS
 
-
       ! =========================================================
       ! 內部子程序：將 3 個節點排序後根據 nnd 動態進位壓成 64 位元特徵碼
       ! =========================================================
-      SUBROUTINE pack_face(n1, n2, n3, key)
+      PURE SUBROUTINE pack_face(n1, n2, n3, key)
          USE VFIFE_Data_module, ONLY: nnd
          INTEGER, INTENT(IN) :: n1, n2, n3
          INTEGER(8), INTENT(OUT) :: key
@@ -502,20 +492,20 @@ CONTAINS
          nodes(3) = INT(n3, 8)
 
          ! 簡單三元 Bubble Sort 確保由小到大排序 (n1 <= n2 <= n3)
+         ! 正確的三數排序網路 (Sorting Network) 確保 nodes(1) <= nodes(2) <= nodes(3)
          IF (nodes(1) > nodes(2)) THEN; temp = nodes(1); nodes(1) = nodes(2); nodes(2) = temp; END IF
+         IF (nodes(1) > nodes(3)) THEN; temp = nodes(1); nodes(1) = nodes(3); nodes(3) = temp; END IF
          IF (nodes(2) > nodes(3)) THEN; temp = nodes(2); nodes(2) = nodes(3); nodes(3) = temp; END IF
-         IF (nodes(1) > nodes(2)) THEN; temp = nodes(1); nodes(1) = nodes(2); nodes(2) = temp; END IF
 
          ! 動態 Base：取大於全域總節點數 nnd 的最小安全進位基數
          base = INT(nnd + 1, 8)
 
-         ! 採用動態 Base 多項式進位，徹底解決 Key 溢位問題
+         ! 採用動態 Base 多項式進位
          key = (nodes(1) * base + nodes(2)) * base + nodes(3)
       END SUBROUTINE pack_face
 
       ! =========================================================
-      ! 內部子程序：針對一維特徵陣列進行雙指標索引排序 (防溢位、絕對穩定版)
-      ! 【修正】引入穩健的分割迴圈，徹底解決指針重疊與無窮遞迴問題
+      ! 內部子程序：針對一維特徵陣列進行雙指標索引排序
       ! =========================================================
       RECURSIVE SUBROUTINE quicksort_idx(keys, idx, left, right)
          INTEGER(8), INTENT(IN)  :: keys(:)
@@ -551,8 +541,6 @@ CONTAINS
 
       END SUBROUTINE quicksort_idx
 
-
-
    END SUBROUTINE face_judgement
 
 
@@ -562,6 +550,7 @@ CONTAINS
 
 
 END MODULE VFIFE_Setup_module
+
 
 
 ```

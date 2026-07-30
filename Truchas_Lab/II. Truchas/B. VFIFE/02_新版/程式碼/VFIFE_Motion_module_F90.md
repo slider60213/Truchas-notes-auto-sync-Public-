@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:09
-modified: 2026-07-30 03:23
+modified: 2026-07-31 04:39
 tags:
   - "#Truchas"
 ---
@@ -33,8 +33,14 @@ AND !icontains(file.name, "excalidraw")
 ```fortran
 MODULE VFIFE_MOTION_module
 
+   USE VFIFE_CMF_module
+
+
+
    ! Truchas
    USE body_data_module,       only: Body_Force
+
+
 
    ! Basic Modules of VFIFE
    USE VFIFE_Data_module
@@ -44,15 +50,13 @@ MODULE VFIFE_MOTION_module
 
 
 
-   ! 對外開放的核心入口
-   PUBLIC :: V5_solid_solver
 
-   ! 內部私有子程式宣告
-   PRIVATE :: calculate_external_forces
-   PRIVATE :: calculate_internal_forces
-   PRIVATE :: update_kinematics
+   ! 子程式宣告
+   PUBLIC :: calculate_external_forces
+   PUBLIC :: calculate_internal_forces
+   PUBLIC :: update_kinematics
 
-   ! 內部獨立運算工具 (私有輔助子程序)
+   ! 內部獨立運算工具 (輔助子程序)
    PRIVATE :: cross_product
    PRIVATE :: mat_vec_mult
    PRIVATE :: mat_trans_vec_mult
@@ -61,42 +65,126 @@ MODULE VFIFE_MOTION_module
 
 CONTAINS
 
-   !===========================================================================
-   ! 固體時間步求解器主入口 (Public)
-   !===========================================================================
-   SUBROUTINE V5_solid_solver(V5_dt)
-      REAL(KIND=8), INTENT(IN) :: V5_dt
-
-      ! 1. 彙整外力 (重力、流體耦合力等)
-      CALL calculate_external_forces()
-
-      ! 2. 計算單元內力與阻尼力
-      CALL calculate_internal_forces()
-
-      ! 3. 顯式時間積分，更新運動學變數 (加速度、速度、位移、座標)
-      CALL update_kinematics(V5_dt)
-
-      ! 4. 模組執行完成驗證訊息
-      WRITE(*, '(A, F10.6, A)') '[VFIFE_MOTION] V5_solid_solver executed successfully for dt = ', V5_dt, ' s'
-      WRITE(*, '(A, 3F12.6)')   '[VFIFE_VERIFY] Current CoM Pos (m)  : ', Rigid_CoM
-      WRITE(*, '(A, 3F12.6)')   '[VFIFE_VERIFY] Current CoM Vel (m/s): ', Rigid_vel
-      WRITE(*, '(A, F12.8)')    '[VFIFE_VERIFY] Quaternion Norm     : ', SQRT(SUM(Rigid_quat**2))
-   END SUBROUTINE V5_solid_solver
-
 
    !===========================================================================
    ! Subroutine : calculate_external_forces
    ! Module     : VFIFE_MOTION_module
-   ! Purpose    : 彙整固體節點承受之外力 (重力/體積力 + 流體耦合力)
+   ! Purpose    : 彙整固體節點承受之外力 (重力/體積力 + 流體壓力 + Cd 剪力)
    !===========================================================================
    SUBROUTINE calculate_external_forces()
       IMPLICIT NONE
-      INTEGER(KIND=int_kind) :: i, k
+      INTEGER(KIND=int_kind) :: i, j, k
+      INTEGER(KIND=int_kind) :: n1, n2, n3
+      REAL(KIND=real_kind)   :: f_node(3), f_press(3), f_shear(3)
+      REAL(KIND=real_kind)   :: f_fluid_total(3)
+      REAL(KIND=real_kind)   :: v_solid_face(3), u_rel(3), u_rel_norm, u_rel_tangent(3)
+      REAL(KIND=real_kind)   :: Cd, rho_local, area, norm(3)
 
-      ! 1. 重置合力陣列 (若流體力已預先存於其他變數，在此統一歸零後加總)
-      Nodes%fsum = 0.0_real_kind
+      ! 設定表面阻力/剪力係數 (可視需要改為全域參數設定)
+      Cd = 0.05_real_kind
 
-      ! 2. 累加重力 / 體積力 (F = m * Body_Force)
+      ! 0. 清空本時間步的流體受力容器
+      IF (ASSOCIATED(Nodes%force)) Nodes%force(:, :) = 0.0_real_kind
+
+
+
+      ! 2. 計算流體作用力 (正向壓力 + 切向剪力) 並分配至固體節點
+      f_fluid_total = 0.0_real_kind
+
+      !$OMP PARALLEL DO DEFAULT(NONE) &
+      !$OMP PRIVATE(i, j, n1, n2, n3, area, norm, v_solid_face, u_rel, u_rel_norm, u_rel_tangent) &
+      !$OMP PRIVATE(rho_local, f_press, f_shear, f_node) &
+      !$OMP SHARED(nel, face_judge, elem_topo, Elements, Nodes, Cd) &
+      !$OMP REDUCTION(+:f_fluid_total)
+      DO i = 1, nel
+         DO j = 1, 4
+            IF (face_judge(j, i) /= 1) CYCLE
+
+            SELECT CASE (j)
+             CASE (1); n1 = elem_topo(3, i); n2 = elem_topo(4, i); n3 = elem_topo(5, i)
+             CASE (2); n1 = elem_topo(2, i); n2 = elem_topo(5, i); n3 = elem_topo(4, i)
+             CASE (3); n1 = elem_topo(2, i); n2 = elem_topo(3, i); n3 = elem_topo(5, i)
+             CASE (4); n1 = elem_topo(2, i); n2 = elem_topo(4, i); n3 = elem_topo(3, i)
+            END SELECT
+
+            area      = Elements%area(j, i)
+            norm(:)   = Elements%normal(:, j, i)
+            rho_local = Elements%density(j, i) ! 動態採樣流體密度
+
+            ! --- [A] 正向壓力項：F_press = - P * A * n ---
+            f_press(:) = -Elements%pressure(j, i) * area * norm(:)
+
+            ! --- [B] 切向剪力項 (Cd) ---
+            IF (ASSOCIATED(Nodes%vt)) THEN
+               v_solid_face(:) = (Nodes%vt(:, n1) + Nodes%vt(:, n2) + Nodes%vt(:, n3)) / 3.0_real_kind
+            ELSE
+               v_solid_face(:) = 0.0_real_kind
+            END IF
+
+            ! 相對速度與切線方向投影
+            u_rel(:)         = Elements%velocity(:, j, i) - v_solid_face(:)
+            u_rel_tangent(:) = u_rel(:) - DOT_PRODUCT(u_rel, norm) * norm(:)
+            u_rel_norm       = SQRT(SUM(u_rel_tangent(:)**2))
+
+            ! 使用採樣到的動態密度 rho_local 計算剪力
+            IF (u_rel_norm > 1.0E-6_real_kind .AND. rho_local > 0.0_real_kind) THEN
+               f_shear(:) = 0.5_real_kind * rho_local * Cd * u_rel_norm * u_rel_tangent(:) * area
+            ELSE
+               f_shear(:) = 0.0_real_kind
+            END IF
+
+            ! --- [C] 面受力總合，均分至 3 個節點 ---
+            f_node(:) = (f_press(:) + f_shear(:)) / 3.0_real_kind
+
+            ! 寫入全域容器 (使用 ATOMIC 防範 Data Race)
+            !$OMP ATOMIC
+            Nodes%force(1, n1) = Nodes%force(1, n1) + f_node(1)
+            !$OMP ATOMIC
+            Nodes%force(2, n1) = Nodes%force(2, n1) + f_node(2)
+            !$OMP ATOMIC
+            Nodes%force(3, n1) = Nodes%force(3, n1) + f_node(3)
+
+            !$OMP ATOMIC
+            Nodes%force(1, n2) = Nodes%force(1, n2) + f_node(1)
+            !$OMP ATOMIC
+            Nodes%force(2, n2) = Nodes%force(2, n2) + f_node(2)
+            !$OMP ATOMIC
+            Nodes%force(3, n2) = Nodes%force(3, n2) + f_node(3)
+
+            !$OMP ATOMIC
+            Nodes%force(1, n3) = Nodes%force(1, n3) + f_node(1)
+            !$OMP ATOMIC
+            Nodes%force(2, n3) = Nodes%force(2, n3) + f_node(2)
+            !$OMP ATOMIC
+            Nodes%force(3, n3) = Nodes%force(3, n3) + f_node(3)
+
+            !$OMP ATOMIC
+            Nodes%fsum(1, n1) = Nodes%fsum(1, n1) + f_node(1)
+            !$OMP ATOMIC
+            Nodes%fsum(2, n1) = Nodes%fsum(2, n1) + f_node(2)
+            !$OMP ATOMIC
+            Nodes%fsum(3, n1) = Nodes%fsum(3, n1) + f_node(3)
+
+            !$OMP ATOMIC
+            Nodes%fsum(1, n2) = Nodes%fsum(1, n2) + f_node(1)
+            !$OMP ATOMIC
+            Nodes%fsum(2, n2) = Nodes%fsum(2, n2) + f_node(2)
+            !$OMP ATOMIC
+            Nodes%fsum(3, n2) = Nodes%fsum(3, n2) + f_node(3)
+
+            !$OMP ATOMIC
+            Nodes%fsum(1, n3) = Nodes%fsum(1, n3) + f_node(1)
+            !$OMP ATOMIC
+            Nodes%fsum(2, n3) = Nodes%fsum(2, n3) + f_node(2)
+            !$OMP ATOMIC
+            Nodes%fsum(3, n3) = Nodes%fsum(3, n3) + f_node(3)
+
+            f_fluid_total(:) = f_fluid_total(:) + f_node(:) * 3.0_real_kind
+         END DO
+      END DO
+      !$OMP END PARALLEL DO
+
+      ! 3. 累加重力 / 體積力
       !$OMP PARALLEL DO DEFAULT(NONE) &
       !$OMP PRIVATE(i, k) &
       !$OMP SHARED(nnd, Nodes, Body_Force)
@@ -109,113 +197,110 @@ CONTAINS
       END DO
       !$OMP END PARALLEL DO
 
-
-      ! 3. 累加流體/外加耦合力 (存於 Nodes%force)
-      IF (ASSOCIATED(Nodes%force)) THEN
-         !$OMP PARALLEL DO DEFAULT(NONE) PRIVATE(i, k) SHARED(nnd, Nodes)
-         DO i = 1, nnd
-            DO k = 1, 3
-               Nodes%fsum(k, i) = Nodes%fsum(k, i) + Nodes%force(k, i)
-            END DO
-         END DO
-         !$OMP END PARALLEL DO
-      END IF
-
-      ! 4. [驗證程式碼] 確認第一個節點的外力計算結果
-      IF (nnd > 0) THEN
-         WRITE(*, '(A, I0, A, 3(ES12.5, 1X))') &
-            '  [Ext Force Check] Body_Force (m/s^2) = ', 1, ': ', Body_Force(1:3)
-         WRITE(*, '(A, ES12.5, A, 3(ES12.5, 1X))') &
-            '  [Ext Force Check] Node 1 (mass=', Nodes%mass(1), &
-            ' kg) Fsum (N) = ', Nodes%fsum(1:3, 1)
-      END IF
+      ! =========================================================
+      ! [驗證程式碼]
+      ! =========================================================
+      WRITE(*, '(A, 3(ES12.5, 1X))') &
+         '  [Ext Force Check] Total Hydrodynamic Force (Press+Shear) on Nodes (N) = ', f_fluid_total(1:3)
 
    END SUBROUTINE calculate_external_forces
 
 
-   !===========================================================================
+!===========================================================================
    ! Subroutine : calculate_internal_forces
    ! Module     : VFIFE_MOTION_module
-   ! Purpose    : 計算 3D 四面體固體單元 (Tet4) 之變形、應力與節點等效內力，
-   !              並自全域合力 Nodes%fsum 中扣除內力 (F_net = F_ext - F_int)。
+   ! Purpose    : 計算 3D 四面體固體單元 (Tet4) 之 CMF 剛體分離、純變形應變、
+   !              靜平衡節點等效內力，並自全域合力 Nodes%fsum 中扣除內力
+   !              (F_net = F_ext - F_int)。
    !
-   ! [使用說明]
-   !   1. 依據 Elements%topo(2:5, e) 讀取四面體之 4 個節點。
-   !   2. 透過體積與幾何形狀矩陣計算單元應變與應力 (胡克定律 Linear Elasticity)。
-   !   3. 將單元內力加總並透過 OMP ATOMIC 安全地累加扣除至 Nodes%fsum。
+   ! [作用說明]
+   !   1. 依據 Elements%topo(2:5, elem_idx) 讀取四面體之 4 個節點座標。
+   !   2. 呼叫 calc_rotation_R 計算剛體旋轉 Q 與 CMF 局部純變形向量 etahead。
+   !   3. 呼叫 calc_B_matrix_coeff 與 calc_element_strain 計算幾何係數及 Cauchy 應變。
+   !   4. 透過廣義 Hooke 定律計算應力，並以 calc_local_forces_equilibrium 求解靜平衡內力。
+   !   5. 將局部內力轉回全域座標系，透過 OMP ATOMIC 安全地自 Nodes%fsum 中扣除。
    !
    ! [依賴關係]
-   !   - USE VFIFE_Data_module (nel, Elements, Nodes, real_kind, int_kind)
+   !   - USE VFIFE_Data_module (nel, Elements, Nodes, e)
+   !   - USE VFIFE_CMF_module  (calc_rotation_R, calc_B_matrix_coeff,
+   !                            calc_element_strain, calc_local_forces_equilibrium)
    !===========================================================================
    SUBROUTINE calculate_internal_forces()
-      ! 修改位置：將 num_elems 改為 nel，並引入材料矩陣 e
-      USE VFIFE_Data_module, ONLY: int_kind, real_kind, nel, Elements, Nodes, e
+
       IMPLICIT NONE
 
       ! --- 區域變數 ---
       INTEGER(KIND=int_kind) :: elem_idx, k, n, n1, n2, n3, n4, mat_id
       REAL(KIND=real_kind)   :: E_mod, nu_val, lambda, mu
       REAL(KIND=real_kind)   :: x(3, 4), x0(3, 4)
-      REAL(KIND=real_kind)   :: f_elem(3, 4)
-      REAL(KIND=real_kind)   :: vol0, detJ
-      REAL(KIND=real_kind)   :: strain(3, 3), stress(3, 3)
+      REAL(KIND=real_kind)   :: f_elem(3, 4), f_local(3, 4)
+      REAL(KIND=real_kind)   :: vol0, a1
+      REAL(KIND=real_kind)   :: strain(6), stress(6)
 
-      ! 若無單元資料直接返回
+      ! --- CMF 相關變數 ---
+      REAL(KIND=real_kind)   :: Rtheta(3, 3), Q(3, 3)
+      REAL(KIND=real_kind)   :: etahead(3, 4), v21(3), v31(3), v41(3)
+      REAL(KIND=real_kind)   :: b(4), r(4), o(4)
+      LOGICAL                :: is_distorted
+
+      ! 1. 前置判斷：若無單元資料或物體為完全剛體 (is_V5_deformable = .FALSE.)，直接返回不計算內力
       IF (nel <= 0 .OR. .NOT. ASSOCIATED(Elements%topo)) RETURN
+      IF (.NOT. is_V5_deformable) RETURN
 
-      ! 1. 遍歷所有 3D 四面體單元計算內力 (OpenMP 平行化)
+      ! 2. 遍歷所有 3D 四面體單元計算內力 (OpenMP 平行化)
       !$OMP PARALLEL DO DEFAULT(NONE) &
       !$OMP PRIVATE(elem_idx, k, n, n1, n2, n3, n4, mat_id, E_mod, nu_val, &
-      !$OMP         lambda, mu, x, x0, f_elem, vol0, detJ, strain, stress) &
-      !$OMP SHARED(nel, Elements, Nodes, e)
+      !$OMP         lambda, mu, x, x0, f_elem, f_local, vol0, a1, &
+      !$OMP         strain, stress, Rtheta, Q, etahead, v21, v31, v41, &
+      !$OMP         b, r, o, is_distorted) &
+      !$OMP SHARED(nel, Elements, Nodes, e, is_V5_deformable)
       DO elem_idx = 1, nel
-         ! 取得四面體的 4 個節點編號 (topo(2:5, elem_idx))
+
+         ! 取得 4 個節點編號 (topo(1,:) 為單元類型或編號，topo(2:5,:) 為節點 ID)
          n1 = Elements%topo(2, elem_idx)
          n2 = Elements%topo(3, elem_idx)
          n3 = Elements%topo(4, elem_idx)
          n4 = Elements%topo(5, elem_idx)
 
-         ! 取得節點當前座標與初始座標
+         ! 取得 4 個節點座標 (x: 當前, x0: 初始)
          x(:, 1) = Nodes%xc(:, n1);  x0(:, 1) = Nodes%xc0(:, n1)
          x(:, 2) = Nodes%xc(:, n2);  x0(:, 2) = Nodes%xc0(:, n2)
          x(:, 3) = Nodes%xc(:, n3);  x0(:, 3) = Nodes%xc0(:, n3)
          x(:, 4) = Nodes%xc(:, n4);  x0(:, 4) = Nodes%xc0(:, n4)
 
-         ! 從材料表存取材料 parameters (假設 mat(1, e) 為 material ID, e(1,:) 為 E, e(2,:) 為 nu)
+         ! 取得材料參數 (e(1,:) 為楊氏模數, e(2,:) 為泊松比)
          mat_id = Elements%mat(1, elem_idx)
          E_mod  = e(1, mat_id)
          nu_val = e(2, mat_id)
          mu     = E_mod / (2.0_real_kind * (1.0_real_kind + nu_val))
          lambda = (E_mod * nu_val) / ((1.0_real_kind + nu_val) * (1.0_real_kind - 2.0_real_kind * nu_val))
 
-         ! 2. 計算初始幾何與體積
-         detJ = (x0(1,2)-x0(1,1)) * ((x0(2,3)-x0(2,1))*(x0(3,4)-x0(3,1)) - (x0(3,3)-x0(3,1))*(x0(2,4)-x0(2,1))) - &
-            (x0(2,2)-x0(2,1)) * ((x0(1,3)-x0(1,1))*(x0(3,4)-x0(3,1)) - (x0(3,3)-x0(3,1))*(x0(1,4)-x0(1,1))) + &
-            (x0(3,2)-x0(3,1)) * ((x0(1,3)-x0(1,1))*(x0(2,4)-x0(2,1)) - (x0(2,3)-x0(2,1))*(x0(1,4)-x0(1,1)))
-         vol0 = ABS(detJ) / 6.0_real_kind
+         ! A. CMF 分離剛體運動：計算旋轉矩陣 Rtheta、座標轉換矩陣 Q 與 CMF 純變形向量
+         CALL calc_rotation_R(x0, x, Q, Rtheta, etahead, v21, v31, v41)
 
-         IF (vol0 <= 1.0e-14_real_kind) CYCLE
+         ! B. 計算四面體 B 矩陣幾何係數 (b, r, o) 與體積 6V0 (a1)
+         CALL calc_B_matrix_coeff(v21, v31, v41, a1, vol0, b, r, o, is_distorted)
+         IF (is_distorted .OR. vol0 <= 1.0e-14_real_kind) CYCLE
 
-         ! 3. 計算柯西-格林微小應變
-         strain = 0.0_real_kind
-         DO k = 1, 3
-            strain(k, k) = ((x(k, 2)-x0(k, 2)) - (x(k, 1)-x0(k, 1))) / MAX(ABS(x0(k, 2)-x0(k, 1)), 1.0e-8_real_kind)
-         END DO
+         ! C. 計算 CMF 局部 Cauchy 應變與應力
+         CALL calc_element_strain(etahead, b, r, o, a1, strain)
 
-         ! 4. 計算柯西應力
-         stress = 2.0_real_kind * mu * strain
-         stress(1,1) = stress(1,1) + lambda * (strain(1,1) + strain(2,2) + strain(3,3))
-         stress(2,2) = stress(2,2) + lambda * (strain(1,1) + strain(2,2) + strain(3,3))
-         stress(3,3) = stress(3,3) + lambda * (strain(1,1) + strain(2,2) + strain(3,3))
+         ! 廣義 Hooke 定律 (計算 6 個應力分量)
+         stress(1) = (lambda + 2.0_real_kind*mu)*strain(1) + lambda*(strain(2) + strain(3))
+         stress(2) = (lambda + 2.0_real_kind*mu)*strain(2) + lambda*(strain(1) + strain(3))
+         stress(3) = (lambda + 2.0_real_kind*mu)*strain(3) + lambda*(strain(1) + strain(2))
+         stress(4) = mu * strain(4)
+         stress(5) = mu * strain(5)
+         stress(6) = mu * strain(6)
 
-         ! 5. 計算節點等效內力 f_elem
+         ! D. 依靜平衡關係計算 CMF 局部節點力 f_local，並透過 Q 轉回全域座標系 f_elem
+         CALL calc_local_forces_equilibrium(v21, v31, v41, vol0, a1, b, r, o, stress, f_local)
+
          DO n = 1, 4
-            f_elem(1, n) = (stress(1,1) + stress(1,2) + stress(1,3)) * vol0 * 0.25_real_kind
-            f_elem(2, n) = (stress(2,1) + stress(2,2) + stress(2,3)) * vol0 * 0.25_real_kind
-            f_elem(3, n) = (stress(3,1) + stress(3,2) + stress(3,3)) * vol0 * 0.25_real_kind
+            f_elem(:, n) = MATMUL(Q, f_local(:, n))
          END DO
 
-         ! 6. 將內力扣除至全域合力陣列 (OMP ATOMIC)
+         ! E. 將內力扣除至全域合力陣列 (OMP ATOMIC 確保多線程寫入安全)
          !$OMP ATOMIC
          Nodes%fsum(1, n1) = Nodes%fsum(1, n1) - f_elem(1, 1)
          !$OMP ATOMIC
@@ -247,9 +332,12 @@ CONTAINS
       END DO
       !$OMP END PARALLEL DO
 
-      ! 7. 驗證訊息
+      ! =========================================================
+      ! [驗證程式碼] 檢查內力計算結果與全域合力輸出
+      ! =========================================================
       IF (nel > 0) THEN
-         WRITE(*, '(A, I0, A)') '   [Int Force Check] Elements evaluated. (nel = ', nel, ')'
+         WRITE(*, '(A, I0)') '  [VFIFE CMF Verification] Calculation completed for nel = ', nel
+         WRITE(*, '(A, 3ES14.6)') '  [VFIFE CMF Verification] Node 1 force (fsum): ', Nodes%fsum(:, 1)
       END IF
 
    END SUBROUTINE calculate_internal_forces
@@ -262,18 +350,23 @@ CONTAINS
    !              並完成四元數更新與節點空間座標/速度重建
    !===========================================================================
    SUBROUTINE update_kinematics(dt)
+      USE VFIFE_Data_module
       IMPLICIT NONE
-      REAL(KIND=8), INTENT(IN) :: dt
 
-      INTEGER(KIND=int_kind)   :: i
-      REAL(KIND=8)             :: r_vec(3), arm_vec(3), torque_i(3)
-      REAL(KIND=8)             :: T_body(3), I_w(3), w_cross_Iw(3), rhs_body(3)
-      REAL(KIND=8)             :: dq(4), omega_quat(4)
-      REAL(KIND=8)             :: r_body0(3), r_global(3), v_rot(3)
+      REAL(KIND=real_kind), INTENT(IN) :: dt
+
+      INTEGER(KIND=int_kind)  :: i
+      REAL(KIND=real_kind)    :: arm_vec(3), torque_i(3)
+      REAL(KIND=real_kind)    :: T_body(3), I_w(3), w_cross_Iw(3), rhs_body(3)
+      REAL(KIND=real_kind)    :: dq(4), omega_quat(4)
+      REAL(KIND=real_kind)    :: r_body0(3), r_global(3), v_rot(3)
 
       ! ----------------------------------------------------------------------
       ! 階段 1: 合力與合力矩對質心歸納 (CoM Force & Torque Reduction)
       ! ----------------------------------------------------------------------
+      ! 若為可變形體 (Deformable Body)，不進行全域剛體 6-DOF 時間積分
+      IF (is_V5_deformable) RETURN
+
       Rigid_Ftotal = 0.0_real_kind
       Rigid_Ttotal = 0.0_real_kind
 
@@ -372,7 +465,9 @@ CONTAINS
       END DO
       !$OMP END PARALLEL DO
 
+      ! =========================================================
       ! [驗證程式碼] 列印剛體動力學狀態與力矩平衡驗證
+      ! =========================================================
       WRITE(*, '(A, 3(ES12.5, 1X))') '  [Rigid Kinematics] Total Force  (N)   = ', Rigid_Ftotal
       WRITE(*, '(A, 3(ES12.5, 1X))') '  [Rigid Kinematics] Total Torque (N-m) = ', Rigid_Ttotal
       WRITE(*, '(A, 3(ES12.5, 1X))') '  [Rigid Kinematics] Omega Body (rad/s) = ', Rigid_omega_body
@@ -395,7 +490,7 @@ CONTAINS
       res(3) = u(1) * v(2) - u(2) * v(1)
    END SUBROUTINE cross_product
 
-   ! 矩陣向量乘法: res = A * x
+   ! ���陣向量乘法: res = A * x
    PURE SUBROUTINE mat_vec_mult(A, x, res)
       IMPLICIT NONE
       REAL(KIND=8), INTENT(IN)  :: A(3,3), x(3)
@@ -454,6 +549,7 @@ CONTAINS
    END SUBROUTINE normalize_quaternion
 
 END MODULE VFIFE_MOTION_module
+
 
 ```
 ---

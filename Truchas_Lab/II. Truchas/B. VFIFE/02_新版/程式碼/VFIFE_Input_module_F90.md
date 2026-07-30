@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-04 03:10
-modified: 2026-07-30 03:21
+modified: 2026-07-31 04:38
 tags:
   - "#Truchas"
 ---
@@ -94,11 +94,11 @@ CONTAINS
             CYCLE
          END IF
 
-         ! 2. 讀取 Deformable_Body 是否為可變形體
-         IF (INDEX(line, "Deformable_Body") > 0) THEN
-            Deformable_Body = INT(GET_VALUE_AFTER_COLON(line))
-            WRITE(*,*) " [V5] Deformable_Body: ", Deformable_Body
-            if (Deformable_Body == 1) then
+         ! 2. 讀取 Is_Deformable_Body 是否為可變形體
+         IF (INDEX(line, "Is_Deformable_Body") > 0) THEN
+            Is_Deformable_Body = INT(GET_VALUE_AFTER_COLON(line))
+            WRITE(*,*) " [V5] Is_Deformable_Body: ", Is_Deformable_Body
+            if (Is_Deformable_Body == 1) then
                is_V5_deformable = .TRUE.
             end if
             CYCLE
@@ -210,6 +210,8 @@ CONTAINS
       ALLOCATE(face_judge(4, nel), SOURCE=0)
       ALLOCATE(elem_vertices(3, 4, nel), elem_facecenter(3, 4, nel), SOURCE=0.0d0)
       ALLOCATE(elem_center(3, nel), elem_area(4, nel), elem_normal(3, 4, nel), SOURCE=0.0d0)
+      ALLOCATE(elem_pressure(4, nel), elem_velocity(3, 4, nel), elem_density(4, nel), SOURCE=0.0d0)
+
 
 
       REWIND(unit_dat)
@@ -257,7 +259,7 @@ CONTAINS
       REWIND(unit_dat)
       CALL FIND_CARD(unit_dat, "CARD 8")
 
-      j = 0  ! 用來當作矩陣 e(:, j) 的實際陣列索引 (1 ~ nummat)
+      j = 0  ! 用來當�����矩陣 e(:, j) 的實際陣列索引 (1 ~ nummat)
 
       DO
          READ(unit_dat, '(A)', IOSTAT=i_err) line
@@ -323,13 +325,9 @@ CONTAINS
       ! 我一度有移植好參數讀取跟物理計算
       ! 但實用性跟可讀性實在太低了
       ! 你應該根據研究需求來自己改程式
-      WRITE(*,*) " [V5] All CARDs Loaded successfully."
+      WRITE(*,*) " [V5] All CARDs Read successfully."
 
-      ! 指針容器初始化
-      ! 未來 SOUBROUTINE 調用變數就不用逐一引入
-      ! 而是可直接傳入 Nodes, Elements 來作為INPUT
-      call Link_VFIFE_Containers()
-      WRITE(*,*) " [V5] read_data: VFIFE_containers init finish"
+
 
       ! ==========================================
       ! LOAD FINISHED
@@ -353,7 +351,7 @@ CONTAINS
 
          WRITE(unit_check, *) "=== V5 DATA CHECK ==="
          WRITE(unit_check, *) "Project Title   : ", TRIM(project_name)
-         WRITE(unit_check, *) "Deformable_Body:", Deformable_Body
+         WRITE(unit_check, *) "Is_Deformable_Body:", Is_Deformable_Body
          WRITE(unit_check, *) "Check_V5_Loading:", Check_V5_Loading
          WRITE(unit_check, *) " "
 
@@ -484,6 +482,7 @@ CONTAINS
       END DO
    END SUBROUTINE FIND_CARD
 END MODULE VFIFE_Input_module
+
 
 
 ```
