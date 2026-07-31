@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: <% tp.date.now("YYYY-MM-DD HH:mm") %>
-modified: 2026-05-13 20:06
+modified: 2026-07-31 22:53
 tags:
   - "#Truchas"
 ---
