@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:37
-modified: 2026-08-02 20:17
+modified: 2026-08-03 05:52
 tags:
   - "#Truchas"
   - Truchas/VFIFE
@@ -63,8 +63,8 @@ AND !icontains(file.name, "excalidraw")
 	透過 AABB 篩選出 V5 固體所在的位置，並且轉換成流體座標的網格編號
 	方便調整 VOF、速度或未來其他操作
 4. 
-	![](pics/Pasted%20image%2020260731042803.png)
-
+	
+	![|450](pics/Pasted%20image%2020260803055131.png)
 
 這是一份非常漂亮且令人振奮的耦合與 OpenMP 平行化測試結果！
 
