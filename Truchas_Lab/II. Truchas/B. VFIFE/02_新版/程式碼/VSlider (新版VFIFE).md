@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:37
-modified: 2026-07-31 23:10
+modified: 2026-08-02 20:17
 tags:
   - "#Truchas"
   - Truchas/VFIFE
