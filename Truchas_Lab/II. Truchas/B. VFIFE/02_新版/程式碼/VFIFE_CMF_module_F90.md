@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-31 04:39
-modified: 2026-07-31 04:40
+modified: 2026-08-06 03:49
 tags:
   - "#Truchas"
 ---
@@ -434,7 +434,7 @@ CONTAINS
       LOGICAL :: is_distorted
 
       WRITE(*,*) '==================================================='
-      WRITE(*,*) '   [VFIFE_CMF_module] Running CMF & B-Matrix Test  '
+      WRITE(*,*) '   [test_cmf_rotation] Running CMF & B-Matrix Test  '
       WRITE(*,*) '==================================================='
 
       x0(:,1) = (/ 0.0_real_kind, 0.0_real_kind, 0.0_real_kind /)
@@ -458,24 +458,25 @@ CONTAINS
 
       CALL calc_element_strain(etahead, b, r, o, a1, Depslon)
 
-      WRITE(*,'(A, F12.6)') ' 6x Volume (a1) : ', a1
-      WRITE(*,'(A, F12.6)') ' Element Vol0   : ', vol0
+      WRITE(*,*) ' 6x Volume (a1) : ', a1
+      WRITE(*,*) ' Element Vol0   : ', vol0
       WRITE(*,*) '--- Depslon (epsx, epsy, epsz, epsyz, epsxz, epsxy) ---'
-      WRITE(*,'(6F10.6)') Depslon
+      WRITE(*,*) Depslon
 
       ! 假設彈性應力 (簡單常數測試)
       sigma = Depslon * 200.0_real_kind
       CALL calc_local_forces_equilibrium(v21, v31, v41, vol0, a1, b, r, o, sigma, f_local)
 
       WRITE(*,*) '--- Local Forces Equilibrium Sum (fx, fy, fz) ---'
-      WRITE(*,'(3F12.6)') SUM(f_local(1,:)), SUM(f_local(2,:)), SUM(f_local(3,:))
+      WRITE(*,*) SUM(f_local(1,:)), SUM(f_local(2,:)), SUM(f_local(3,:))
 
       WRITE(*,*) '==================================================='
-      WRITE(*,*) '   [VFIFE_CMF_module] Test Completed Successfully  '
+      WRITE(*,*) '   [test_cmf_rotation] Test Completed Successfully  '
       WRITE(*,*) '==================================================='
    END SUBROUTINE test_cmf_rotation
 
 END MODULE VFIFE_CMF_module
+
 
 ```
 

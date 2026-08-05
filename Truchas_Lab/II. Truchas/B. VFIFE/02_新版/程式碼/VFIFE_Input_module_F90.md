@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-06-04 03:10
-modified: 2026-07-31 04:38
+modified: 2026-08-06 03:48
 tags:
   - "#Truchas"
 ---
@@ -88,8 +88,8 @@ CONTAINS
                temp_str = ADJUSTL(line(p+1:))
                IF (INDEX(temp_str, "/") > 0) temp_str = temp_str(1:INDEX(temp_str, "/")-1)
                project_name = TRIM(ADJUSTL(temp_str))
-               !WRITE(*, '(" [V5] Project: ", A)') TRIM(project_name)
-               WRITE(*,*) " [V5] Project: ", TRIM(project_name)
+
+               WRITE(*,*) " [read_data] Project: ", TRIM(project_name)
             END IF
             CYCLE
          END IF
@@ -97,7 +97,7 @@ CONTAINS
          ! 2. 讀取 Is_Deformable_Body 是否為可變形體
          IF (INDEX(line, "Is_Deformable_Body") > 0) THEN
             Is_Deformable_Body = INT(GET_VALUE_AFTER_COLON(line))
-            WRITE(*,*) " [V5] Is_Deformable_Body: ", Is_Deformable_Body
+            WRITE(*,*) " [read_data] Is_Deformable_Body: ", Is_Deformable_Body
             if (Is_Deformable_Body == 1) then
                is_V5_deformable = .TRUE.
             end if
@@ -108,13 +108,13 @@ CONTAINS
          IF (INDEX(line, "Check_V5_Loading") > 0) THEN
             Check_V5_Loading = INT(GET_VALUE_AFTER_COLON(line))
             IF (Check_V5_Loading == 1) THEN
-               WRITE(*,*) " [V5] Check is ENABLED. File will be generated."
+               WRITE(*,*) " [read_data] Check is ENABLED. File will be generated."
             END IF
             CYCLE
          END IF
 
       END DO
-      WRITE(*,*) " [V5] Card 1 Loaded."
+      WRITE(*,*) " [read_data] CARD 1 Loaded."
 
       ! ==========================================
       ! CARD 2: Time Control
@@ -128,31 +128,19 @@ CONTAINS
          IF (LEN_TRIM(ADJUSTL(line)) == 0 .OR. INDEX(ADJUSTL(line), "!") == 1) CYCLE
 
          ! 使用極簡標籤配對，順序可隨意調動
-         IF (INDEX(line, "Start_Step") > 0) THEN
-            minstp = INT(GET_VALUE_AFTER_COLON(line))
-            CYCLE
-         ELSE IF (INDEX(line, "Max_Step") > 0) THEN
-            maxstp = INT(GET_VALUE_AFTER_COLON(line))
-            CYCLE
-         ELSE IF (INDEX(line, "Time_Step_Delta") > 0) THEN
-            V5_dt = GET_VALUE_AFTER_COLON(line)
-            CYCLE
-         ELSE IF (INDEX(line, "Damping_Alpha") > 0) THEN
-            alpha = GET_VALUE_AFTER_COLON(line)
-            CYCLE
-         ELSE IF (INDEX(line, "Convergence_Toler") > 0) THEN
-            toler = GET_VALUE_AFTER_COLON(line)
+         IF (INDEX(line, "V5_User_dt") > 0) THEN
+            V5_User_dt = GET_VALUE_AFTER_COLON(line)
             CYCLE
          END IF
       END DO
-      WRITE(*,*) " [V5] Card 2 Loaded."
+      WRITE(*,*) " [read_data] CARD 2 Loaded."
 
 
 
       ! ==========================================
-      ! CARD 6: Node Data (矩陣讀取)
+      ! CARD 3: Node Data (矩陣讀取)
       ! ==========================================
-      CALL FIND_CARD(unit_dat, "CARD 6")
+      CALL FIND_CARD(unit_dat, "CARD 3")
       nnd = 0
       DO
          READ(unit_dat, '(A)', IOSTAT=i_err) line
@@ -161,7 +149,7 @@ CONTAINS
          IF (LEN_TRIM(line) > 0 .AND. INDEX(line, "!") /= 1) nnd = nnd + 1
       END DO
 
-      WRITE(*,*) " [V5] Detected Nodes (nnd):", nnd
+      WRITE(*,*) " [read_data] Detected Nodes (nnd):", nnd
       ! 全域動態矩陣配置
 
       ALLOCATE(d(3, nnd), dn(3, nnd), dnt(3, nnd), vt(3, nnd), at(3, nnd), SOURCE=0.0d0)
@@ -170,7 +158,7 @@ CONTAINS
 
       REWIND(unit_dat)
       ALLOCATE(x_coord(3, nnd), rifix(3, nnd), SOURCE=0.0d0)
-      CALL FIND_CARD(unit_dat, "CARD 6")
+      CALL FIND_CARD(unit_dat, "CARD 3")
       DO i = 1, nnd
          READ(unit_dat, *) j, x_coord(1,i), x_coord(2,i), x_coord(3,i), &
             rifix(1,i), rifix(2,i), rifix(3,i)
@@ -182,12 +170,12 @@ CONTAINS
       IF (.NOT. ALLOCATED(x_coord0)) ALLOCATE(x_coord0(3, nnd), SOURCE=0.0d0)
       x_coord0 = x_coord
 
-      WRITE(*,*) " [V5] CARD 6 Node Coordinates Loaded."
+      WRITE(*,*) " [read_data] CARD 3 Node Coordinates Loaded."
 
       ! ==========================================
-      ! CARD 7: Element Topology
+      ! CARD 4: Element Topology
       ! ==========================================
-      CALL FIND_CARD(unit_dat, "CARD 7")
+      CALL FIND_CARD(unit_dat, "CARD 4")
       nel = 0
       DO
          READ(unit_dat, '(A)', IOSTAT=i_err) line
@@ -196,7 +184,7 @@ CONTAINS
          IF (LEN_TRIM(line) > 0 .AND. INDEX(line, "!") /= 1) nel = nel + 1
       END DO
 
-      WRITE(*,*) " [V5] Detected Elements (nel):", nel
+      WRITE(*,*) " [read_data] Detected Elements (nel):", nel
 
 
 
@@ -216,12 +204,12 @@ CONTAINS
 
       REWIND(unit_dat)
       ALLOCATE(rnode(10, nel), SOURCE=0.0d0)
-      CALL FIND_CARD(unit_dat, "CARD 7")
+      CALL FIND_CARD(unit_dat, "CARD 4")
       DO i = 1, nel
          READ(unit_dat, *) rnode(1,i), rnode(2,i), rnode(3,i), rnode(4,i), rnode(5,i), &
             rnode(6,i), rnode(7,i), rnode(8,i), rnode(9,i), rnode(10,i)
       END DO
-      WRITE(*,*) " [V5] CARD 7 Topology Loaded."
+      WRITE(*,*) " [read_data] CARD 4 Topology Loaded."
 
       ALLOCATE(elem_topo(5, nel), elem_mat(5, nel), SOURCE=0)
       elem_topo(1:5, :) = INT(rnode(1:5, :))
@@ -231,11 +219,11 @@ CONTAINS
 
 
       ! ==========================================
-      ! CARD 8: Materials (材料參數細節讀取 - 動態組數版)
+      ! CARD 5: Materials (材料參數細節讀取 - 動態組數版)
       ! Shane: 自動偵測出現的 Material_Group 數量並動態配置
       ! ==========================================
-      CALL FIND_CARD(unit_dat, "CARD 8")
-      WRITE(*,*) " [V5] Parsing Material Details..."
+      CALL FIND_CARD(unit_dat, "CARD 5")
+      WRITE(*,*) " [read_data] Parsing Material Details..."
 
       ! --- 階段 1：預掃描 calculate nummat ---
       nummat = 0
@@ -249,17 +237,17 @@ CONTAINS
          END IF
       END DO
 
-      WRITE(*,*) " [V5] Detected Active Material Groups (nummat):", nummat
+      WRITE(*,*) " [read_data] Detected Active Material Groups (nummat):", nummat
 
       ! 動態配置材料矩陣
       IF (.NOT. ALLOCATED(e)) ALLOCATE(e(MAX_MAT_PARAMS, nummat), SOURCE=0.0d0)
-      write(*,*) " [V5] Max material parameters allowed: ", MAX_MAT_PARAMS
+      write(*,*) " [read_data] Max material parameters allowed: ", MAX_MAT_PARAMS
 
-      ! --- 回到 CARD 8 開頭，依序讀入各組數據 ---
+      ! --- 回到 CARD 5 開頭，依序讀入各組數據 ---
       REWIND(unit_dat)
-      CALL FIND_CARD(unit_dat, "CARD 8")
+      CALL FIND_CARD(unit_dat, "CARD 5")
 
-      j = 0  ! 用來當�����矩陣 e(:, j) 的實際陣列索引 (1 ~ nummat)
+      j = 0  ! 用來當矩陣 e(:, j) 的實際陣列索引 (1 ~ nummat)
 
       DO
          READ(unit_dat, '(A)', IOSTAT=i_err) line
@@ -270,9 +258,9 @@ CONTAINS
          IF (INDEX(line, "Material_Group") > 0) THEN
             j = j + 1  ! 推進到下一個配置好的陣列位置
 
-            WRITE(*,*) " [V5] Loading Material Group into Slot:", j
+            WRITE(*,*) " [read_data] Loading Material Group into Slot:", j
 
-            ! 內層迴圈：讀取����組別內的參數
+            ! 內層迴圈：讀取組別內的參數
             DO
                READ(unit_dat, '(A)', IOSTAT=i_err) line
                IF (i_err /= 0 .OR. INDEX(line, "/") > 0) EXIT
@@ -321,11 +309,12 @@ CONTAINS
 
 
       ! Shane:
-      ! 舊版的CARD 3~5、10~18是很醜的各種花式自訂外力
+      ! 舊版一堆CARD是很醜的各種花式自訂外力
       ! 我一度有移植好參數讀取跟物理計算
-      ! 但實用性跟可讀性實在太低了
+      ! 但實用性、可讀性、可維護性實在太低了
       ! 你應該根據研究需求來自己改程式
-      WRITE(*,*) " [V5] All CARDs Read successfully."
+
+      WRITE(*,*) " [read_data] All CARDs Read successfully."
 
 
 
@@ -357,15 +346,11 @@ CONTAINS
 
          ! --- CARD 2, 3, 4 ---
          WRITE(unit_check, *) "[CARD 2-4 Controls]"
-         WRITE(unit_check, '(A, I10)') "  Start_Step         : ", minstp
-         WRITE(unit_check, '(A, I10)') "  Max_Step           : ", maxstp
-         WRITE(unit_check, '(A, ES15.7)') "  Time_Step_Delta    : ", V5_dt
-         WRITE(unit_check, '(A, F10.4)') "  Damping_Alpha      : ", alpha
-         WRITE(unit_check, '(A, ES15.7)') "  Convergence_Toler  : ", toler
+         WRITE(unit_check, '(A, ES15.7)') "  V5_User_dt    : ", V5_User_dt
          WRITE(unit_check, *) " "
 
-         ! --- CARD 6: Nodes (全量輸出以便比對) ---
-         WRITE(unit_check, *) "[CARD 6 Nodes]"
+         ! --- CARD 3: Nodes (全量輸出以便比對) ---
+         WRITE(unit_check, *) "[CARD 3 Nodes]"
          WRITE(unit_check, '(A, I10)') "  Node         : ", nnd
          DO i = 1, nnd
             WRITE(unit_check, '(I8, 3F15.6, 3F5.0)') i, x_coord(1,i), x_coord(2,i), x_coord(3,i), &
@@ -373,8 +358,8 @@ CONTAINS
          END DO
          WRITE(unit_check, *) " "
 
-         ! --- CARD 7: Elements (全量輸出) ---
-         WRITE(unit_check, *) "[CARD 7 Elements]"
+         ! --- CARD 4: Elements (全量輸出) ---
+         WRITE(unit_check, *) "[CARD 4 Elements]"
          WRITE(unit_check, '(A, I10)') "  Element      : ", nel
          DO i = 1, nel
             WRITE(unit_check, '(I8, 4I8, 5I8)')   &
@@ -383,8 +368,8 @@ CONTAINS
          END DO
          WRITE(unit_check, *) " "
 
-         ! --- CARD 8: Materials ---
-         WRITE(unit_check, *) "[CARD 8 Materials]"
+         ! --- CARD 5: Materials ---
+         WRITE(unit_check, *) "[CARD 5 Materials]"
          WRITE(unit_check, '(A, I2)') "Total_Materials: ", nummat
 
          DO j = 1, nummat
@@ -408,7 +393,7 @@ CONTAINS
 
 
          CLOSE(unit_check)
-         WRITE(*,*) " [V5] Verification file 'V5_Dat_Check.txt' has been generated."
+         WRITE(*,*) " [check_data] Verification file 'V5_Dat_Check.txt' has been generated."
 
       END IF
 
@@ -440,7 +425,7 @@ CONTAINS
       ! 2. �ɮת��A�ˬd�P���Э��m (�T�O�i�ݮi��[cite: 1])
       INQUIRE(UNIT=u_num, OPENED=is_opened, NAME=actual_filename)
       IF (.NOT. is_opened) THEN
-         WRITE(*,*) " [ERROR] Unit", u_num, " is NOT opened!"
+         WRITE(*,*) " [FIND_CARD ERROR] Unit", u_num, " is NOT opened!"
          STOP
       ELSE
          ! �z�쥻�N�� REWIND�A�o��u�D�u��Ū���v�D�`���n[cite: 1]
@@ -454,12 +439,12 @@ CONTAINS
          line_count = line_count + 1
 
          IF (f_ios < 0) THEN
-            WRITE(*, '("Fatal: [", A, "] not found in ", A)') &
+            WRITE(*, '("FIND_CARD Fatal: [", A, "] not found in ", A)') &
                TRIM(search_tag), TRIM(actual_filename)
             STOP
          END IF
 
-         ! �簣����[cite: 1]
+         ! 簣[cite: 1]
          comment_pos = INDEX(line, "!")
          IF (comment_pos > 0) line = line(1:comment_pos-1)
 
@@ -475,13 +460,14 @@ CONTAINS
 
          ! ��T�ǰt���Ҷ}�Y
          IF (INDEX(compressed_line, TRIM(search_tag)) == 1) THEN
-            WRITE(*,*) " [V5] Found Section ", TRIM(search_tag), &
+            WRITE(*,*) " [FIND_CARD] Found Section ", TRIM(search_tag), &
                " at line: ", line_count
             EXIT
          END IF
       END DO
    END SUBROUTINE FIND_CARD
 END MODULE VFIFE_Input_module
+
 
 
 

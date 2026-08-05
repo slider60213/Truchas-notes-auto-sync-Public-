@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:09
-modified: 2026-07-31 04:39
+modified: 2026-08-06 03:49
 tags:
   - "#Truchas"
 ---
@@ -35,16 +35,17 @@ MODULE VFIFE_MOTION_module
 
    USE VFIFE_CMF_module
 
-
+   ! Basic Modules of VFIFE
+   USE VFIFE_Data_module
+   USE VFIFE_Utils_module
+   USE VFIFE_Parallel_module
 
    ! Truchas
    USE body_data_module,       only: Body_Force
 
-
-
-   ! Basic Modules of VFIFE
-   USE VFIFE_Data_module
-   USE VFIFE_Utils_module
+   ! Parallel
+   use parallel_info_module,   only: p_info
+   use pgslib_module,          only: PGSLib_BCAST, PGSLib_SCATTER_SUM, PGSLib_GLOBAL_SUM
 
    IMPLICIT NONE
 
@@ -200,13 +201,14 @@ CONTAINS
       ! =========================================================
       ! [驗證程式碼]
       ! =========================================================
-      WRITE(*, '(A, 3(ES12.5, 1X))') &
-         '  [Ext Force Check] Total Hydrodynamic Force (Press+Shear) on Nodes (N) = ', f_fluid_total(1:3)
+      ! WRITE(*,*) &
+      !    '  [calculate_external_forces] Total Hydrodynamic Force (Press+Shear) on Nodes (N) = ', &
+      !    f_fluid_total(1:3)
 
    END SUBROUTINE calculate_external_forces
 
 
-!===========================================================================
+   !===========================================================================
    ! Subroutine : calculate_internal_forces
    ! Module     : VFIFE_MOTION_module
    ! Purpose    : 計算 3D 四面體固體單元 (Tet4) 之 CMF 剛體分離、純變形應變、
@@ -335,10 +337,10 @@ CONTAINS
       ! =========================================================
       ! [驗證程式碼] 檢查內力計算結果與全域合力輸出
       ! =========================================================
-      IF (nel > 0) THEN
-         WRITE(*, '(A, I0)') '  [VFIFE CMF Verification] Calculation completed for nel = ', nel
-         WRITE(*, '(A, 3ES14.6)') '  [VFIFE CMF Verification] Node 1 force (fsum): ', Nodes%fsum(:, 1)
-      END IF
+      ! IF (nel > 0) THEN
+      !    WRITE(*,*) '  [calculate_internal_forces] Calculation completed for nel = ', nel
+      !    WRITE(*,*) '  [calculate_internal_forces] Node 1 force (fsum): ', Nodes%fsum(:, 1)
+      ! END IF
 
    END SUBROUTINE calculate_internal_forces
 
@@ -349,130 +351,305 @@ CONTAINS
    ! Purpose    : 剛體 6-DOF 時間積分 (3-DOF 平移 + Body Frame 3-DOF 旋轉)
    !              並完成四元數更新與節點空間座標/速度重建
    !===========================================================================
-   SUBROUTINE update_kinematics(dt)
-      USE VFIFE_Data_module
+
+   SUBROUTINE update_kinematics(dt, is_first_step)
+
       IMPLICIT NONE
-
-      REAL(KIND=real_kind), INTENT(IN) :: dt
-
-      INTEGER(KIND=int_kind)  :: i
-      REAL(KIND=real_kind)    :: arm_vec(3), torque_i(3)
-      REAL(KIND=real_kind)    :: T_body(3), I_w(3), w_cross_Iw(3), rhs_body(3)
-      REAL(KIND=real_kind)    :: dq(4), omega_quat(4)
-      REAL(KIND=real_kind)    :: r_body0(3), r_global(3), v_rot(3)
+      REAL(8), INTENT(IN) :: dt
+      LOGICAL, INTENT(IN) :: is_first_step
 
       ! ----------------------------------------------------------------------
       ! 階段 1: 合力與合力矩對質心歸納 (CoM Force & Torque Reduction)
       ! ----------------------------------------------------------------------
       ! 若為可變形體 (Deformable Body)，不進行全域剛體 6-DOF 時間積分
-      IF (is_V5_deformable) RETURN
+      IF (is_V5_deformable) THEN
+         CALL update_kinematics_deformable(dt, is_first_step)
+      ELSE
+         CALL update_kinematics_rigid(dt, is_first_step)
+      END IF
 
-      Rigid_Ftotal = 0.0_real_kind
-      Rigid_Ttotal = 0.0_real_kind
+   END SUBROUTINE update_kinematics
+
+
+
+   SUBROUTINE update_kinematics_deformable(dt, is_first_step)
+      IMPLICIT NONE
+      REAL(KIND=real_kind), INTENT(IN) :: dt
+      LOGICAL,              INTENT(IN) :: is_first_step
+      INTEGER(KIND=int_kind) :: i, j
+      REAL(KIND=real_kind)   :: acc_i, v_half_old, v_half_new, v_full
+      REAL(KIND=real_kind)   :: dt_speed_update
+
+      ! ----------------------------------------------------------------------
+      ! 可變形體蛙躍法顯式時間積分 (VFIFE Staggered Leapfrog Scheme)
+      ! ----------------------------------------------------------------------
+      ! 第一步 (t=0) 採用半步長 (dt/2) 啟動，之後時間步恢復全步長 (dt)
+      IF (is_first_step) THEN
+         dt_speed_update = 0.5_real_kind * dt
+      ELSE
+         dt_speed_update = dt
+      END IF
+
+      !$OMP PARALLEL DO DEFAULT(NONE) &
+      !$OMP PRIVATE(i, j, acc_i, v_half_old, v_half_new, v_full) &
+      !$OMP SHARED(nnd, Nodes, dt, dt_speed_update, is_first_step)
+      DO i = 1, nnd
+         DO j = 1, 3
+            ! 檢查自由度邊界條件 (Nodes%fix == 0.0 為自由節點)
+            IF (Nodes%fix(j, i) == 0.0_real_kind) THEN
+
+               ! 1. 計算當前時間步加速度 a^n = F^n / m
+               IF (Nodes%mass(i) > 0.0_real_kind) THEN
+                  acc_i = Nodes%fsum(j, i) / Nodes%mass(i)
+               ELSE
+                  acc_i = 0.0_real_kind
+               END IF
+               Nodes%at(j, i) = acc_i
+
+               ! 2. 更新半步速度 v^{n+1/2}
+               IF (is_first_step) THEN
+                  ! t=0 啟動步: v^{1/2} = v^0 + a^0 * (dt / 2)
+                  v_half_old = Nodes%vt(j, i) ! 取初始速度 v^0
+                  v_half_new = v_half_old + acc_i * dt_speed_update
+               ELSE
+                  ! 正常循環: v^{n+1/2} = v^{n-1/2} + a^n * dt
+                  v_half_old = Nodes%vt_half(j, i)
+                  v_half_new = v_half_old + acc_i * dt_speed_update
+               END IF
+
+               ! 半步速度數值噪聲截斷
+               IF (ABS(v_half_new) < V5_EPS_VEL) THEN
+                  Nodes%vt_half(j, i) = 0.0_real_kind
+               ELSE
+                  Nodes%vt_half(j, i) = v_half_new
+               END IF
+
+               ! 3. 更新全步空間座標 x^{n+1} = x^n + v^{n+1/2} * dt
+               Nodes%xc(j, i) = Nodes%xc(j, i) + Nodes%vt_half(j, i) * dt
+
+               ! 4. ��建全步��度 v^{n+1} (專供 FSI 與 Log 輸出)
+               IF (is_first_step) THEN
+                  v_full = 0.5_real_kind * (Nodes%vt(j, i) + Nodes%vt_half(j, i))
+               ELSE
+                  v_full = 0.5_real_kind * (v_half_old + Nodes%vt_half(j, i))
+               END IF
+
+               IF (ABS(v_full) < V5_EPS_VEL) THEN
+                  Nodes%vt(j, i) = 0.0_real_kind
+               ELSE
+                  Nodes%vt(j, i) = v_full
+               END IF
+
+            END IF
+         END DO
+      END DO
+      !$OMP END PARALLEL DO
+
+      ! =========================================================
+      ! [驗證程式碼] 列印可變形體節點 1 蛙躍法動力學狀態
+      ! =========================================================
+      ! BLOCK
+      !    WRITE(*,*) '  [update_kinematics_deformable] Is First Step        = ', is_first_step
+      !    WRITE(*,*) '  [update_kinematics_deformable] Node 1 Mass (kg)      = ', Nodes%mass(1)
+      !    WRITE(*,*) '  [update_kinematics_deformable] Node 1 Force (N)     = ', Nodes%fsum(:, 1)
+      !    WRITE(*,*) '  [update_kinematics_deformable] Node 1 Acc (m/s^2)   = ', Nodes%at(:, 1)
+      !    WRITE(*,*) '  [update_kinematics_deformable] Node 1 V_half (m/s)  = ', Nodes%vt_half(:, 1)
+      !    WRITE(*,*) '  [update_kinematics_deformable] Node 1 Pos (m)       = ', Nodes%xc(:, 1)
+      !    WRITE(*,*) '  [update_kinematics_deformable] Node 1 V_full (m/s)  = ', Nodes%vt(:, 1)
+      ! END BLOCK
+   END SUBROUTINE update_kinematics_deformable
+
+
+   SUBROUTINE update_kinematics_rigid(dt, is_first_step)
+      IMPLICIT NONE
+      REAL(KIND=real_kind), INTENT(IN) :: dt
+      LOGICAL,              INTENT(IN) :: is_first_step
+      INTEGER(KIND=int_kind)  :: i, j
+      REAL(KIND=real_kind)    :: v_temp
+      REAL(KIND=real_kind)    :: arm_vec(3), torque_i(3)
+      REAL(KIND=real_kind)    :: T_body(3), I_w(3), w_cross_Iw(3), rhs_body(3)
+      REAL(KIND=real_kind)    :: dq(4), omega_quat(4)
+      REAL(KIND=real_kind)    :: r_body0(3), r_global(3), v_rot(3)
+      REAL(KIND=real_kind)    :: dt_speed_update
+      REAL(KIND=real_kind)    :: v_vel_old(3), v_omega_old(3)
+      REAL(8) :: V5_Rigid_vel_half(3)
+      REAL(8) :: V5_Rigid_omega_body_half(3)
+
+      ! 設定半步速度更新的時間步長 (啟動步 dt/2，後續 dt)
+      IF (is_first_step) THEN
+         dt_speed_update = 0.5_real_kind * dt
+      ELSE
+         dt_speed_update = dt
+      END IF
+
+      ! ----------------------------------------------------------------------
+      ! 階段 1: 合力與合力矩對質心歸納 (CoM Force & Torque Reduction)
+      ! ----------------------------------------------------------------------
+      V5_Rigid_Ftotal = 0.0_real_kind
+      V5_Rigid_Ttotal = 0.0_real_kind
 
       DO i = 1, nnd
          ! 1.1 累加總合力 (Global Frame)
-         Rigid_Ftotal = Rigid_Ftotal + Nodes%fsum(:, i)
+         V5_Rigid_Ftotal = V5_Rigid_Ftotal + Nodes%fsum(:, i)
 
          ! 1.2 計算當前節點對質心的臂力向量 r = x_node - x_CoM
-         arm_vec = Nodes%xc(:, i) - Rigid_CoM
+         arm_vec = Nodes%xc(:, i) - V5_Rigid_CoM
 
          ! 1.3 計算節點外力產生之矩 tau = arm x fsum
          CALL cross_product(arm_vec, Nodes%fsum(:, i), torque_i)
 
          ! 1.4 累加總外力矩 (Global Frame)
-         Rigid_Ttotal = Rigid_Ttotal + torque_i
+         V5_Rigid_Ttotal = V5_Rigid_Ttotal + torque_i
       END DO
 
+      ! 外力與外力矩先截斷數值噪聲
+      WHERE (ABS(V5_Rigid_Ftotal) < V5_EPS_FORCE)  V5_Rigid_Ftotal = 0.0_real_kind
+      WHERE (ABS(V5_Rigid_Ttotal) < V5_EPS_TORQUE) V5_Rigid_Ttotal = 0.0_real_kind
+
+
       ! ----------------------------------------------------------------------
-      ! 階段 2: 質心 3-DOF 平移時間積分 (Central Translation)
+      ! 階段 2: 質心 3-DOF 平移蛙躍法積分 (Leapfrog Translation)
       ! ----------------------------------------------------------------------
-      IF (Rigid_mass > 0.0_real_kind) THEN
-         Rigid_acc = Rigid_Ftotal / Rigid_mass
+      IF (V5_Rigid_mass > 0.0_real_kind) THEN
+         V5_Rigid_acc = V5_Rigid_Ftotal / V5_Rigid_mass
       ELSE
-         Rigid_acc = 0.0_real_kind
+         V5_Rigid_acc = 0.0_real_kind
       END IF
 
-      Rigid_vel = Rigid_vel + Rigid_acc * dt
-      Rigid_CoM = Rigid_CoM + Rigid_vel * dt
+      ! 2.1 更新半步線速度 v^{n+1/2} = v^{n-1/2} + a^n * dt
+      IF (is_first_step) THEN
+         v_vel_old = V5_Rigid_vel ! 初始速度 v^0
+         V5_Rigid_vel_half = v_vel_old + V5_Rigid_acc * dt_speed_update
+      ELSE
+         v_vel_old = V5_Rigid_vel_half
+         V5_Rigid_vel_half = v_vel_old + V5_Rigid_acc * dt_speed_update
+      END IF
+
+      WHERE (ABS(V5_Rigid_vel_half) < V5_EPS_VEL) V5_Rigid_vel_half = 0.0_real_kind
+
+      ! 2.2 更新質心全���空���座標 x^{n+1} = x^n + v^{n+1/2} * dt
+      V5_Rigid_CoM = V5_Rigid_CoM + V5_Rigid_vel_half * dt
+
+      ! 2.3 重建全步線速度 v^{n+1} (供 FSI 與 Log 輸出)
+      V5_Rigid_vel = 0.5_real_kind * (v_vel_old + V5_Rigid_vel_half)
+      WHERE (ABS(V5_Rigid_vel) < V5_EPS_VEL) V5_Rigid_vel = 0.0_real_kind
+
 
       ! ----------------------------------------------------------------------
-      ! 階段 3: Body Frame 尤拉轉動方程式求解 (3-DOF Rotation in Body Frame)
+      ! 階段 3: Body Frame 尤拉轉動方程式蛙躍法積分 (Leapfrog Rotation)
       ! ----------------------------------------------------------------------
-      ! 3.1 將 Global Frame 下的外力矩轉換至 Body Frame: T_body = R^T * T_global
-      CALL mat_trans_vec_mult(Rigid_Rmat, Rigid_Ttotal, T_body)
+      ! 3.1 將 Global Frame 外力矩轉換至 Body Frame: T_body = R^T * T_global
+      CALL mat_trans_vec_mult(V5_Rigid_Rmat, V5_Rigid_Ttotal, T_body)
 
       ! 3.2 計算陀螺力矩項: omega_body x (I_body * omega_body)
-      CALL mat_vec_mult(Rigid_Ibody, Rigid_omega_body, I_w)
-      CALL cross_product(Rigid_omega_body, I_w, w_cross_Iw)
+      CALL mat_vec_mult(V5_Rigid_Ibody, V5_Rigid_omega_body, I_w)
+      CALL cross_product(V5_Rigid_omega_body, I_w, w_cross_Iw)
 
       ! 3.3 右端項 RHS = T_body - omega_body x (I_body * omega_body)
       rhs_body = T_body - w_cross_Iw
 
       ! 3.4 求解 Body Frame 角加速度: alpha_body = I_body^-1 * RHS
-      CALL mat_vec_mult(Rigid_invIbody, rhs_body, Rigid_alpha_body)
+      CALL mat_vec_mult(V5_Rigid_invIbody, rhs_body, V5_Rigid_alpha_body)
 
-      ! 3.5 時間積分更新 Body Frame 角速度
-      Rigid_omega_body = Rigid_omega_body + Rigid_alpha_body * dt
+      ! 3.5 更新半步 Body Frame 角速度 omega_body^{n+1/2}
+      IF (is_first_step) THEN
+         v_omega_old = V5_Rigid_omega_body ! 初始角速度 w^0
+         V5_Rigid_omega_body_half = v_omega_old + V5_Rigid_alpha_body * dt_speed_update
+      ELSE
+         v_omega_old = V5_Rigid_omega_body_half
+         V5_Rigid_omega_body_half = v_omega_old + V5_Rigid_alpha_body * dt_speed_update
+      END IF
 
-      ! 3.6 將 Body Frame 角速度轉換回 Global Frame: omega_global = R * omega_body
-      CALL mat_vec_mult(Rigid_Rmat, Rigid_omega_body, Rigid_omega_global)
+      WHERE (ABS(V5_Rigid_omega_body_half) < V5_EPS_OMEGA) V5_Rigid_omega_body_half = 0.0_real_kind
+
+      ! 3.6 重建全步 Body Frame 角速度 omega_body^{n+1}
+      V5_Rigid_omega_body = 0.5_real_kind * (v_omega_old + V5_Rigid_omega_body_half)
+      WHERE (ABS(V5_Rigid_omega_body) < V5_EPS_OMEGA) V5_Rigid_omega_body = 0.0_real_kind
+
+      ! 3.7 將 Body Frame 角速度轉換至 Global Frame (使用半步角速度更新四元數姿態)
+      CALL mat_vec_mult(V5_Rigid_Rmat, V5_Rigid_omega_body_half, V5_Rigid_omega_global)
+
 
       ! ----------------------------------------------------------------------
       ! 階段 4: 四元數與姿態旋轉矩陣更新 (Quaternion & Pose Update)
       ! ----------------------------------------------------------------------
-      ! 4.1 四元數時間微分: dq/dt = 0.5 * q (x) [0, omega_global]
-      omega_quat = [ 0.0_real_kind, Rigid_omega_global(1), Rigid_omega_global(2), Rigid_omega_global(3) ]
+      ! 4.1 四元數時間微分: dq/dt = 0.5 * q (x) [0, omega_global^{n+1/2}]
+      omega_quat = [ 0.0_real_kind, V5_Rigid_omega_global(1), V5_Rigid_omega_global(2), V5_Rigid_omega_global(3) ]
 
-      dq(1) = 0.5_real_kind * (-Rigid_quat(2)*omega_quat(2) - Rigid_quat(3)*omega_quat(3) - Rigid_quat(4)*omega_quat(4))
-      dq(2) = 0.5_real_kind * ( Rigid_quat(1)*omega_quat(2) + Rigid_quat(3)*omega_quat(4) - Rigid_quat(4)*omega_quat(3))
-      dq(3) = 0.5_real_kind * ( Rigid_quat(1)*omega_quat(3) - Rigid_quat(2)*omega_quat(4) + Rigid_quat(4)*omega_quat(2))
-      dq(4) = 0.5_real_kind * ( Rigid_quat(1)*omega_quat(4) + Rigid_quat(2)*omega_quat(3) - Rigid_quat(3)*omega_quat(2))
+      dq(1) = 0.5_real_kind * (-V5_Rigid_quat(2)*omega_quat(2) - V5_Rigid_quat(3)*omega_quat(3) - V5_Rigid_quat(4)*omega_quat(4))
+      dq(2) = 0.5_real_kind * ( V5_Rigid_quat(1)*omega_quat(2) + V5_Rigid_quat(3)*omega_quat(4) - V5_Rigid_quat(4)*omega_quat(3))
+      dq(3) = 0.5_real_kind * ( V5_Rigid_quat(1)*omega_quat(3) - V5_Rigid_quat(2)*omega_quat(4) + V5_Rigid_quat(4)*omega_quat(2))
+      dq(4) = 0.5_real_kind * ( V5_Rigid_quat(1)*omega_quat(4) + V5_Rigid_quat(2)*omega_quat(3) - V5_Rigid_quat(3)*omega_quat(2))
 
-      ! 4.2 顯式時間積分四元數
-      Rigid_quat = Rigid_quat + dq * dt
+      ! 4.2 時間積分四元數
+      V5_Rigid_quat = V5_Rigid_quat + dq * dt
 
-      ! 4.3 四元數單位化 (防止數值漂移)
-      CALL normalize_quaternion(Rigid_quat)
+      ! 4.3 四元數單位化
+      CALL normalize_quaternion(V5_Rigid_quat)
 
-      ! 4.4 依據更新後四元數重建旋轉矩陣 R
-      CALL update_rotation_matrix(Rigid_quat, Rigid_Rmat)
+      ! 4.4 重建旋轉矩陣 R
+      CALL update_rotation_matrix(V5_Rigid_quat, V5_Rigid_Rmat)
+
 
       ! ----------------------------------------------------------------------
       ! 階段 5: 各節點運動學重建 (Node Kinematic Reconstruction)
       ! ----------------------------------------------------------------------
       !$OMP PARALLEL DO DEFAULT(NONE) &
-      !$OMP PRIVATE(i, r_body0, r_global, v_rot) &
-      !$OMP SHARED(nnd, Nodes, Rigid_CoM0, Rigid_CoM, Rigid_vel, Rigid_omega_global, Rigid_Rmat)
+      !$OMP PRIVATE(i, j, r_body0, r_global, v_rot) &
+      !$OMP SHARED(nnd, Nodes, V5_Rigid_CoM0, V5_Rigid_CoM) &
+      !$OMP SHARED(V5_Rigid_vel, V5_Rigid_omega_global, V5_Rigid_Rmat, v_temp)
       DO i = 1, nnd
-         ! 5.1 計算初始 Body Frame 相對座標向量: r_body0 = x0 - CoM0
-         r_body0 = Nodes%xc0(:, i) - Rigid_CoM0
+         ! 5.1 計算�����始 Body Frame 相對座標向量: r_body0 = x0 - CoM0
+         r_body0 = Nodes%xc0(:, i) - V5_Rigid_CoM0
 
          ! 5.2 旋轉至當前 Global Frame 相對座標: r_global = R * r_body0
-         r_global(1) = Rigid_Rmat(1,1)*r_body0(1) + Rigid_Rmat(1,2)*r_body0(2) + Rigid_Rmat(1,3)*r_body0(3)
-         r_global(2) = Rigid_Rmat(2,1)*r_body0(1) + Rigid_Rmat(2,2)*r_body0(2) + Rigid_Rmat(2,3)*r_body0(3)
-         r_global(3) = Rigid_Rmat(3,1)*r_body0(1) + Rigid_Rmat(3,2)*r_body0(2) + Rigid_Rmat(3,3)*r_body0(3)
+         r_global(1) = V5_Rigid_Rmat(1,1)*r_body0(1) + V5_Rigid_Rmat(1,2)*r_body0(2) + V5_Rigid_Rmat(1,3)*r_body0(3)
+         r_global(2) = V5_Rigid_Rmat(2,1)*r_body0(1) + V5_Rigid_Rmat(2,2)*r_body0(2) + V5_Rigid_Rmat(2,3)*r_body0(3)
+         r_global(3) = V5_Rigid_Rmat(3,1)*r_body0(1) + V5_Rigid_Rmat(3,2)*r_body0(2) + V5_Rigid_Rmat(3,3)*r_body0(3)
 
-         ! 5.3 重建當前節點空間座標: x_i = CoM + r_global
-         Nodes%xc(:, i) = Rigid_CoM + r_global
+         ! 5.3 重建當前節點空間旋轉速度: v_rot = omega x r_global
+         v_rot(1) = V5_Rigid_omega_global(2)*r_global(3) - V5_Rigid_omega_global(3)*r_global(2)
+         v_rot(2) = V5_Rigid_omega_global(3)*r_global(1) - V5_Rigid_omega_global(1)*r_global(3)
+         v_rot(3) = V5_Rigid_omega_global(1)*r_global(2) - V5_Rigid_omega_global(2)*r_global(1)
 
-         ! 5.4 重建當前節點空間速度: v_i = v_CoM + omega_global x r_global
-         v_rot(1) = Rigid_omega_global(2)*r_global(3) - Rigid_omega_global(3)*r_global(2)
-         v_rot(2) = Rigid_omega_global(3)*r_global(1) - Rigid_omega_global(1)*r_global(3)
-         v_rot(3) = Rigid_omega_global(1)*r_global(2) - Rigid_omega_global(2)*r_global(1)
-
-         Nodes%vt(:, i) = Rigid_vel + v_rot
+         ! 5.4 重建當前節點空間座標與速度 (Nodes%fix == 0.0 為自由節點)
+         DO j = 1, 3
+            IF (Nodes%fix(j, i) == 0.0_real_kind) THEN
+               Nodes%xc(j, i) = V5_Rigid_CoM(j) + r_global(j)
+               v_temp = V5_Rigid_vel(j) + v_rot(j)
+               IF (ABS(v_temp) < V5_EPS_VEL) THEN
+                  Nodes%vt(j, i) = 0.0_real_kind
+               ELSE
+                  Nodes%vt(j, i) = v_temp
+               END IF
+            END IF
+         END DO
       END DO
       !$OMP END PARALLEL DO
 
       ! =========================================================
-      ! [驗證程式碼] 列印剛體動力學狀態與力矩平衡驗證
+      ! [驗證程式碼] 列印剛體蛙躍法動力學狀態
       ! =========================================================
-      WRITE(*, '(A, 3(ES12.5, 1X))') '  [Rigid Kinematics] Total Force  (N)   = ', Rigid_Ftotal
-      WRITE(*, '(A, 3(ES12.5, 1X))') '  [Rigid Kinematics] Total Torque (N-m) = ', Rigid_Ttotal
-      WRITE(*, '(A, 3(ES12.5, 1X))') '  [Rigid Kinematics] Omega Body (rad/s) = ', Rigid_omega_body
+      ! BLOCK
+      !    REAL(KIND=real_kind) :: quat_norm
 
-   END SUBROUTINE update_kinematics
+      !    quat_norm = SQRT(SUM(V5_Rigid_quat**2))
+
+      !    WRITE(*,*) '  [update_kinematics_rigid] Is First Step        = ', is_first_step
+      !    WRITE(*,*) '  [update_kinematics_rigid] Rigid Mass (kg)      = ', V5_Rigid_mass
+      !    WRITE(*,*) '  [update_kinematics_rigid] Total Force  (N)     = ', V5_Rigid_Ftotal
+      !    WRITE(*,*) '  [update_kinematics_rigid] Rigid Acc (m/s^2)    = ', V5_Rigid_acc
+      !    WRITE(*,*) '  [update_kinematics_rigid] Total Torque (N-m)   = ', V5_Rigid_Ttotal
+      !    WRITE(*,*) '  [update_kinematics_rigid] CoM Pos (m)          = ', V5_Rigid_CoM
+      !    WRITE(*,*) '  [update_kinematics_rigid] CoM Vel_half (m/s)   = ', V5_Rigid_vel_half
+      !    WRITE(*,*) '  [update_kinematics_rigid] CoM Vel_full (m/s)   = ', V5_Rigid_vel
+      !    WRITE(*,*) '  [update_kinematics_rigid] Omega Body_half      = ', V5_Rigid_omega_body_half
+      !    WRITE(*,*) '  [update_kinematics_rigid] Omega Body_full      = ', V5_Rigid_omega_body
+      !    WRITE(*,*) '  [update_kinematics_rigid] Quaternion Norm      = ', quat_norm
+      !    WRITE(*,*) '  [update_kinematics_rigid] Node 1 Pos (m)       = ', Nodes%xc(:, 1)
+      !    WRITE(*,*) '  [update_kinematics_rigid] Node 1 Vel (m/s)     = ', Nodes%vt(:, 1)
+      ! END BLOCK
+   END SUBROUTINE update_kinematics_rigid
 
 
    !===========================================================================
@@ -548,7 +725,9 @@ CONTAINS
       END IF
    END SUBROUTINE normalize_quaternion
 
+
 END MODULE VFIFE_MOTION_module
+
 
 
 ```

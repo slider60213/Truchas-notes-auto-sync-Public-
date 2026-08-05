@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:10
-modified: 2026-07-31 04:39
+modified: 2026-08-06 03:49
 tags:
   - "#Truchas"
 ---
@@ -220,13 +220,13 @@ CONTAINS
                Elements%density(j, i)     = Rho_face
 
                ! 驗證用：前 2 個面輸出採樣資訊
-               IF (f_idx <= 2) THEN
-                  WRITE(*, '(A,I0,A,I0,A,ES12.5,A,3(ES12.5,1X),A,ES12.5)') &
-                     '    [Fluid Sample Check] Face: ', f_idx, &
-                     ' | Cell: ', n, ' | P_face: ', P_face, &
-                     ' | V_face: ', V_face(1:3), &
-                     ' | Rho_face: ', Rho_face
-               END IF
+               ! IF (f_idx <= 2) THEN
+               !    WRITE(*,*) &
+               !       '    [Get_Fluid_Info] Face: ', f_idx, &
+               !       ' | Cell: ', n, ' | P_face: ', P_face, &
+               !       ' | V_face: ', V_face(1:3), &
+               !       ' | Rho_face: ', Rho_face
+               ! END IF
 
                total_force_check(:) = total_force_check(:) - P_face * area * norm(:)
             END DO
@@ -238,12 +238,12 @@ CONTAINS
       ! =========================================================
       ! [驗證程式碼] 檢查 MPI 索引轉換與採樣安全性
       ! =========================================================
-      IF (num_surf_faces > 0) THEN
-         WRITE(*, '(A, I0, A, I0)') '  [MPI Index Check] Total Faces Processed: ', f_idx, &
-            ' | Sampled Density Range Check: OK (Checked against Local ncells = ', ncells, ')'
-      END IF
-      WRITE(*, '(A,I3,A,3ES14.6)') " [Get_Fluid_Info] Total Samples/Face:", n_pts, &
-         " | Total Face Pressure Force (X,Y,Z):", total_force_check
+      ! IF (num_surf_faces > 0) THEN
+      !    WRITE(*,*) '  [Get_Fluid_Info] Total Faces Processed: ', f_idx, &
+      !       ' | Sampled Density Range Check: OK (Checked against Local ncells = ', ncells, ')'
+      ! END IF
+      ! WRITE(*,*) " [Get_Fluid_Info] Total Samples/Face:", n_pts, &
+      !    " | Total Face Pressure Force (X,Y,Z):", total_force_check
 
    END SUBROUTINE Get_Fluid_Info
 
@@ -323,7 +323,7 @@ CONTAINS
                V5solid_vof(icell) = REAL(inside_count, real_kind) / total_sub_pts
 
 
-               !    ! 驗證����式碼：僅印出 i, j, k 三個方向最中間區域 (中心點前後各 1 格) 的資訊��� VOF 數值
+               !    ! 驗證����式碼：僅印出 i, j, k 三個方向最��間區域 (中心點前��������各 1 格) 的資訊��� VOF 數值
                !    IF (ABS(i - (V5_fluid_istart + V5_fluid_iend)/2) <= 1 .AND. &
                !       ABS(j - (V5_fluid_jstart + V5_fluid_jend)/2) <= 1 .AND. &
                !       ABS(k - (V5_fluid_kstart + V5_fluid_kend)/2) <= 1) THEN
@@ -352,11 +352,11 @@ CONTAINS
          REAL(KIND=real_kind) :: k_vof_sum, total_vof_sum, dV_local
 
          total_vof_sum = 0.0_real_kind
-         WRITE(*,*) "=========================================================================================="
-         WRITE(*,*) " [V5 VOF Diagnostics] Z-Layer (k) Breakdown Analysis"
-         WRITE(*,*) "=========================================================================================="
-         WRITE(*, '(A6,A18,A14,A18,A18)') "k", "Z-Bounds [min, max]", "Sum(VOF)", "Layer Vol (m3)", "Cumulative Vol"
-         WRITE(*,*) "------------------------------------------------------------------------------------------"
+         ! WRITE(*,*) "=========================================================================================="
+         ! WRITE(*,*) " [compute_V5solid_vof] Z-Layer (k) Breakdown Analysis"
+         ! WRITE(*,*) "=========================================================================================="
+         ! WRITE(*,*) "k", "Z-Bounds [min, max]", "Sum(VOF)", "Layer Vol (m3)", "Cumulative Vol"
+         ! WRITE(*,*) "------------------------------------------------------------------------------------------"
 
          DO k_chk = V5_fluid_kstart, V5_fluid_kend
             k_vof_sum = 0.0_real_kind
@@ -371,14 +371,15 @@ CONTAINS
             dV_local = (x_axis(2)-x_axis(1)) * (y_axis(2)-y_axis(1)) * (z_axis(k_chk+1)-z_axis(k_chk))
             total_vof_sum = total_vof_sum + k_vof_sum
 
-            WRITE(*, '(I6, " [", F8.3, ",", F8.3, "]", F14.4, E18.6, E18.6)') &
-               k_chk, z_axis(k_chk), z_axis(k_chk+1), k_vof_sum, k_vof_sum * dV_local, total_vof_sum * dV_local
+            ! WRITE(*,*) "",k_chk, z_axis(k_chk), z_axis(k_chk+1),&
+            !    k_vof_sum, k_vof_sum * dV_local,&
+            !    total_vof_sum * dV_local
          END DO
 
          ! --- X 軸 Diagnostics ---
-         WRITE(*,*) "------------------------------------------------------------------------------------------"
-         WRITE(*,*) " [V5 VOF Diagnostics] X-Axis (i) Breakdown Analysis"
-         WRITE(*,*) "------------------------------------------------------------------------------------------"
+         ! WRITE(*,*) "------------------------------------------------------------------------------------------"
+         ! WRITE(*,*) " [compute_V5solid_vof] X-Axis (i) Breakdown Analysis"
+         ! WRITE(*,*) "------------------------------------------------------------------------------------------"
          DO i_chk = V5_fluid_istart, V5_fluid_iend
             k_vof_sum = 0.0_real_kind
             DO k_chk = V5_fluid_kstart, V5_fluid_kend
@@ -387,14 +388,14 @@ CONTAINS
                   k_vof_sum = k_vof_sum + V5solid_vof(idx_chk)
                END DO
             END DO
-            WRITE(*, '(A4,I4, " [", F8.3, ",", F8.3, "] Sum VOF:", F10.4)') &
-               "i = ", i_chk, x_axis(i_chk), x_axis(i_chk+1), k_vof_sum
+            !WRITE(*,*) &
+            !   "i = ", i_chk, x_axis(i_chk), x_axis(i_chk+1), k_vof_sum
          END DO
 
          ! --- Y 軸 Diagnostics ---
-         WRITE(*,*) "------------------------------------------------------------------------------------------"
-         WRITE(*,*) " [V5 VOF Diagnostics] Y-Axis (j) Breakdown Analysis"
-         WRITE(*,*) "------------------------------------------------------------------------------------------"
+         ! WRITE(*,*) "------------------------------------------------------------------------------------------"
+         ! WRITE(*,*) " [compute_V5solid_vof] Y-Axis (j) Breakdown Analysis"
+         ! WRITE(*,*) "------------------------------------------------------------------------------------------"
          DO j_chk = V5_fluid_jstart, V5_fluid_jend
             k_vof_sum = 0.0_real_kind
             DO k_chk = V5_fluid_kstart, V5_fluid_kend
@@ -403,20 +404,19 @@ CONTAINS
                   k_vof_sum = k_vof_sum + V5solid_vof(idx_chk)
                END DO
             END DO
-            WRITE(*, '(A4,I4, " [", F8.3, ",", F8.3, "] Sum VOF:", F10.4)') &
-               "j = ", j_chk, y_axis(j_chk), y_axis(j_chk+1), k_vof_sum
+            !WRITE(*,*) "j = ", j_chk, y_axis(j_chk), y_axis(j_chk+1), k_vof_sum
          END DO
          WRITE(*,*) "=========================================================================================="
 
          ! --- Single Cell Detailed Sampling Diagnostics ---
          WRITE(*,*) "------------------------------------------------------------------------------------------"
-         WRITE(*,*) " [V5 VOF Diagnostics] Single Cell Sampling Detail Check"
+         WRITE(*,*) " [compute_V5solid_vof] Single Cell Sampling Detail Check"
          WRITE(*,*) "------------------------------------------------------------------------------------------"
          idx_chk = 21 + (21 - 1) * Nx_tot(1) + (20 - 1) * Nx_tot(1) * Nx_tot(2)
-         WRITE(*, '(A, F10.4)') " Core Cell (21,21,20) [0.0~0.05, 0.0~0.05, -0.05~0] VOF = ", V5solid_vof(idx_chk)
+         WRITE(*,*) " Core Cell (21,21,20) [0.0~0.05, 0.0~0.05, -0.05~0] VOF = ", V5solid_vof(idx_chk)
 
          idx_chk = 24 + (24 - 1) * Nx_tot(1) + (20 - 1) * Nx_tot(1) * Nx_tot(2)
-         WRITE(*, '(A, F10.4)') " Outer Cell (24,24,20) [0.15~0.2, 0.15~0.2, -0.05~0] VOF = ", V5solid_vof(idx_chk)
+         WRITE(*,*) " Outer Cell (24,24,20) [0.15~0.2, 0.15~0.2, -0.05~0] VOF = ", V5solid_vof(idx_chk)
       END BLOCK
    END SUBROUTINE compute_V5solid_vof
 
@@ -485,7 +485,7 @@ CONTAINS
       END DO
 
       IF (solid_mat_idx > 0) THEN
-         WRITE(*, '(A, F10.4)') " Check Solid VOF Max Value in VF_New: ", &
+         WRITE(*,*) " [Update_Fluid_Solid_VOF] Check Solid VOF Max Value in VF_New: ", &
             MAXVAL(VF_New(solid_mat_idx, :))
       END IF
 
@@ -497,9 +497,9 @@ CONTAINS
    !=======================================================================
    ! Subroutine: build_fluid_to_solid_mapping
    ! Purpose   : 反向建立流體網格 (Fluid Cell) �����含哪些固體節點 (Solid Nodes)
-   !             與固體元素 (Solid Elements) 的 Head-Next 靜態鏈結串列。
+   !             與固體元素 (Solid Elements) 的 Head-Next 靜態鏈結����������
    !
-   ! [呼叫方式]
+   ! [呼�����方式]
    !   CALL build_fluid_to_solid_mapping(Nodes, Elements)
    !
    ! [執行後更新的全域變數 (OUTPUT)]
@@ -586,7 +586,7 @@ CONTAINS
          elem_min = MINVAL(Elements%vertices(:,:,ielem), DIM=2)
          elem_max = MAXVAL(Elements%vertices(:,:,ielem), DIM=2)
 
-         ! 2. 取��該元素 AABB 涵蓋的流體網格範圍，並約束於有效流體網格內 [1, Nx_tot]
+         ! 2. 取����該元素 AABB 涵蓋的流體網格範圍，並約束於有效流體網格內 [1, Nx_tot]
          istart = MAX(1, MIN(Nx_tot(1), find_cell_index(elem_min(1), x_axis, Nx_tot(1))))
          iend   = MAX(1, MIN(Nx_tot(1), find_cell_index(elem_max(1), x_axis, Nx_tot(1))))
 
@@ -736,11 +736,29 @@ CONTAINS
       REAL(KIND=real_kind)   :: total_vof, max_vel
       INTEGER(KIND=int_kind) :: active_cells
 
+      ! ------------------------------------------------------------------
+      ! [驗證程式碼] 確認 update_fluid_mapping 使用由 V5Setup 建立的最新快取與 AABB
+      ! ------------------------------------------------------------------
+      ! WRITE(*,*) "=========================================="
+      ! WRITE(*,*) " [update_fluid_mapping] Starting Mapping..."
+      ! WRITE(*,*) "   Current V5_time           :", V5_time
+      ! WRITE(*,*) "   Surface Faces (from cache):", num_surf_faces
+      ! WRITE(*,*) "   Solid AABB X-range        :", V5_minX(1), " to ", V5_maxX(1)
+      ! WRITE(*,*) "   Solid AABB Y-range        :", V5_minX(2), " to ", V5_maxX(2)
+      ! WRITE(*,*) "   Solid AABB Z-range        :", V5_minX(3), " to ", V5_maxX(3)
+      ! WRITE(*,*) "=========================================="
+
+
       ! 1. 計算固體最新 AABB 包絡盒，更新 V5_fluid_istart/iend 等網格索引範圍
-      CALL compute_solid_aabb()
+      !CALL compute_solid_aabb()
 
       ! 2. 更新外露固體表面快取資訊
-      CALL build_surface_cache()
+      !CALL build_surface_cache()
+      ! 驗證程式碼：確認 surf_node 座標是否有隨時間微幅改變
+      ! WRITE(*,*) '[update_fluid_mapping] Time Step ', V5_time, &
+      !    ' Surf Node 1 X:', surf_node1(1, 1), &
+      !    ' Surf Node 1 Y:', surf_node1(2, 1), &
+      !    ' Surf Node 1 Z:', surf_node1(3, 1)
 
       ! 3. 動態配置並計算流體網格的 V5solid_vof
       IF (.NOT. ALLOCATED(V5solid_vof)) THEN
@@ -759,7 +777,7 @@ CONTAINS
       END WHERE
 
       ! 驗證程式碼：確認 V5_ingbr 旗標已正確更新
-      WRITE(*, '(A, I8)') ' [Fluid Mapping Log] Updated V5_ingbr=1 Cell Count:', COUNT(V5_ingbr == 1)
+      ! WRITE(*,*) ' [update_fluid_mapping] Updated V5_ingbr=1 Cell Count:', COUNT(V5_ingbr == 1)
       ! ---------------------------------------------------
       ! 將 V5solid_vof 同步寫回 Truchas Matl 數據庫並維持體積守恆
       ! (傳入固體 VOF 陣列與網格總數 ncells)
@@ -791,12 +809,12 @@ CONTAINS
             END DO
          END DO
 
-         WRITE(*, '(A)') '=========================================='
-         WRITE(*, '(A)') ' [DEBUG] V5solid_vof VOLUME VERIFICATION'
-         WRITE(*, '(A)') '=========================================='
-         WRITE(*, '(A, F12.4)') ' Sum of V5solid_vof           :', sum_vof
-         WRITE(*, '(A, ES14.6)')' Calculated Solid Volume (m3) :', total_solid_vol
-         WRITE(*, '(A)') '=========================================='
+         WRITE(*,*) '=========================================='
+         WRITE(*,*) ' [update_fluid_mapping] V5solid_vof VOLUME VERIFICATION'
+         WRITE(*,*) '=========================================='
+         WRITE(*,*) ' Sum of V5solid_vof           :', sum_vof
+         WRITE(*,*) ' Calculated Solid Volume (m3) :', total_solid_vol
+         WRITE(*,*) '=========================================='
       END BLOCK
 
       ! ---------------------------------------------------
@@ -859,18 +877,20 @@ CONTAINS
       END DO
       !$OMP END PARALLEL DO
 
+
       ! 5. [診斷輸出] 統計更新結果
-      WRITE(*, '(A, I6, A, F10.4, A, ES12.5, A)') &
-         ' [update_fluid_mapping] Active Solid Cells = ', active_cells, &
-         ' | Sum VOF = ', total_vof, &
-         ' | Max Solid Vel = ', max_vel, ' m/s'
+      ! WRITE(*,*) '--------------------------------------------------'
+      ! WRITE(*,*) ' [update_fluid_mapping] Active Solid Cells (>0.001) = ', active_cells
+      ! WRITE(*,*) ' [update_fluid_mapping] Total Interp VOF Sum    = ', total_vof
+      ! WRITE(*,*) ' [update_fluid_mapping] Max Interp Solid Vel   = ', max_vel, ' m/s'
+      ! WRITE(*,*) '--------------------------------------------------'
 
    END SUBROUTINE update_fluid_mapping
 
 
    !=======================================================================
    ! Subroutine: V5Solid_Feedback
-   ! Purpose: 依照最新 VOF 與���體插值速����� (V5solid_vel)，將速度加權反饋給流體��格 Zone(icell)%Vc
+   ! Purpose: 依照最新 VOF 與固體插值速度 (V5solid_vel)，將速度加權反饋給流體網格 Zone(icell)%Vc
    !=======================================================================
    SUBROUTINE V5Solid_Feedback()
       IMPLICIT NONE
@@ -879,13 +899,23 @@ CONTAINS
       INTEGER(KIND=int_kind) :: i, j, k, icell
       REAL(KIND=real_kind)   :: V5_s_vof, fluid_vc_tmp(3)
 
-      ! 僅��固體涵蓋的流體網格 AABB 範圍內更新速度
+      ! 診斷統計變數
+      INTEGER(KIND=int_kind) :: feedback_cells
+      REAL(KIND=real_kind)   :: max_fluid_vc_before, max_fluid_vc_after
+
+      feedback_cells       = 0
+      max_fluid_vc_before  = 0.0_real_kind
+      max_fluid_vc_after   = 0.0_real_kind
+
+      ! 僅對固體涵蓋的流體網格 AABB 範圍內更新速度
       !$OMP PARALLEL DO DEFAULT(NONE) &
       !$OMP PRIVATE(i, j, k, icell, V5_s_vof, fluid_vc_tmp) &
       !$OMP SHARED(V5_fluid_istart, V5_fluid_iend) &
       !$OMP SHARED(V5_fluid_jstart, V5_fluid_jend) &
       !$OMP SHARED(V5_fluid_kstart, V5_fluid_kend) &
-      !$OMP SHARED(Nx_tot, V5solid_vof, V5solid_vel, Zone)
+      !$OMP SHARED(Nx_tot, V5solid_vof, V5solid_vel, Zone) &
+      !$OMP REDUCTION(+:feedback_cells) &
+      !$OMP REDUCTION(max:max_fluid_vc_before, max_fluid_vc_after)
       DO k = V5_fluid_kstart, V5_fluid_kend
          DO j = V5_fluid_jstart, V5_fluid_jend
             DO i = V5_fluid_istart, V5_fluid_iend
@@ -897,8 +927,9 @@ CONTAINS
                ! 僅針對有固體佔據的網格做 IBM 速度加權
                IF (V5_s_vof > 0.01_real_kind) THEN
 
-                  ! 暫存更新前的流體速度
+                  ! 暫存更新前的流體速度與統計最大值
                   fluid_vc_tmp(:) = Zone(icell)%Vc(:)
+                  max_fluid_vc_before = MAX(max_fluid_vc_before, SQRT(SUM(fluid_vc_tmp**2)))
 
                   ! 依照 VOF 進行固體與流體速度的加權混合
                   Zone(icell)%Vc(1) = V5solid_vel(1, icell) * V5_s_vof &
@@ -909,6 +940,10 @@ CONTAINS
 
                   Zone(icell)%Vc(3) = V5solid_vel(3, icell) * V5_s_vof &
                      + fluid_vc_tmp(3) * (1.0_real_kind - V5_s_vof)
+
+                  ! 統計更新後的流體速度與作用網格數
+                  max_fluid_vc_after = MAX(max_fluid_vc_after, SQRT(SUM(Zone(icell)%Vc(:)**2)))
+                  feedback_cells     = feedback_cells + 1
                END IF
 
             END DO
@@ -916,10 +951,18 @@ CONTAINS
       END DO
       !$OMP END PARALLEL DO
 
+      ! =========================================================
+      ! [驗證程式碼] 流體網格反饋作用統計輸出
+      ! =========================================================
+      WRITE(*,*) ' [V5Solid_Feedback] Coupled Cells Count      = ', feedback_cells
+      WRITE(*,*) ' [V5Solid_Feedback] Max Fluid Vel (Before)   = ', max_fluid_vc_before, ' m/s'
+      WRITE(*,*) ' [V5Solid_Feedback] Max Fluid Vel (After)    = ', max_fluid_vc_after, ' m/s'
+
    END SUBROUTINE V5Solid_Feedback
 
 
 END MODULE VFIFE_FSCoupled_module
+
 
 
 ```

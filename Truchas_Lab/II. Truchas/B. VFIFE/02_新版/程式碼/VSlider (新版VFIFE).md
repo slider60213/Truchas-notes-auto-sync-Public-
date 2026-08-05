@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:37
-modified: 2026-08-03 05:52
+modified: 2026-08-06 03:58
 tags:
   - "#Truchas"
   - Truchas/VFIFE
@@ -32,6 +32,7 @@ AND !icontains(file.name, "excalidraw")
 - 轉動變形計算輔助: [VFIFE_CMF_module.F90](VFIFE_CMF_module_F90.md)
 - 工具庫:  [VFIFE_Utils_module.F90](VFIFE_Utils_module_F90.md) 
 - 變數宣告:  [VFIFE_Data_module.F90](VFIFE_Data_module_F90.md)  
+- 平行化: [VFIFE_Parallel_module.F90](../VFIFE_Parallel_module_F90.md) (開發中)
 
 ## SOURCE CODE (Others)
 - 其他改動:   
@@ -40,11 +41,12 @@ AND !icontains(file.name, "excalidraw")
 	`material_input_module.F90`  
 	`parameter_module.F90`  
 	`matl_utilities.F90`  
+	`timing_module.F90`
 
 ---
 # 🦖 以前
 
-[@SanWeiDuoXiangLiuTiYuRouXingGuTiOuHeHuZhiFenXi__TaiWanBoShuoShiLunWenZhiShiJiaZhiXiTong]
+
 
 ---
 # 👨‍💻 以後

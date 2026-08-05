@@ -1,7 +1,7 @@
-# 0. 成果展示
-！ 要記得修改 GIF 時間然後轉成影片檔
+# 0. Truchas Lab Research Showcase
+
 ## Buoy-Wave Interaction
-[浮標隨波性模擬](Truchas_Lab/II.%20Truchas/A.%20成果合輯/浮標隨波性模擬.md)
+[_Method:_ VFIFE (Vector Form Intrinsic Finite Element) - Buoy-Wave Interaction](Truchas_Lab/II.%20Truchas/A.%20成果合輯/浮標隨波性模擬.md)
 
 | ![\|425](pics/image116.gif) | ![Buoy\|425](Truchas_Lab/II.%20Truchas/A.%20成果合輯/pics/Buoy.gif) |
 | --------------------------- | ---------------------------------------------------------- |
@@ -9,14 +9,14 @@
 
 ---
 ## Guishan Island Lanslide
-[龜山島山崩海嘯](Truchas_Lab/II.%20Truchas/A.%20成果合輯/龜山島山崩海嘯.md)
+[_Method:_ DBM (Discrete Body Method) - Landslide-Induced Tsunami](Truchas_Lab/II.%20Truchas/A.%20成果合輯/龜山島山崩海嘯.md)
 
 | ![\|425](pics/Guishan_SideView.gif) | ![\|425](pics/Guishan_TopView.gif) |
 | ----------------------------------- | ---------------------------------- |
 
 ---
 ## Guandu Bridge Local Scour
-[關渡橋局部沖刷](Truchas_Lab/II.%20Truchas/A.%20成果合輯/關渡橋局部沖刷.md)
+[_Method:_ DBM - Pier Local Scour Simulation](Truchas_Lab/II.%20Truchas/A.%20成果合輯/關渡橋局部沖刷.md)
 
 | ![\|425](pics/image140.gif) | ![\|425](pics/image141.gif) |
 | --------------------------- | --------------------------- |
@@ -25,19 +25,20 @@
 
 
 
-# 1. 相關研究進度在 Truchas_Lab 裡面。
+# 1. Research Progress
+All related research progress, updates, and simulation logs can be found in the `Truchas_Lab` directory.
 
-# 2. 部分排版錯誤
-- 由於 Github 幾年前取消了 Markdown 語法中對部分排版的支援，網頁上看到的文字及圖片其位置、顏色、大小可能無法正確呈現。
-- 可以直接下載 md 檔然後用 VS CODE 或是 Obsidian (建議) 開啟觀看。
+# 2. Rendering & Layout Compatibility
+- Due to updates in GitHub's Markdown rendering engine, certain legacy inline styling (such as custom text positioning, colors, and specific image dimensions) may not display correctly directly on Github.  
+	  > **Recommended Viewing:** For optimal formatting and full styling support, please clone or download the repository and view the `.md` files using **Obsidian** (Recommended) or **VS Code**.
 
-# 3. 頁面跳轉錯誤
-- 頁面跳轉有時候不精確，要根據上下文或是網址末端標註的位置來尋找。
-- 例如跳轉後網址是 `https://github.........md#turn-40` ，表示要找第 Turn 40 的問答。
+# 3. Anchor Navigation & Deep Linking
+- Some internal page jump links (anchors) may not land precisely on the target header due to Markdown rendering differences.
+- If the navigation falls short, please check the target section anchor in the URL bar (e.g., `#turn-40`) and locate the corresponding section manually (e.g., search for **Turn 40** in the text).
 
 
 
-# 4. 資料夾說明
+# 4. Directory Structure
 
 - Truchas_Lab：研究進度
 - 筆記自動上傳測試：測試用
