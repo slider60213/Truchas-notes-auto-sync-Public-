@@ -1882,7 +1882,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-004.png)
+![上傳圖片預覽](../../../../../../../I.%20Research%20Tools/C.%20Code%20Editor%20程式編輯器/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-004.png)
 
 雖然視窗外觀跟內容都有符合要求，但是瀏覽工作目錄的時候，它顯示的是main.py的位置，包括選擇已存在的inp跳出來的瀏覽視窗也是，我需要的是工作目錄根據偵測到的LXD來作選擇，為了實現這件事情可能需要先實踐open_win的GUI
 user_student@MSI:~$ run_sim
@@ -2910,7 +2910,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-007.png)
+![上傳圖片預覽](../../../../../../../I.%20Research%20Tools/C.%20Code%20Editor%20程式編輯器/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-007.png)
 
 ### 🤖 Assistant
 
@@ -3546,7 +3546,7 @@ wsl_args = [
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-009.png)
+![上傳圖片預覽](../../../../../../../I.%20Research%20Tools/C.%20Code%20Editor%20程式編輯器/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-009.png)
 
 現在的版本可以順利模擬沒有問題，但我想作一些界面的優化。
 目前上方的網址列有正常顯示，瀏覽功能跟open_win功能也都有正常運作，要確保點選瀏覽之後，有同時給予系統cd到該路徑的指令。
@@ -3884,7 +3884,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-010.png)
+![上傳圖片預覽](../../../../../../../I.%20Research%20Tools/C.%20Code%20Editor%20程式編輯器/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-010.png)
 
 為什麼下拉選單還是沒有內容
 
@@ -4187,7 +4187,7 @@ wsl_args = ["-d", self.wsl_name, "--", "bash", "-li", "-c", "..."]
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-011.png)
+![上傳圖片預覽](../../../../../../../I.%20Research%20Tools/C.%20Code%20Editor%20程式編輯器/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-011.png)
 
 既然是有實際登入的話，直接在一開始選擇啟用的WSL時就直接登入就好，這樣lxc list不會有問題，也可以無縫切換成開發者模式（power shell介面）
 
@@ -4895,7 +4895,7 @@ class SimulationWindow(QMainWindow):
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../../../I.%20建議工具/C.%20VS%20CODE/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-013.png)
+![上傳圖片預覽](../../../../../../../I.%20Research%20Tools/C.%20Code%20Editor%20程式編輯器/00_聊天紀錄/Gemini/Gemini_VS-CODE-開WSL跟LXD的共享資料夾/assets/img-013.png)
 
 執行main.py 然後點選 Truchas-Lab_20260609 後
 它先是顯示⚠️ 偵測超時 (LXD 服務可能正在啟動中，請再點擊一次
