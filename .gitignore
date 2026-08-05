@@ -1,36 +1,30 @@
-# ±Æ°£ Obsidian ªº¨t²ÎÂøª«
+# æ’é™¤ Obsidian çš„ç³»çµ±é›œç‰©
 .obsidian/
+.pandoc
 .trash/
 tmp/
 copilot/
 Excalidraw/
 Zotero/
-§ë½Z/
-±`¥Î±ğ¹Ï/
+æŠ•ç¨¿/
+å¸¸ç”¨æ¢—åœ–/
 *.7z
 *.mp4
 *.zip
 *.pdf
 *.tar
 
-# ±Æ°£¼È¦sµe¥¬¡]¦pªG§A¤£·Q¦P¨Bªº¸Ü¡^
+# æ’é™¤æš«å­˜ç•«å¸ƒï¼ˆå¦‚æœä½ ä¸æƒ³åŒæ­¥çš„è©±ï¼‰
 *.canvas
 
 # Ignore Smart Environment folder
 .smart-env
 
-# °È¥²±Æ°£¦pªG¥¨¤j¼Æ¾ÚÀÉ¡]¦p .h5, .out, .vtk¡^
-# §_«h·|¾É­P GitHub ªÅ¶¡Ãzº¡¤W¶Ç¥¢±Ñ
+# å‹™å¿…æ’é™¤å¦‚æœå·¨å¤§æ•¸æ“šæª”ï¼ˆå¦‚ .h5, .out, .vtkï¼‰
+# å¦å‰‡æœƒå°è‡´ GitHub ç©ºé–“çˆ†æ»¿ä¸Šå‚³å¤±æ•—
 Truchas/**/*.h5
 Truchas/**/*.out
 Truchas/**/*.vtk
 
-# §A·Q­n«O¯dªº
+# ä½ æƒ³è¦ä¿ç•™çš„
 !Truchas/**/*.md
-!Truchas/**/*.png
-!Truchas/**/*.jpg
-!Truchas/**/*.gif
-!Truchas/**/*.html
-
-
-

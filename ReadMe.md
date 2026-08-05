@@ -40,13 +40,29 @@ All related research progress, updates, and simulation logs can be found in the 
 
 # 4. Directory Structure
 
-- Truchas_Lab：研究進度
-- 筆記自動上傳測試：測試用
-- 模版 Templates：筆記模版
-- .github：Github 相關功能
-- .gitignore：上傳時要忽略的檔案
-- .smart-env：擴充功能 smart-connection
-- .trash：廢棄資料
-- consistency-report.md：引用連結檢查
-- copilot：Obsidian 聯動 AI 助手的聊天紀錄
-- pics：當層路徑下各筆記的附件（圖片、GIF、MP4 ...）
+```text
+.
+├── 筆記功能測試/
+│   └── pics/
+├── 模版 Templates/
+├── copilot/
+│   └── copilot-conversations/
+├── Excalidraw/
+│   └── pics/
+├── pics/
+├── tmp/
+│   └── pics/
+└── Truchas_Lab/
+    ├── I. 建議工具/
+    │   ├── A. 推薦軟體/
+    │   ├── B. 輸入法/
+    │   ├── C. VS CODE/
+    │   └── D. AI工具/
+    ├── II. Truchas/
+    │   ├── A. 成果合輯/
+    │   ├── B. VFIFE/
+    │   ├── C. Truchsa-WSL/
+    │   └── D. 2.5.3版/
+    └── III. COMCOT/
+
+```
