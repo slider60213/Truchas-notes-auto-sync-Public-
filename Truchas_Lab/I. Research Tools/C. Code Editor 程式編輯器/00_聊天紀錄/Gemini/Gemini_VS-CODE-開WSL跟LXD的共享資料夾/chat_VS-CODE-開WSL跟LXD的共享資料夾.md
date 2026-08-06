@@ -327,7 +327,7 @@ cd /home/user_student/student-VFIFE/VFIFE
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-001.png)
 
 我有連到WSL但連錯了
 我要連的是Truchas_Lab開頭的那個，但他自動連到Ubuntu開頭的
@@ -465,7 +465,7 @@ wsl --set-default Truchas_Lab_20260422
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_VFIFE-程式碼可讀性提升/assets/img-002.png)
 
 我應該選什麼？
 
@@ -1159,7 +1159,7 @@ Fortran 的編譯邏輯比較特殊，`fluid_flow_module.F90` 在編譯時需要
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_免費建模軟體比較與建議/pics/img-006.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_免費建模軟體比較與建議/pics/img-006.png)
 
 RESTART之後 他還是建議我安裝 好像沒裝到一樣
 
@@ -2036,7 +2036,7 @@ which gfortran
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-008.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-008.png)
 
 好像可以連線AI 我應該選哪一個
 
@@ -2280,7 +2280,7 @@ VS Code 顯示「Free」可能是因為快取或登入狀態沒有重新整理�
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-012.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-012.png)
 
 ### 🤖 Assistant
 
@@ -2351,11 +2351,11 @@ GitHub 現在將所有個人用戶（包含學生）都納入新的計費邏輯�
 
 ![上傳圖片預覽](assets/img-013.png)
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-014.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-014.png)
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-015.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-015.png)
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-016.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-016.png)
 
 ### 🤖 Assistant
 
@@ -3744,7 +3744,7 @@ git push -u origin main
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-018.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-018.png)
 
 已經一半了怎麼辦，只能等6/3嗎？
 另外怎麼匯出對話紀錄
@@ -3797,7 +3797,7 @@ VS Code 目前沒有官方的「一鍵匯出 PDF/Markdown」按鈕，但你可�
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-019.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-019.png)
 
 我應該已經啟用啦 而且我點了圖片中的here 他只是讓我登入 然後又跳轉回這個頁面
 
@@ -3834,7 +3834,7 @@ VS Code 目前沒有官方的「一鍵匯出 PDF/Markdown」按鈕，但你可�
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_聊天紀錄/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-020.png)
+![上傳圖片預覽](../../../../../II.%20Truchas/B.%20VFIFE/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-020.png)
 
 為什麼我選擇以GOOGLE繼續 跳出來的網頁還是連結到GITHUB登入
 
