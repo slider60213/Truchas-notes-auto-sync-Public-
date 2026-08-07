@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-30 03:45
-modified: 2026-07-30 03:51
+modified: 2026-08-08 02:14
 tags:
   - "#Truchas"
   - Truchas/VFIFE
@@ -53,7 +53,7 @@ AND !icontains(file.name, "excalidraw")
 
 &MATERIAL
 
-    Material_Name           = 'solid_V5'
+    Material_Name           = 'solid'
     Material_Number         = 2
     priority                = 2
 
