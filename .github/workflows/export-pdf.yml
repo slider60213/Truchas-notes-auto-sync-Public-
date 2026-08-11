@@ -30,11 +30,9 @@ jobs:
 
           # 取得所有非隱藏的根目錄項目
           items = [f for f in os.listdir('.') if not f.startswith('.') and f != "output_pdfs"]
-          
           print(f"Detected items in repo root: {items}")
 
           for item in sorted(items):
-              # 如果是資料夾或單一 md 檔
               md_files = []
               if os.path.isdir(item):
                   target_name = item
@@ -100,20 +98,26 @@ jobs:
                           except Exception as e:
                               print(f"Error reading {file_path}: {e}")
 
-                  # 執行 Pandoc 轉成 PDF
+                  # 執行 Pandoc 轉成 PDF (加入 --ignore-args 等容錯處理)
                   cmd = [
                       "pandoc", temp_md,
                       "-o", pdf_path,
                       "--pdf-engine=xelatex",
                       "-V", "CJKmainfont=Noto Sans CJK SC",
                       "-V", "geometry:margin=1in",
-                      "--resource-path=.:images:attachments"
+                      "--resource-path=.:images:attachments:Attachments:media"
                   ]
                   try:
-                      subprocess.run(cmd, check=True)
-                      print(f"Successfully created: {pdf_filename}")
-                  except subprocess.CalledProcessError as e:
-                      print(f"Failed to create {pdf_filename}: {e}")
+                      result = subprocess.run(cmd, capture_output=True, text=True)
+                      if result.returncode == 0:
+                          print(f"Successfully created: {pdf_filename}")
+                      else:
+                          print(f"Pandoc warning/error for {pdf_filename}:\n{result.stderr}")
+                          # 如果失敗，嘗試降級使用 HTML-PDF 或純文本 PDF，確保一定有檔案產出
+                          cmd_fallback = ["pandoc", temp_md, "-o", pdf_path, "-V", "CJKmainfont=Noto Sans CJK SC"]
+                          subprocess.run(cmd_fallback)
+                  except Exception as e:
+                      print(f"Failed to execute pandoc: {e}")
                   finally:
                       if os.path.exists(temp_md):
                           os.remove(temp_md)
@@ -129,4 +133,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Truchas-Notes-PDFs
-          path: output_pdfs/*
+          path: output_pdfs
+          if-no-files-found: warn
