@@ -8,35 +8,108 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Install Pandoc and LaTeX
         run: |
           sudo apt-get update
-          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-lang-chinese
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-lang-chinese python3
 
       - name: Create output directory
         run: mkdir -p output_pdfs
 
-      - name: Convert each root folder to separate PDF
+      - name: Run Intelligent PDF Packager
         run: |
-          # 尋找根目錄下的所有資料夾，分別打包轉成 PDF
-          for dir in */; do
-            if [ -d "$dir" ] && [ "$dir" != ".github/" ] && [ "$dir" != "output_pdfs/" ]; then
-              folder_name=$(basename "$dir")
-              echo "Processing folder: $folder_name"
+          python3 - << 'EOF'
+          import os
+          import subprocess
+          import shutil
+
+          # 設定單一 PDF 合併前的文字檔大小上限 (約 10MB 的純文字/Markdown，轉成含圖 PDF 約在 20-30MB 內)
+          MAX_CHUNK_SIZE = 10 * 1024 * 1024  
+          OUTPUT_DIR = "output_pdfs"
+
+          # 取得所有非隱藏的根目錄資料夾
+          folders = [f for f in os.listdir('.') if os.path.isdir(f) and not f.startswith('.') and f != OUTPUT_DIR]
+
+          for folder in sorted(folders):
+              print(f"=== Processing folder: {folder} ===")
               
-              # 收集該資料夾內的所有 .md 檔案並轉為 PDF
-              find "$dir" -name "*.md" | sort | xargs pandoc -o "output_pdfs/${folder_name}.pdf" \
-                --pdf-engine=xelatex \
-                -V CJKmainfont="Noto Sans CJK SC" \
-                -V geometry:margin=1in \
-                --resource-path=.:"$dir" || true
-            fi
-          done
+              # 收集該資料夾內所有 .md 檔案（按路徑排序以保留階層）
+              md_files = []
+              for root, _, files in os.walk(folder):
+                  for file in sorted(files):
+                      if file.endswith('.md'):
+                          md_files.append(os.path.join(root, file))
+              
+              md_files.sort()
+              if not md_files:
+                  continue
+
+              part = 1
+              current_chunk = []
+              current_size = 0
+
+              def build_pdf(chunk_files, folder_name, part_num, is_multi_part):
+                  part_suffix = f"_Part{part_num}" if is_multi_part else ""
+                  pdf_filename = f"{folder_name}{part_suffix}.pdf"
+                  pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
+                  temp_md = f"temp_{folder_name}_{part_num}.md"
+
+                  print(f"Generating: {pdf_filename} with {len(chunk_files)} files...")
+
+                  # 合併檔案並插入階層資訊 header
+                  with open(temp_md, 'w', encoding='utf-8') as outfile:
+                      for file_path in chunk_files:
+                          outfile.write(f"\n\n<!-- FILE_PATH_HEADER -->\n")
+                          outfile.write(f"# [資料夾結構路徑]: {file_path}\n\n")
+                          try:
+                              with open(file_path, 'r', encoding='utf-8') as infile:
+                                  outfile.write(infile.read())
+                                  outfile.write("\n\n---\n")
+                          except Exception as e:
+                              print(f"Error reading {file_path}: {e}")
+
+                  # 執行 Pandoc 轉成 PDF
+                  cmd = [
+                      "pandoc", temp_md,
+                      "-o", pdf_path,
+                      "--pdf-engine=xelatex",
+                      "-V", "CJKmainfont=Noto Sans CJK SC",
+                      "-V", "geometry:margin=1in",
+                      f"--resource-path=.:{folder_name}"
+                  ]
+                  try:
+                      subprocess.run(cmd, check=True)
+                      print(f"Successfully created {pdf_filename}")
+                  except subprocess.CalledProcessError as e:
+                      print(f"Failed to create {pdf_filename}: {e}")
+                  finally:
+                      if os.path.exists(temp_md):
+                          os.remove(temp_md)
+
+              # 分塊邏輯
+              chunks = []
+              for fpath in md_files:
+                  fsize = os.path.getsize(fpath)
+                  if current_size + fsize > MAX_CHUNK_SIZE and current_chunk:
+                      chunks.append(current_chunk)
+                      current_chunk = [fpath]
+                      current_size = fsize
+                  else:
+                      current_chunk.append(fpath)
+                      current_size += fsize
+              if current_chunk:
+                  chunks.append(current_chunk)
+
+              is_multi = len(chunks) > 1
+              for idx, chunk in enumerate(chunks, start=1):
+                  build_pdf(chunk, folder, idx, is_multi)
+
+          EOF
 
       - name: Upload PDFs as Artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Truchas-Notes-PDFs
-          path: output_pdfs/*.pdf
+          path: output_pdfs/
