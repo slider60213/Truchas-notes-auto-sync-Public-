@@ -23,38 +23,68 @@ jobs:
           python3 - << 'EOF'
           import os
           import subprocess
-          import shutil
 
-          # 設定單一 PDF 合併前的文字檔大小上限 (約 10MB 的純文字/Markdown，轉成含圖 PDF 約在 20-30MB 內)
+          # 設定單一 PDF 合併前的文字檔大小上限 (10MB 純文字約可轉成 20-30MB 含圖 PDF)
           MAX_CHUNK_SIZE = 10 * 1024 * 1024  
-          OUTPUT_DIR = "output_pdfs"
+          OUTPUT_DIR = os.path.abspath("output_pdfs")
 
-          # 取得所有非隱藏的根目錄資料夾
-          folders = [f for f in os.listdir('.') if os.path.isdir(f) and not f.startswith('.') and f != OUTPUT_DIR]
+          # 取得所有非隱藏的根目錄項目
+          items = [f for f in os.listdir('.') if not f.startswith('.') and f != "output_pdfs"]
+          
+          print(f"Detected items in repo root: {items}")
 
-          for folder in sorted(folders):
-              print(f"=== Processing folder: {folder} ===")
-              
-              # 收集該資料夾內所有 .md 檔案（按路徑排序以保留階層）
+          for item in sorted(items):
+              # 如果是資料夾或單一 md 檔
               md_files = []
-              for root, _, files in os.walk(folder):
-                  for file in sorted(files):
-                      if file.endswith('.md'):
-                          md_files.append(os.path.join(root, file))
-              
-              md_files.sort()
-              if not md_files:
+              if os.path.isdir(item):
+                  target_name = item
+                  for root, _, files in os.walk(item):
+                      for file in sorted(files):
+                          if file.endswith('.md'):
+                              md_files.append(os.path.join(root, file))
+              elif os.path.isfile(item) and item.endswith('.md'):
+                  target_name = "Root_Notes"
+                  md_files.append(item)
+              else:
                   continue
 
-              part = 1
+              md_files.sort()
+              if not md_files:
+                  print(f"Skipping {item}: No .md files found.")
+                  continue
+
+              print(f"\n=== Processing group: {target_name} ({len(md_files)} md files) ===")
+
+              # 分塊邏輯
+              chunks = []
               current_chunk = []
               current_size = 0
 
-              def build_pdf(chunk_files, folder_name, part_num, is_multi_part):
-                  part_suffix = f"_Part{part_num}" if is_multi_part else ""
-                  pdf_filename = f"{folder_name}{part_suffix}.pdf"
+              for fpath in md_files:
+                  try:
+                      fsize = os.path.getsize(fpath)
+                  except Exception as e:
+                      print(f"Could not get size for {fpath}: {e}")
+                      continue
+
+                  if current_size + fsize > MAX_CHUNK_SIZE and current_chunk:
+                      chunks.append(current_chunk)
+                      current_chunk = [fpath]
+                      current_size = fsize
+                  else:
+                      current_chunk.append(fpath)
+                      current_size += fsize
+              if current_chunk:
+                  chunks.append(current_chunk)
+
+              is_multi = len(chunks) > 1
+
+              for idx, chunk_files in enumerate(chunks, start=1):
+                  part_suffix = f"_Part{idx}" if is_multi else ""
+                  safe_target_name = target_name.replace(" ", "_").replace("/", "_")
+                  pdf_filename = f"{safe_target_name}{part_suffix}.pdf"
                   pdf_path = os.path.join(OUTPUT_DIR, pdf_filename)
-                  temp_md = f"temp_{folder_name}_{part_num}.md"
+                  temp_md = f"temp_{safe_target_name}_{idx}.md"
 
                   print(f"Generating: {pdf_filename} with {len(chunk_files)} files...")
 
@@ -77,39 +107,26 @@ jobs:
                       "--pdf-engine=xelatex",
                       "-V", "CJKmainfont=Noto Sans CJK SC",
                       "-V", "geometry:margin=1in",
-                      f"--resource-path=.:{folder_name}"
+                      "--resource-path=.:images:attachments"
                   ]
                   try:
                       subprocess.run(cmd, check=True)
-                      print(f"Successfully created {pdf_filename}")
+                      print(f"Successfully created: {pdf_filename}")
                   except subprocess.CalledProcessError as e:
                       print(f"Failed to create {pdf_filename}: {e}")
                   finally:
                       if os.path.exists(temp_md):
                           os.remove(temp_md)
 
-              # 分塊邏輯
-              chunks = []
-              for fpath in md_files:
-                  fsize = os.path.getsize(fpath)
-                  if current_size + fsize > MAX_CHUNK_SIZE and current_chunk:
-                      chunks.append(current_chunk)
-                      current_chunk = [fpath]
-                      current_size = fsize
-                  else:
-                      current_chunk.append(fpath)
-                      current_size += fsize
-              if current_chunk:
-                  chunks.append(current_chunk)
-
-              is_multi = len(chunks) > 1
-              for idx, chunk in enumerate(chunks, start=1):
-                  build_pdf(chunk, folder, idx, is_multi)
-
           EOF
+
+      - name: Verify output files
+        run: |
+          echo "Checking contents of output_pdfs:"
+          ls -la output_pdfs/
 
       - name: Upload PDFs as Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: Truchas-Notes-PDFs
-          path: output_pdfs/
+          path: output_pdfs/*
