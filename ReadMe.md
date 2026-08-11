@@ -3,7 +3,7 @@
 ## Buoy-Wave Interaction
 [_Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/浮標隨波性模擬.md)
 
-| ![\|425](pics/image116.gif) | ![Buoy\|425](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/pics/Buoy.gif) |
+| ![\|425](pics/image116.gif) | ![Buoy\|425](pics/Buoy.gif) |
 | --------------------------- | ---------------------------------------------------------- |
 
 
