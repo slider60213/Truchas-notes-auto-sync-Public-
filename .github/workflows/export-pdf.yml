@@ -1,0 +1,42 @@
+name: Convert Notes to Categorized PDFs
+
+on:
+  workflow_dispatch: # 支援在 GitHub 網頁手動點擊執行
+
+jobs:
+  build-pdf:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Pandoc and LaTeX
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex texlive-fonts-recommended texlive-lang-chinese
+
+      - name: Create output directory
+        run: mkdir -p output_pdfs
+
+      - name: Convert each root folder to separate PDF
+        run: |
+          # 尋找根目錄下的所有資料夾，分別打包轉成 PDF
+          for dir in */; do
+            if [ -d "$dir" ] && [ "$dir" != ".github/" ] && [ "$dir" != "output_pdfs/" ]; then
+              folder_name=$(basename "$dir")
+              echo "Processing folder: $folder_name"
+              
+              # 收集該資料夾內的所有 .md 檔案並轉為 PDF
+              find "$dir" -name "*.md" | sort | xargs pandoc -o "output_pdfs/${folder_name}.pdf" \
+                --pdf-engine=xelatex \
+                -V CJKmainfont="Noto Sans CJK SC" \
+                -V geometry:margin=1in \
+                --resource-path=.:"$dir" || true
+            fi
+          done
+
+      - name: Upload PDFs as Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: Truchas-Notes-PDFs
+          path: output_pdfs/*.pdf
