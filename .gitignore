@@ -15,7 +15,7 @@ Zotero/
 *.tar
 
 # 排除 Note merged
-*-merged
+*-merged*
 
 # 排除暫存畫布（如果你不想同步的話）
 *.canvas
