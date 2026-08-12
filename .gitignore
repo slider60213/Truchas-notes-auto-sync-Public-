@@ -1,7 +1,10 @@
 # 排除 Obsidian 的系統雜物
 .obsidian/
-.pandoc
+.pandoc/
+.copilot/
+.agents/
 .trash/
+.*/
 tmp/
 copilot/
 Excalidraw/
