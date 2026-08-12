@@ -2393,7 +2393,7 @@ with open("pier.msh", "r") as f:
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-024.png)
+![上傳圖片預覽](../../../../B.%20VFIFE%201/00_AI%20CHAT/Gemini/Gemini_Gmsh-GUI-設定建議/pics/img-024.png)
 
 像這樣嗎？ 這些選項勾選會怎麼樣？
 VERSION 2 跟 4 主要差在哪？

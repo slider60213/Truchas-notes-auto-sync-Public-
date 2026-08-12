@@ -8,7 +8,7 @@
 
 VFIFE\src\input\lin_solver_input.F90：`UBIK_PRESSURE_DEFAULT`
 VFIFE、DEM、2.0.2、2.5.3預設皆為fgmres+jacobi
-> ![](pics/Pasted%20image%2020260317174219.png)
+> ![](../../../../B.%20VFIFE%201/00_AI%20CHAT/Gemini/Gemini_螺線型速度場定義與命名/pics/Pasted%20image%2020260317174219.png)
 
 | solver                 | fgmres | fgmres |
 | :--------------------- | :----- | :----- |

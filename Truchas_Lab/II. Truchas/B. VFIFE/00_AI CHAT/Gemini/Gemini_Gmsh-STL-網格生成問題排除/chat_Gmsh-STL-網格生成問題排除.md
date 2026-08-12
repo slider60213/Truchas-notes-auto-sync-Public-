@@ -3590,7 +3590,7 @@ if __name__ == "__main__":
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-019.jpg)
+![上傳圖片預覽](../../../../B.%20VFIFE%201/00_AI%20CHAT/Gemini/Gemini_Gmsh-STL-網格生成問題排除/pics/img-019.jpg)
 
 我拿另一個stl檔，做了三個不同大小的版本當對比，我發現原始建模有缺口，即使經過剛剛的Meshlab操作還是沒有被填補 這部份怎麼處理呢？
 

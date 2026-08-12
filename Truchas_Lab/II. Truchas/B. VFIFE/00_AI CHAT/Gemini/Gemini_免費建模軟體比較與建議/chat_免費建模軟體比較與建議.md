@@ -738,7 +738,7 @@ sudo apt install gedit
 
 ![上傳圖片預覽](../../../Gemini_Fortran-程式碼重構與優化/pics/img-002.png)
 
-![上傳圖片預覽](pics/img-003%201.png)
+![上傳圖片預覽](../../../../B.%20VFIFE%201/00_AI%20CHAT/Gemini/Gemini_免費建模軟體比較與建議/pics/img-003%201.png)
 
 點擊中間繪圖區，按 "1" (鍵盤數字) 可以自動縮放視角看見物體。
 我按了沒反應 是不是版本的問題？
@@ -810,9 +810,9 @@ Cylinder(2) = {L + Offset, L/2, 0, 0, 0, H, L/2, 2*pi};
 
 *[This turn includes uploaded images]*
 
-![上傳圖片預覽](pics/img-004%201.png)
+![上傳圖片預覽](../../../../B.%20VFIFE%201/00_AI%20CHAT/Gemini/Gemini_免費建模軟體比較與建議/pics/img-004%201.png)
 
-![上傳圖片預覽](pics/img-005%201.png)
+![上傳圖片預覽](../../../../B.%20VFIFE%201/00_AI%20CHAT/Gemini/Gemini_免費建模軟體比較與建議/pics/img-005%201.png)
 
 我查了一下鍵位表，你說的是不是shift+Ctrl+V?是不是因為這是LINUX版所以跟你知道的快捷鍵不一樣？能改嗎？
 
