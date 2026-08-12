@@ -42,19 +42,6 @@ All related research progress, updates, and simulation logs can be found in the 
 
 ```text
 .
-├── copilot/
-│   ├── copilot-conversations/
-│   └── skills/
-│       ├── copilot-fetch-x/
-│       ├── copilot-read-pdf/
-│       ├── copilot-web-fetch/
-│       ├── copilot-web-search/
-│       ├── copilot-youtube-transcript/
-│       ├── json-canvas/
-│       ├── obsidian-bases/
-│       ├── obsidian-cli/
-│       ├── obsidian-markdown/
-│       └── symposium-publish/
 ├── Excalidraw/
 │   └── pics/
 ├── LongForm/
