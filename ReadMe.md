@@ -72,4 +72,4 @@ All related research progress, updates, and simulation logs can be found in the 
 
 ![](pics/timeline_vertical%208.png)
 
-![](pics/timeline_gantt%205.png)
+![](pics/timeline_gantt.png)
