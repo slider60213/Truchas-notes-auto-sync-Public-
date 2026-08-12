@@ -1,4 +1,4 @@
-# 0. Truchas Lab Research Showcase
+#  Truchas Lab Research Showcase
 
 ## Buoy-Wave Interaction
 [_Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/浮標隨波性模擬.md)
@@ -25,20 +25,10 @@
 
 
 
-# 1. Research Progress
+# Research Progress
 All related research progress, updates, and simulation logs can be found in the `Truchas_Lab` directory.
 
-# 2. Rendering & Layout Compatibility
-- Due to updates in GitHub's Markdown rendering engine, certain legacy inline styling (such as custom text positioning, colors, and specific image dimensions) may not display correctly directly on Github.  
-	  > **Recommended Viewing:** For optimal formatting and full styling support, please clone or download the repository and view the `.md` files using **Obsidian** (Recommended) or **VS Code**.
-
-# 3. Anchor Navigation & Deep Linking
-- Some internal page jump links (anchors) may not land precisely on the target header due to Markdown rendering differences.
-- If the navigation falls short, please check the target section anchor in the URL bar (e.g., `#turn-40`) and locate the corresponding section manually (e.g., search for **Turn 40** in the text).
-
-
-
-# 4. Directory Structure
+# Directory Structure
 
 ```text
 .
@@ -67,9 +57,19 @@ All related research progress, updates, and simulation logs can be found in the 
 
 ```
 
-# 5. Timeline
+#  Timeline of Repo
 
 
 ![](pics/timeline_vertical%208.png)
 
 ![](pics/timeline_gantt.png)
+
+
+# FYI: 
+## Rendering & Layout Compatibility
+- Due to updates in GitHub's Markdown rendering engine, certain legacy inline styling (such as custom text positioning, colors, and specific image dimensions) may not display correctly directly on Github.  
+	  > **Recommended Viewing:** For optimal formatting and full styling support, please clone or download the repository and view the `.md` files using **Obsidian** (Recommended) or **VS Code**.
+
+## Anchor Navigation & Deep Linking
+- Some internal page jump links (anchors) may not land precisely on the target header due to Markdown rendering differences.
+- If the navigation falls short, please check the target section anchor in the URL bar (e.g., `#turn-40`) and locate the corresponding section manually (e.g., search for **Turn 40** in the text).
