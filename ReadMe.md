@@ -43,9 +43,22 @@ All related research progress, updates, and simulation logs can be found in the 
 ```text
 .
 ├── copilot/
-│   └── copilot-conversations/
+│   ├── copilot-conversations/
+│   └── skills/
+│       ├── copilot-fetch-x/
+│       ├── copilot-read-pdf/
+│       ├── copilot-web-fetch/
+│       ├── copilot-web-search/
+│       ├── copilot-youtube-transcript/
+│       ├── json-canvas/
+│       ├── obsidian-bases/
+│       ├── obsidian-cli/
+│       ├── obsidian-markdown/
+│       └── symposium-publish/
 ├── Excalidraw/
 │   └── pics/
+├── LongForm/
+│   └── 論文大綱_V01/
 ├── Note Templates/
 ├── Note Test/
 │   └── pics/
@@ -59,10 +72,10 @@ All related research progress, updates, and simulation logs can be found in the 
     │   ├── C. Code Editor 程式編輯器/
     │   └── D. AI Tools  AI 工具/
     ├── II. Truchas/
-    │   ├── A. 成果合輯/
+    │   ├── A. Research Results/
     │   ├── B. VFIFE/
     │   ├── C. Truchsa-WSL/
-    │   └── D. 2.5.3版/
+    │   └── D. 160-Truchas-2.5.3/
     └── III. COMCOT/
 
 ```
