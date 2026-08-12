@@ -68,7 +68,7 @@ All related research progress, updates, and simulation logs can be found in the 
 ```
 
 # 5. Timeline
-![](pics/timeline_vertical%204.png)
 
+![](pics/timeline_vertical%205.png)
 
 ![](pics/timeline_gantt%205.png)
