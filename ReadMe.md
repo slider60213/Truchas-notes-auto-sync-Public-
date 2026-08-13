@@ -4,17 +4,16 @@
 [_Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/浮標隨波性模擬.md)
 
 | ![\|425](pics/image116.gif) | ![Buoy\|425](pics/Buoy.gif) |
-| --------------------------- | ---------------------------------------------------------- |
+| --------------------------- | --------------------------- |
+|                             |                             |
 
-
----
 ## Guishan Island Lanslide
 [_Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/龜山島山崩海嘯.md)
 
 | ![\|425](pics/Guishan_SideView.gif) | ![\|425](pics/Guishan_TopView.gif) |
 | ----------------------------------- | ---------------------------------- |
 
----
+
 ## Guandu Bridge Local Scour
 [_Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/關渡橋局部沖刷.md)
 
@@ -23,7 +22,7 @@
 
 <div style="height: 3px; background-color: #0076ff; margin: 20px 0;"></div>
 
-
+---
 
 
 # Release Structure
