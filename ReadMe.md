@@ -27,26 +27,26 @@
 This repository contains multiple research components and experimental environments. Please refer to the directory below to find and download the corresponding source code, pre-built environments, or data tools.
 
 ### 🐧 WSL & Virtualization Environments
-*   ** `[WSL-LXD]` Linux Containers Setup** 
+*   **`[WSL-LXD]` Linux Containers Setup** 
     *   *Description:* Advanced virtualization environment configuration for Truchas.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Truchas-WSL)
-*   ** `[WSL-GUI]` Graphical Interface**
+*   **`[WSL-GUI]` Graphical Interface**
     *   *Description:* GUI integration for managed Truchas-WSL workflows.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Truchas-WSL-GUI)
-*   ** `[WSL-Only]` Core WSL Environment**
+*   **`[WSL-Only]` Core WSL Environment**
     *   *Description:* Basic WSL setup and initialization scripts for research replication.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Truchas-WSL-only)
-*   ** `[LXD-Only]` LXD Environment**
+*   **`[LXD-Only]` LXD Environment**
     *   *Description:* Standalone LXD container configurations designed to be integrated and combined with the WSL environment.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Truchas-WSL-LXD)
 
 ### 🤖 Core Agents & Utilities
-*   ** `[WSL-Agent]` Communication Agent**
+*   **`[WSL-Agent]` Communication Agent**
     *   *Description:* Background daemon managing host-to-guest communications.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Truchas-WSL-agent)
 
 ### 📊 Data Processing & Analysis (Matlab)
-*   ** `[Matlab] GMV Plotter` **
+*   **`[Matlab] GMV Plotter`**
     *   *Description:* Post-processing toolbox utilized for plotting and analyzing GMV simulation data.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Matlab-GMV_Plotter)
 
