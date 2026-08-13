@@ -1,4 +1,4 @@
-#  Truchas Lab Research Showcase
+#  ．Truchas Lab Research Showcase
 
 ## Buoy-Wave Interaction
 [_Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/浮標隨波性模擬.md)
@@ -20,10 +20,7 @@
 | ![\|425](pics/image140.gif) | ![\|425](pics/image141.gif) |
 | --------------------------- | --------------------------- |
 
-<div style="height: 3px; background-color: #0076ff; margin: 20px 0;"></div>
-
 ---
-
 
 # Release Structure
 
@@ -53,16 +50,7 @@ This repository contains multiple research components and experimental environme
     *   *Description:* Post-processing toolbox utilized for plotting and analyzing GMV simulation data.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Matlab-GMV_Plotter)
 
-<svg width="100%" height="3" xmlns="http://w3.org">
-  <defs>
-    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#0076ff" />
-      <stop offset="50%" stop-color="#00d4ff" />
-      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
-    </linearGradient>
-  </defs>
-  <rect width="100%" height="3" fill="url(#blueGrad)" />
-</svg>
+---
 
 # Directory Structure
 
@@ -93,7 +81,7 @@ This repository contains multiple research components and experimental environme
 
 ```
 
-<div style="height: 3px; background: linear-gradient(to right, #0076ff, #00d4ff, transparent); margin: 20px 0;"></div>
+---
 
 #  Timeline of Repo
 
@@ -102,7 +90,7 @@ This repository contains multiple research components and experimental environme
 
 ![](pics/timeline_gantt.png)
 
-<div style="height: 3px; background: linear-gradient(to right, #0076ff, #00d4ff, transparent); margin: 20px 0;"></div>
+---
 
 # FYI: 
 ## Rendering & Layout Compatibility
