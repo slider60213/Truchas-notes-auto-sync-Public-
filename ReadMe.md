@@ -21,7 +21,8 @@
 | ![\|425](pics/image140.gif) | ![\|425](pics/image141.gif) |
 | --------------------------- | --------------------------- |
 
-<div style="height: 3px; background: linear-gradient(to right, #0076ff, #00d4ff, transparent); margin: 20px 0;"></div>
+<div style="height: 3px; background-color: #0076ff; margin: 20px 0;"></div>
+
 
 
 
@@ -53,7 +54,16 @@ This repository contains multiple research components and experimental environme
     *   *Description:* Post-processing toolbox utilized for plotting and analyzing GMV simulation data.
     *   *Latest Download:* [👉 Release Link](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Matlab-GMV_Plotter)
 
-<div style="height: 3px; background: linear-gradient(to right, #0076ff, #00d4ff, transparent); margin: 20px 0;"></div>
+<svg width="100%" height="3" xmlns="http://w3.org">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0076ff" />
+      <stop offset="50%" stop-color="#00d4ff" />
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="100%" height="3" fill="url(#blueGrad)" />
+</svg>
 
 # Directory Structure
 
