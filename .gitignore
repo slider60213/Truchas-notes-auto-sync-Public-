@@ -1,21 +1,13 @@
-# 排除 Obsidian 的系統雜物
-.obsidian/
-.pandoc/
-.copilot/
-.agents/
-.trash/
-.*/
+# 排除特定筆記
+consistency-report.md
+
+# 排除特定資料夾
 tmp/
 copilot/
 Excalidraw/
 Zotero/
 投稿/
 常用梗圖/
-*.7z
-*.mp4
-*.zip
-*.pdf
-*.tar
 
 # 排除 Note merged
 *-merged*
@@ -24,14 +16,22 @@ LongForm/
 # 排除暫存畫布（如果你不想同步的話）
 *.canvas
 
-# Ignore Smart Environment folder
-.smart-env
+# 排除 Obsidian 的系統雜物
+#.obsidian/
+#.pandoc/
+#.copilot/
+#.agents/
+#.trash/
+#.smart-env
+.*/
 
 # 務必排除如果巨大數據檔（如 .h5, .out, .vtk）
 # 否則會導致 GitHub 空間爆滿上傳失敗
-Truchas/**/*.h5
-Truchas/**/*.out
-Truchas/**/*.vtk
-
-# 你想要保留的
-!Truchas/**/*.md
+*.h5
+*.out
+*.vtk
+*.7z
+*.mp4
+*.zip
+*.pdf
+*.tar
