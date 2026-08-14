@@ -18,3 +18,11 @@ OpenFOAM 是一款原生為 Linux 設計的計算流體力學（CFD）軟體，�
 
 無人在意的角落裡，LANL truchas 團隊其實也於 Github 上默默推出適用於 WSL2 的版本，但其安裝步驟仍較為繁瑣，並且在操作習慣(inp 檔設置、運行命令)與程式碼(source code)上，皆與實驗室慣用的版本相去甚遠，因此幾經嘗試後，我並沒有選擇以該版本 truchas 作為實驗室程式的移植載體。
 
+## 2.2 WSL2 
+
+[WSL2](../Truchas_Lab/II.%20Truchas/C.%20Truchsa-WSL/01_WSL%20&%20LXD/01_WSL/WSL2.md)
+
+
+# 2.3 LXD
+
+[LXD_Docker_.venv](../Truchas_Lab/II.%20Truchas/C.%20Truchsa-WSL/02_Truchas-2.0.2/pics/LXD_Docker_.venv.md)
