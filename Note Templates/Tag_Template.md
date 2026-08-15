@@ -79,26 +79,34 @@ renderTree(tagTree, "");
 # 標籤分類
 ## Truchas
 
-#Truchas #Truchas/GMV軟體 #Truchas/gmv檔 #Truchas/Tecplot軟體 #Truchas/tecplot檔 #Truchas/Ensight軟體 #Truchas/ensight檔
-#Truchas/116版
-#Truchas/2-5-3版 
+#Truchas 
+#Truchas/GMV軟體 #Truchas/gmv檔 
+#Truchas/Tecplot軟體 #Truchas/tecplot檔 
+#Truchas/Ensight軟體 #Truchas/ensight檔
+#Truchas/116版 #Truchas/2-5-3版 
 #Truchas/inp檔
 
 
 ---
 ## DBM
 
-#Truchas/DBM #Truchas/DBM/Shear_stress #Truchas/DBM/Strain_rate #Truchas/DBM/Viscosity
+#Truchas/DBM 
+#Truchas/DBM/Shear_stress 
+#Truchas/DBM/Strain_rate 
+#Truchas/DBM/Viscosity
 
 
 ---
 ## VFIFE
 
-#Truchas/VFIFE #Truchas/VFIFE/Gmsh #Truchas/VFIFE/MeshLab
+#Truchas/VFIFE 
+#Truchas/VFIFE/Gmsh 
+#Truchas/VFIFE/MeshLab
 
 ---
 ## 電腦
-#電腦 #電腦/32位元 #電腦/64位元
+#電腦 
+#電腦/32位元 #電腦/64位元
 
 ---
 
@@ -109,7 +117,11 @@ renderTree(tagTree, "");
 ---
 ## AI
 
- #AI #AI/Gemini #AI/NBLM  #AI/ChatGPT #AI/Ollama
+ #AI 
+ #AI/Gemini 
+ #AI/NBLM 
+ #AI/ChatGPT 
+ #AI/Ollama
 #AI/copilot-conversation 
 
 ---
@@ -121,7 +133,10 @@ renderTree(tagTree, "");
 
 ## WINDOWS
 
- #電腦/WINDOWS #電腦/WINDOWS/windows軟體 #電腦/WINDOWS/WSL #電腦/WINDOWS/LXD
+ #電腦/WINDOWS 
+ #電腦/WINDOWS/windows軟體 
+ #電腦/WINDOWS/WSL 
+ #電腦/WINDOWS/LXD
 
 ---
 ## Obsidian

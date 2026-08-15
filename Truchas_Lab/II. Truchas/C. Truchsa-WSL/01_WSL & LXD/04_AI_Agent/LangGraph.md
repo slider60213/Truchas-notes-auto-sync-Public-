@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-02 05:03
-modified: 2026-08-14 00:30
+modified: 2026-08-15 17:11
 tags:
   - "#Truchas"
 ---
@@ -468,6 +468,7 @@ lxc exec "$target_container" -- su - user_student -c "bash -ic 'cd $target_dir &
 
 ### 👤 使用者
 
+```
 user_student@DESKTOP-KCIIFGN :~/Shane_Command/Truchas_Python_Agent$ cat .env
 # 大腦模式選擇：可填入 ollama_standard / ollama_reasoning / gemini / openai
 BRAIN_MODE=ollama_standard
@@ -504,6 +505,8 @@ return json.loads(ai_raw_text)
 except Exception as e:
 print(f"❌ [Gemini 官方通道錯誤] 模型: {model_name}, 原因: {e}")
 return {}
+```
+
 
 ### 🤖 助理
 
