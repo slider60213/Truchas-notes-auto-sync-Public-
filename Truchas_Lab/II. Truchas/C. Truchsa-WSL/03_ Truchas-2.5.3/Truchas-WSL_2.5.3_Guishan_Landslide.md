@@ -43,7 +43,7 @@ Viscosity: 1e-3
 
 WSL 10CPU      0~25個 bin: 4hr 27min
 160     4CPU     0~25個 bin: 14hr 6min
-
+160   10CPU     0~25個 bin: 
 
 ---
 # 🔗 參考資料
