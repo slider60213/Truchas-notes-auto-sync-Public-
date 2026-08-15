@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-08-12 16:05
+modified: 2026-08-15 02:51
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -80,6 +80,8 @@ wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
 # 登入 WSL
 wsl -d Truchas-Lab
 ```
+
+---
 
 ### 🎨 個人化設定
 透過 power shell 輸入 `notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`
@@ -289,5 +291,66 @@ Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker
     請謹慎使用程式碼。
     
 2. **解壓並轉換**：您可以利用 Lima 的規格檔案（YAML），將這個 `.tar` 檔指定為虛擬機的磁碟映像來源，Lima 就會直接把這個備份還原成 Mac 上的 Linux 虛擬機環境。
+
+## WSL-GMV 開啟問題
+
+### WSL2 GMV 匯入畫面問題排查
+
+**Date**: August 15, 2026 at 02:48 AM
+**Turns**: 1
+**Source**: [Gemini Chat](https://gemini.google.com/app/922f00bb0fe88a4b?android-min-version=301356232&ios-min-version=322.0&is_sa=1&campaign_id=test_autosubmit&pt=9008&mt=8)
+
+---
+
+### Turn 1
+
+#### 👤 使用者
+
+我在 WSL2移植了 GMV 軟體，並且打包整個 WSL 給其他電腦使用，為什麼有些電腦匯入後可以正常開啟 GMV，有些卻只有視窗但沒有畫面
+
+### 🤖 助理
+
+這主要是目標電腦的顯示卡驅動、OpenGL 硬體加速或 WSLg 相容性差異所導致的繪圖渲染問題。
+
+### 核心原因分析
+GMV (General Mesh Viewer) 高度依賴 **OpenGL** 進行 3D 網格與場域的繪圖渲染。當您打包 WSL2 匯入到不同電腦時，系統環境從「軟體層（Linux）」跨到了「硬體與宿主環境（Windows + 顯卡）」，常見導致「有視窗卻白屏/黑屏/無畫面」的原因有：
+
+1. **宿主電腦缺少 WSL Virtual GPU (vGPU) 驅動**
+  - WSL2 預設會透過 Mesa3D 將 OpenGL 指令轉譯給 Windows 的 GPU (DirectX 12)。若目標電腦的 Windows 顯示卡驅動太舊，或沒有安裝支援 WSL2 vGPU 的驅動程式，OpenGL 畫面就無法正常傳遞。
+2. **硬體加速渲染失敗（Direct3D 12 映射問題）**
+  - 部分整合顯示卡（例如舊款 Intel iGPU）或雙顯示卡筆電（Intel/AMD + NVIDIA）在 WSLg 的 GPU Passthrough 下，會發生繪圖 context 建立成功但無法繪製 buffer 的情況。
+3. **WSLg 與傳統 X-Server (VcXsrv/XMing) 設定衝突**
+  - 若無畫面的電腦使用的是較舊的 Windows 10（無原生 WSLg），或是環境變數 `$DISPLAY` 被指向了外部 X-Server，可能會因為 Direct Rendering (GLX) 被停用而無法顯示畫面。
+
+### 建議排查步驟
+您可以請發生問題的電腦執行以下測試，以確定是 GPU 驅動還是 OpenGL 渲染的問題：
+
+### 1. 測試 OpenGL 畫面是否能正常運作
+在 WSL2 中執行：
+
+```bash
+glxgears
+
+```
+
+- **若連齒輪畫面都沒有或同樣空白**：代表問題出在宿主電腦的 OpenGL / GPU 加速。
+- **若齒輪可以正常轉動**：代表是 GMV 專屬的 OpenGL Context 或 X11 視覺元件問題。
+
+### 2. 強制改用軟體渲染測試
+在該台電腦的 WSL2 中執行：
+
+```bash
+LIBGL_ALWAYS_SOFTWARE=1 gmv
+
+```
+
+- 如果加上 `LIBGL_ALWAYS_SOFTWARE=1` 後 **GMV 畫面就正常顯示了**，那就可以 100% 確定是該台電腦的顯示卡驅動或 WSL GPU 支援度問題。
+您可以先讓有問題的電腦嘗試上述測試，確認結果後我們再針對對應的原因調整環境設定或打包腳本！
+
+---
+
+*Exported from [Voyager](https://github.com/Nagi-ovo/voyager) *  
+*Generated on August 15, 2026 at 02:48 AM*
+
 ---
 # 🔗 參考資料
