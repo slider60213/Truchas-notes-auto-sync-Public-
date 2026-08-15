@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-16 02:06
-modified: 2026-08-16 02:19
+modified: 2026-08-16 02:47
 tags:
   - "#Truchas"
 ---
@@ -39,6 +39,10 @@ Viscosity: 1e-3
 | Top view      | ![](pics/Guishan_d2000_1e-3_VOFs_TopView_MTD3_000030.png) | ![](pics/Guishan_Landslide_VOFs_TopView_MTD3_000030.png) |
 | Side view     | ![](pics/Guishan_d2000_1e-3_VOFs_SideView_000030.png)     | ![](pics/Guishan_Landslide_VOFs_SideView_000030.png)     |
 | Water surface | ![](pics/XY_eta_from_isosurface000030.png)                | ![](pics/XY_eta_from_isosurface000030%201.png)           |
+
+
+WSL 10CPU      0~25個 bin: 4hr 27min
+160     4CPU     0~25個 bin: 14hr 6min
 
 
 ---
