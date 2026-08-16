@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-16 02:06
-modified: 2026-08-16 02:47
+modified: 2026-08-16 15:18
 tags:
   - "#Truchas"
 ---
@@ -43,7 +43,7 @@ Viscosity: 1e-3
 
 WSL 10CPU      0~25個 bin: 4hr 27min
 160     4CPU     0~25個 bin: 14hr 6min
-160   10CPU     0~25個 bin: 
+160   10CPU     0~25個 bin:  5hr 37min
 
 ---
 # 🔗 參考資料
