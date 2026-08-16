@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-16 02:06
-modified: 2026-08-17 01:32
+modified: 2026-08-17 04:01
 tags:
   - "#Truchas"
 ---
@@ -65,6 +65,8 @@ WSL  10CPU      第25個 Output 檔案:   4hr 27min
 
 This benchmark evaluates the precision and computational efficiency of migrating Truchas free-surface wave simulations from the baseline platform (Machine 160, 4 CPUs) to an expanded 10-CPU configuration and a WSL-LXD containerized environment. Results demonstrate that the WSL-LXD (10 CPU) setup dramatically reduces execution time from **14 hr 06 min to 4 hr 27 min** (achieving a 3.16x speedup). Across the 8,000 grid points, the WSL-LXD model yields a Mean Absolute Error (MAE) of merely **0.0204 m** and a coefficient of determination ($R^2$) of **0.9953**, with **99.00%** of nodes exhibiting errors under 0.1 m. The benchmark confirms that domain decomposition and OS containerization introduce negligible numerical dissipation. The isolated peak local deviation (15.0 m at grid $(1025, -875)$) stems from subtle wetting-and-drying boundary interface reconstructions rather than global physical discrepancies.
 
+
+![](pics/VOF_SPLASH_V2.png)
 
 ---
 # 🔗 參考資料
