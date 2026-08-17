@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-16 02:06
-modified: 2026-08-17 22:35
+modified: 2026-08-17 23:13
 tags:
   - "#Truchas"
 ---
@@ -39,22 +39,60 @@ Output_Dt = 5.0 s
 160   10CPU      第25個 Output 檔案:   5hr 37min
 WSL  10CPU      第25個 Output 檔案:   4hr 27min
 
+[Comp_160 vs WSL_Guishan_Island](../../../../Excalidraw/Comp_160%20vs%20WSL_Guishan_Island.md)
 
+**1. Spatial Error（空間誤差分佈圖）**
+
+- **關鍵看點**：觀察誤差在全域空間（$X, Y$ 座標）上的分佈型態與擴散狀況。
+    
+- **越準的趨勢**：
+    
+    - **底色一致性**：整張圖呈現均一的深紫色（誤差趨近於 $0$）。
+        
+    - **無區域性亮點**：亮點（綠/黃色）越少越好；若有亮點，應僅呈極少數的點狀分佈，而非大規模的帶狀或區域性亮斑（後者代表整片流場傳播方向或速度算錯）。
+        
+
+**2. Scatter Correlation（水面高程相關性散佈圖）**
+
+- **關鍵看點**：評估比較組與 Baseline 的全域水位（$\eta$）線性相關程度與整體一致性。
+    
+- **越準的趨勢**：
+    
+    - **緊貼對角線**：所有藍色資料點高度集中並**緊密重合於紅色的 $1:1$ 參考虛線**上。
+        
+    - ** $R^2$ 趨近於 $1.0000$ **：判定係數 $R^2$ 越接近 $1$（例如 $> 0.999$），代表整體水面的空間波形相關性越高。
+        
+    - **無對角線偏離**：散佈點不應出現上下不對稱的飄移（若整體偏向虛線上側或下側，代表存在系統性水位偏差 Bias）。
+        
+
+**3. Error - Gradient（誤差 vs. 水面梯度 $\vert{}\nabla \eta\vert{}$）**
+
+- **關鍵看點**：驗證數值誤差是否成功收斂在高梯度的波浪前緣（Steep Wave Front），並確定平緩水域不受影響。
+    
+- **越準的趨勢**：
+    
+    - **綠點（平緩區）貼底**：在黑色虛線左側及內部的綠點，應**全部扁平地貼在縱軸最底部（誤差接近 $0$）**。
+        
+    - **紅點（陡峭區）誤差可控**：縱軸較高的誤差點應 100% 被分類為紅點；且隨著梯度增加，紅點的縱軸高度（誤差值）越低代表越精準。
+        
+    - **趨勢符合物理**：證明「平緩區完全精準，誤差僅由波前微小相位差引起」。
+        
+
+**4. Error - Surface VOF（誤差 vs. 抽樣水面 VOF 值）**
+
+- **關鍵看點**：評估 Volume of Fluid (VOF) 自由液面捕捉技術在數值重構水面（等值面 $0.49$）時的數值穩定度。
+    
+- **越準的趨勢**：
+    
+    - **集中於 Target VOF 兩側**：資料點應高度緊貼紅色虛線（VOF $= 0.49$），代表等值面萃取位置精確。
+        
+    - **縱軸誤差低**：在 VOF $= 0.49$ 附近的資料點，其縱軸（絕對誤差）越接近 $0$ 越好。
+        
+    - **無低梯度大誤差**：深藍色/綠色（低梯度）的點不應出現在縱軸高處，確保只有高梯度界面（黃色點）才會產生輕微過渡誤差。
 
 - WSL 多核心數模擬展現出與機台160媲美的成果，並且速度上略勝一籌。
 - 繪圖上 DBM-Landslide 的分布位置與傳播軌跡基本一致。
 - 水位數據差異是平行運算（MPI 核心數不同）搭配浮點數精度累積誤差造成的正常現象。
-
-|                          | 160-報告<br>(4 CPU)                                                      | 160 <br>(4 CPU)                                                           | 160<br>(10 CPU)                                                           | WSL<br>(10 CPU)                                                  |
-| ------------------------ | ---------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| Runtime                  | N/A                                                                    | 14hr 6min                                                                 | 5hr 37min                                                                 | 4hr 27min                                                        |
-| Top<br>view              | ![\|200](pics/Guishan_d2000_1e-3_new_VOFs_TopView_MTD3_000025%201.png) | ![\|200](pics/Guishan_d2000_1e-3_new_VOFs_TopView_MTD3_000025%202.png)    | ![\|200](pics/Guishan_d2000_1e-3_new_VOFs_TopView_MTD3_000025%203.png)    | ![\|200](pics/Guishan_Landslide_VOFs_TopView_MTD3_000025.png)    |
-| Side<br>view             | ![\|200](pics/Guishan_d2000_1e-3_new_VOFs_SideView_000025%201.png)     | ![\|200](pics/Guishan_d2000_1e-3_new_VOFs_SideView_000025%202.png)        | ![\|200](pics/Guishan_d2000_1e-3_new_VOFs_SideView_000025%203.png)        | ![\|200](pics/Guishan_Landslide_VOFs_SideView_000025.png)        |
-| Water<br>surface         | ![\|200](pics/Guishan_d2000_1e-3_new_WaterSurface_TopView_000025.png)  | ![\|200](pics/Guishan_d2000_1e-3_new_WaterSurface_TopView_000025%201.png) | ![\|200](pics/Guishan_d2000_1e-3_new_WaterSurface_TopView_000025%202.png) | ![\|200](pics/Guishan_Landslide_WaterSurface_TopView_000025.png) |
-| Water<br>surface<br>data | ![\|200](pics/Pasted%20image%2020260816233211.png)                     | ![\|200](pics/Pasted%20image%2020260816233229.png)                        | ![\|200](pics/Pasted%20image%2020260816233412.png)                        | ![\|200](pics/Pasted%20image%2020260816233545.png)               |
-| Scatter<br>correlation   |                                                                        | ![\|200](pics/Scatter_Correlation_160_4_CPU.png)                          | ![\|200](pics/Scatter_Correlation_160_10_CPU.png)                         | ![\|200](pics/Scatter_Correlation_WSL_LXD_10_CPU.png)            |
-| Spatial<br>error         |                                                                        | ![\|200](pics/Spatial_Error_160_4_CPU.png)                                | ![\|200](pics/Spatial_Error_160_10_CPU.png)                               | ![\|200](pics/Spatial_Error_WSL_LXD_10_CPU.png)                  |
-
 
 ### **算力升級與環境移轉效益驗證 (HPC & Environment Migration Benchmark)**
 
