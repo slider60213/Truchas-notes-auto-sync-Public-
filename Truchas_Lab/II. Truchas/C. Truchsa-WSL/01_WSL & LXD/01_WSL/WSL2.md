@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-08-15 02:51
+modified: 2026-08-18 11:36
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
