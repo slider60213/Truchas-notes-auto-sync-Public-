@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-16 02:06
-modified: 2026-08-17 23:13
+modified: 2026-08-18 11:11
 tags:
   - "#Truchas"
 ---
@@ -35,9 +35,10 @@ mud density: 2000 kg/m $^3$
 Viscosity: 1e-3
 Output_Dt = 5.0 s
 比較第25個 Output 檔案 (t=125.0 s)
-160     4CPU      第25個 Output 檔案: 14hr 6min
-160   10CPU      第25個 Output 檔案:   5hr 37min
-WSL  10CPU      第25個 Output 檔案:   4hr 27min
+160     4CPU      第25個 Output 檔案(.bin) : 14hr 6min
+160   10CPU      第25個 Output 檔案(.bin) :   5hr 37min
+WSL    4CPU      第25個 Output 檔案(.bin) :   5hr 48min
+WSL  10CPU      第25個 Output 檔案(.bin) :   4hr 27min
 
 [Comp_160 vs WSL_Guishan_Island](../../../../Excalidraw/Comp_160%20vs%20WSL_Guishan_Island.md)
 
