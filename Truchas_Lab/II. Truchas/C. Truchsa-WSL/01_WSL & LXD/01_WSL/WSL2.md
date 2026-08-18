@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-08-18 15:15
+modified: 2026-08-18 23:56
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -53,6 +53,8 @@ WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是�
 | **相容性**                                                                                                                                                                                                                                            | 無法執行需要完整內核的軟體（如 Docker）       | 100% 完整 Linux 系統相容性       |
 
 ### 🚀 如何快速安裝？
+
+![](pics/Pasted%20image%2020260818235636.png)
 
 在 Windows 10 (2004 以上) 或 Windows 11 中，只需**以系統管理員身分**開啟 PowerShell 或命令提示字元（CMD），輸入以下指令即可一鍵完成安裝：
 
