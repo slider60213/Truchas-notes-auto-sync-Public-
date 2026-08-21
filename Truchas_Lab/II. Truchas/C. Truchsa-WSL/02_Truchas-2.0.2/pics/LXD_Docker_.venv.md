@@ -4,24 +4,43 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-11 20:09
-modified: 2026-08-21 15:14
+modified: 2026-08-21 15:40
 tags:
   - "#Truchas"
 ---
 
 
 
-## 📌 摘要與目標
-- 
+## 📌 核心問題：為什麼是 LXD？
 
-## 🧪 模擬參數 (若適用)
-- **Case ID**: 
-- **Solver**: 
-- **Mesh Size**: 
+### 💡 Why LXD over Docker?
+
+Legacy scientific software like Truchas requires an integrated toolchain (Gmsh for meshing, GMV for visualization). **LXD (System Containers)** was chosen over Docker for four engineering reasons:
+
+* **Monolithic Toolchain Support**: Unlike Docker's single-process design, LXD provides a full `systemd` environment, allowing multiple heavy simulation packages to co-exist and interact natively without bloating a Dockerfile.
+* **Seamless GPU/X11 Pipeline**: LXD's system-level hardware mapping allows Truchas, Gmsh, and GMV to share a single configured graphical pipeline back to WSL2 automatically, eliminating Docker's complex runtime flags for X11.
+* **Stateful Research Environment**: Scientific workflows are highly dynamic. LXD is stateful by design, meaning students can modify `.bashrc` and save simulation states permanently without dealing with Docker’s volume permission traps (root ownership issues).
+* **Linux Mastery for Students**: LXD acts exactly like a regular Ubuntu server. It serves as a persistent playground for students to practice sysadmin tasks and customize their engineering workstations.
+* **Identical Kernel Limits (No Double Testing)**: Both Docker and LXD share the same WSL2 Linux kernel. If a legacy dependency crashes due to modern kernel system calls, it fails identically in both. Since the core compatibility limits were already verified and patched via compiler re-configuration in LXD, testing in Docker is redundant.
+
+
+### 💡 為什麼選擇 LXD 而不是 Docker？
+
+科學模擬（Truchas）需要一整套完整的工具鏈（包含前處理 Gmsh、後處理 GMV）。我們選擇 LXD（系統容器）而非 Docker 的核心原因如下：
+
+* **完整的科學運算環境**：LXD 提供具備 `systemd` 的完整作業系統，允許 Truchas、Gmsh、GMV 多個重型軟體原生共存、互相呼叫，避免 Docker 容易遇到的相依性地獄。
+* **完美的圖形畫面（X11）共享**：LXD 擁有成熟的系統級硬體映射。只要設定一次 GPU 通道，裡面所有圖形化軟體都能直接把模擬畫面傳回 WSL，不需要為每個工具單獨修改複雜的 Docker 啟動指令。
+* **檔案永久保存，無權限問題**：LXD 具備持久性（Stateful）。學生今天微調的 `.bashrc`、編譯到一半的檔案都會永久保存。這避開了 Docker 自動化掛載時，極易產生的「路徑限制」與「檔案變成 root 權限地獄」。
+* **擬真的 Linux 練習場**：LXD 的操作體驗跟真正的獨立伺服器一模一樣，能讓學生在做研究的同時，真正累積個人化的環境設定，並學會如何當一個 Linux Power User。
+* **核心共用，免去 Docker 無謂測試**：Docker 與 LXD 都共用 WSL2 的 Linux 核心。當舊套件與現代核心發生底層相容性衝突時，兩者表現完全一致。本專案已在 LXD 中摸清核心邊界並修正編譯器，因此完全不需浪費時間去 Docker 重複測試。
+
+
+
+---
 
 ## 📝 內容紀錄
 
-### 1. 為什麼用 LXD？
+### 1.  LXD 跟 Docker 差異？
 ![](pics/Pasted%20image%2020260511201551.png)
 
 這是一個非常經典的問題。雖然兩者都使用 Linux 核心技術（如 Namespaces 和 Cgroups），但它們的**設計哲學**與**使用目的**完全不同。
