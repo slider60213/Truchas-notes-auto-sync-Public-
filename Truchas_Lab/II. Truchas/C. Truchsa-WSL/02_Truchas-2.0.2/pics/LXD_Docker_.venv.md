@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-11 20:09
-modified: 2026-05-13 02:55
+modified: 2026-08-21 15:14
 tags:
   - "#Truchas"
 ---
@@ -72,6 +72,11 @@ tags:
 deactivate
 ```
 
+因為太難記了，我把登入跟退出的指令改成
+```
+登入：venv
+退出：venv_exit
+```
 ![](pics/Pasted%20image%2020260513025542.png)
 ---
 ## 🔗 參考資料
