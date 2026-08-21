@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-11 20:09
-modified: 2026-08-21 15:40
+modified: 2026-08-21 15:56
 tags:
   - "#Truchas"
 ---
@@ -82,7 +82,33 @@ Legacy scientific software like Truchas requires an integrated toolchain (Gmsh f
 
 ### 2. 為什麼用.venv
 
-![](pics/Pasted%20image%2020260511200957.png)
+在科學運算和模擬的領域中（例如你的 Truchas 專案），這是一種非常經典且高明的**組合拳搭配（Hybrid Architecture）**：
+
+- **LXD（大盒子）**：負責承載**系統級的重型依賴**（如舊版 GCC 編譯器、Mesa 3D 繪圖庫、Gmsh 底層套件）。
+- **venv（小盒子）**：在 LXD 內部負責**精準切換不同的 Python 版本與套件**（如有些模擬腳本要 Python 2.7，有些自動化分析要 Python 3.7）。
+
+以下為你詳細拆解為什麼在 LXD 裡面搭配 `venv` 是一個完美的科研環境架構：
+
+---
+
+🎨 用你的脈絡來還原這個「組合拳」場景
+
+假設你在 LXD 容器（Ubuntu）裡面做研究，遇到了這個嚴苛的相容性問題：
+
+1. **Truchas 核心**：需要舊版的 Linux 繪圖庫，你已經在 LXD 系統裡裝好了。
+2. **網格分析腳本 A**：是 10 年前的老學長寫的，必須在 **Python 2.7** 下跑 `numpy==1.10`。
+3. **數據視覺化腳本 B**：是現代開源社群寫的，必須在 **Python 3.7** 下跑 `matplotlib==3.x`。
+
+❌ 錯誤的做法（不用 venv，直接污染 LXD 系統）：
+
+如果你不用 `venv`，直接在 LXD 系統裡用 `pip install` 盲目安裝，新版的套件會直接覆蓋掉舊版的套件，導致「執行腳本 B 時，腳本 A 就崩潰；修好腳本 A 時，腳本 B 又動不了」。這就是典型的 **Python 套件地獄**。
+
+⭕ 正確的做法（LXD 內建 venv 臨時開關）：
+
+你在這個 LXD 系統裡面同時保留 Python 2.7 與 Python 3.7（Linux 系統允許安裝多個 Python 版本，彼此不衝突）。
+
+- **當你需要跑老學長的網格分析（開啟開源開關 A）**：
+- **當你需要跑現代的數據視覺化（開啟開源開關 B）**：
 
 ### 3. 要怎麼退出.venv
 
@@ -97,6 +123,8 @@ deactivate
 退出：venv_exit
 ```
 ![](pics/Pasted%20image%2020260513025542.png)
+
 ---
+
 ## 🔗 參考資料
 -

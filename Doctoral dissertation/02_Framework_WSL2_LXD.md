@@ -23,6 +23,10 @@ OpenFOAM 是一款原生為 Linux 設計的計算流體力學（CFD）軟體，�
 [WSL2](../Truchas_Lab/II.%20Truchas/C.%20Truchsa-WSL/01_WSL%20&%20LXD/01_WSL/WSL2.md)
 
 
-# 2.3 LXD
+## 2.3 System Container (LXD) vs. Application Container (Docker)
 
 [LXD_Docker_.venv](../Truchas_Lab/II.%20Truchas/C.%20Truchsa-WSL/02_Truchas-2.0.2/pics/LXD_Docker_.venv.md)
+
+過去在實驗室機台進行模擬，需要由管理員在主機台開設個人帳號，完成後會有一個自己專屬的 LINUX 系統來安裝 Truchas, 常用軟體如 GMV, Tecplot, MATLAB 等，學生會在機台上進行編譯、模擬及繪圖，隨著時代發展，MATLAB、Tecplot 等軟體也隨著 Windows 版本推進而持續更新，為了獲得新版本的使用效能，流程改為將模擬檔案下載至 Windows 系統的個人電腦，修改程式碼亦多在 Windows 系統上進行，然而這套流程其實有許多隱患，首先就是移動檔案，若檔案容量過大常常耗費時間在等待檔案傳輸；其次是換行符號問題，Windows 介面編輯程式碼時，常常會因為 Windows 換行符號 (CRLF = `\r\n`) 與 Linux 換行符號 (LF = `\n` ) 的不相容，導致 Linux 系統或模擬軟體（如 Truchas）在解析檔案時出錯，進而拋出 `\r: command not found` 或解析失敗等隱形 Bug；而最後也是最根源的問題就是機台環境過時，更新機台的 LINUX 環境並不困難，但由於 Truchas 編譯所依賴的平行運算套件與編譯套件版本過舊(如 PGSLib、Chaco、Ubiksolve、GCC ...），因此機台環境被迫限制在能兼容上述套件的環境．並且部分編譯邏輯被寫定在文件深處，因此可謂牽一髮而動全身，無論從技術層面或實際效益而言，將各套件升級至新版本絕不是合適的方案，再退一萬步說，即使真的成功升級，二十年後隨著 Windows 版本迭代又會面臨相同的問題。因此，合理的解決方案只有兩個，一是完全轉換成 Windows 版本，但這會面臨前面說的編譯邏輯修復問題，更重要的是舊版 Truchas 依賴的平行運算庫（如 MPI）在 Windows 下存在嚴重的執行緒排程效能衰退，且舊時代後處理工具（如 GMV）高度依賴 Linux 的 POSIX 與 X11 圖形渲染管線，在 Windows 環境下缺乏原生支援，會導致圖形化介面完全無法啟動，再加上強行 Windows 化將使專案完全脫離主流科學計算的 Linux 開源生態系（導致未來難以整合如 Gmsh 網格生成、ParaView 巨量資料視覺化、OpenFOAM 流體力學模擬等 Linux 原生工程軟體，且無法直接串接 PETSc 等高效能平行代數求解器，使專案淪為無法引進開源社群資源與工業標準的技術孤島），最後剩下的方案只有一個，打包到 WSL2 上！
+
+---
