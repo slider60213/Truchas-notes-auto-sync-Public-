@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-08-18 23:56
+modified: 2026-08-21 15:01
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -56,7 +56,7 @@ WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是�
 
 ![](pics/Pasted%20image%2020260818235636.png)
 
-在 Windows 10 (2004 以上) 或 Windows 11 中，只需**以系統管理員身分**開啟 PowerShell 或命令提示字元（CMD），輸入以下指令即可一鍵完成安裝：
+在 Windows 10 (2004 以上) 或 Windows 11 中，只需 **<font color="#ffc000">以系統管理員身分</font>** 開啟 PowerShell 或命令提示字元（CMD），輸入以下指令即可一鍵完成安裝：
 
 
 ```
@@ -86,170 +86,69 @@ wsl -d Truchas-Lab
 ---
 
 ### 🎨 個人化設定
-透過 power shell 輸入 `notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`
-會跳出 `setting.json` 可於其中設定 WSL 的個人配置，以下內容僅供參考，複製貼上無用必須針對個人電腦調整。
+透過 power shell 輸入
+```
+notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
+```
+
+會跳出 `setting.json` 可於其中設定 WSL 的個人配置，以下內容僅供參考，複製貼上<font color="#ffc000">// 3. 多環境清單以上</font>的部分後，更換<font color="#ffc000">**★ 請修改此處 ★**</font>的內容。
+
 ```
 {
-    "$help": "https://aka.ms/terminal-documentation",
-    "$schema": "https://aka.ms/terminal-profiles-schema",
-    "actions": 
-    [
-        {
-            "command": 
-            {
-                "action": "splitPane",
-                "split": "auto",
-                "splitMode": "duplicate"
-            },
-            "id": "User.splitPane.A6751878"
-        },
-        {
-            "command": "find",
-            "id": "User.find"
-        },
-        {
-            "command": "paste",
-            "id": "User.paste"
-        },
-        {
-            "command": 
-            {
-                "action": "copy",
-                "singleLine": false
-            },
-            "id": "User.copy.644BA8F2"
-        }
-    ],
-    "copyFormatting": "none",
-    "copyOnSelect": false,
-    "defaultProfile": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+    "$help": "https://aka.ms",
+    "$schema": "https://aka.ms",
+    
+    // 1. 快捷鍵設定：提升操作效率
     "keybindings": 
     [
-        {
-            "id": "User.paste",
-            "keys": "ctrl+v"
-        },
-        {
-            "id": "User.find",
-            "keys": "ctrl+shift+f"
-        },
-        {
-            "id": "User.copy.644BA8F2",
-            "keys": "ctrl+c"
-        },
-        {
-            "id": "User.splitPane.A6751878",
-            "keys": "alt+shift+d"
-        }
+        { "id": "User.paste", "keys": "ctrl+v" },
+        { "id": "User.find", "keys": "ctrl+shift+f" },
+        { "id": "User.copy.644BA8F2", "keys": "ctrl+c" },
+        { "id": "User.splitPane.A6751878", "keys": "alt+shift+d" } // 快速自動分割視窗
     ],
-    "newTabMenu": 
-    [
-        {
-            "type": "remainingProfiles"
-        }
+    
+    "actions": [
+        { "command": { "action": "splitPane", "split": "auto", "splitMode": "duplicate" }, "id": "User.splitPane.A6751878" },
+        { "command": "find", "id": "User.find" },
+        { "command": "paste", "id": "User.paste" },
+        { "command": { "action": "copy", "singleLine": false }, "id": "User.copy.644BA8F2" }
     ],
+
+    // 2. 視覺外觀設定：所有終端機環境皆會自動繼承此處的視覺預設值
     "profiles": 
     {
-        // 所有終端機環境（WSL、PowerShell、CMD）皆會自動繼承此處的視覺預設值
         "defaults": 
         {
-            // [變數 1] 圖片路徑：請確保路徑中的斜線為雙反斜線 \\
-            "backgroundImage": "C:\\Users\\user\\Desktop\\Truchas_App_Project\\theme\\loading\\Truchas Slider.png",
+            // ★ 請修改此處 ★ 請替換成您個人電腦中的圖片絕對路徑（注意：路徑中的斜線必須是雙反斜線 \\）
+            "backgroundImage": "C:\\Users\\您的使用者名稱\\Pictures\\您的背景圖片.png",
             
-            // [變數 2] 透明度：數值範圍為 0.0 (完全透明) 到 1.0 (完全不透明)
+            // 背景圖片透明度：數值範圍為 0.0 (完全透明) 到 1.0 (完全不透明)
             "backgroundImageOpacity": 0.15, 
             
-            // [變數 3] 圖片大小縮放模式：
-            // "uniformToFill" -> 等比例拉伸填滿視窗 (目前設定，適合當大背景)
-            // "uniform"       -> 保持原圖比例縮放，直到碰到視窗邊緣
-            // "none"          -> 保持圖片原本的原始大小，不進行縮放
+            // 圖片縮放模式："uniform" 代表保持原圖比例縮放，直到碰到視窗邊緣
             "backgroundImageStretchMode": "uniform",
             
-            // [變數 4] 圖片對齊位置：可選 "center", "left", "right", "top", "bottom"
+            // 圖片對齊位置
             "backgroundImageAlignment": "center",
 
-            // 💡 提示：如果將 StretchMode 改為 "none" 或 "uniform"，
-            // 這裡已經取消註解，可以自由自訂圖片的具體像素寬高：
+            // 若要固定圖片的具體像素寬高，可取消下方兩行註解並自訂數值：
             "backgroundImageHeight": "1600px",
             "backgroundImageWidth": "1600px"
         },
+        
+        // 3. 多環境清單：此處的 WSL 與系統環境會由 Windows Terminal 自動偵測動態生成
+        // ⚠️ 注意：以下清單僅供結構參考，複製貼上至個人電腦將無法直接使用，請保留您原本設定檔中的 list 內容。
         "list": 
         [
-            {
-                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
-                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
-                "hidden": false,
-                "name": "Windows PowerShell"
-            },
-            {
-                "commandline": "%SystemRoot%\\System32\\cmd.exe",
-                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
-                "hidden": false,
-                "name": "\u547d\u4ee4\u63d0\u793a\u5b57\u5143"
-            },
-            {
-                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
-                "hidden": false,
-                "name": "Azure Cloud Shell",
-                "source": "Windows.Terminal.Azure"
-            },
-            {
-                "guid": "{4af6b532-e771-585d-9d6c-a046937ee234}",
-                "hidden": false,
-                "name": "Ubuntu-24.04",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{8eaa6b02-91c4-56d4-9211-cad6ec54f96e}",
-                "hidden": false,
-                "name": "Ubuntu-Legacy",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{60de18b7-9498-5800-a4a0-7a6f9ac32a4b}",
-                "hidden": false,
-                "name": "Truchas_Lab_20260422",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{41afc21a-4062-511e-90fa-ed31a2d48929}",
-                "hidden": false,
-                "name": "Truchas-Lab_20260609",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{9431cfd9-cb5f-5436-8813-17bf5719831c}",
-                "hidden": false,
-                "name": "Truchas-Lab-ENG",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{e2ffec3e-52b7-55b5-8db4-0df48f9bca75}",
-                "hidden": false,
-                "name": "Truchas-Lab-CHI",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{47c07f62-b6fa-5f1e-9ce4-3580a6b21ae4}",
-                "hidden": false,
-                "name": "Truchas-Lab-CHI",
-                "source": "Microsoft.WSL"
-            },
-            {
-                "guid": "{6e2da920-8006-5b14-9aca-802210ad63a4}",
-                "hidden": false,
-                "name": "Truchas-Lab-ENG",
-                "source": "Microsoft.WSL"
-            }
+            // 您的 Windows PowerShell、命令提示字元 (CMD) 以及動態偵測到的所有 WSL Linux 散佈版會顯示於此
         ]
-    },
-    "schemes": [],
-    "themes": []
+    }
 }
+
 ```
 
 
-### 👨‍💻 若為 MAC 用戶
+### 👨‍💻 若為 MAC 用戶 (尚未測試)
 
 #### 方案 A：使用 Docker 匯入（最快、最直覺）
 
@@ -294,65 +193,12 @@ Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker
     
 2. **解壓並轉換**：您可以利用 Lima 的規格檔案（YAML），將這個 `.tar` 檔指定為虛擬機的磁碟映像來源，Lima 就會直接把這個備份還原成 Mac 上的 Linux 虛擬機環境。
 
-## WSL-GMV 開啟問題
+## 問題：GMV 開啟失敗
+在20260821後的 Truchas-WSL 已經透過設定 .bashrc 以及安裝繪圖套件來解決此問題。如果你還是遇到開啟失敗問題，請隨時讓我知道。
 
-### WSL2 GMV 匯入畫面問題排查
+The GMV launch failure has been resolved in Truchas-WSL (version 20260821 and later) by updating ~/.bashrc configuration and installing the required graphics packages. If you continue to experience this issue, please feel free to reach out.
 
-**Date**: August 15, 2026 at 02:48 AM
-**Turns**: 1
-**Source**: [Gemini Chat](https://gemini.google.com/app/922f00bb0fe88a4b?android-min-version=301356232&ios-min-version=322.0&is_sa=1&campaign_id=test_autosubmit&pt=9008&mt=8)
-
----
-
-### Turn 1
-
-#### 👤 使用者
-
-我在 WSL2移植了 GMV 軟體，並且打包整個 WSL 給其他電腦使用，為什麼有些電腦匯入後可以正常開啟 GMV，有些卻只有視窗但沒有畫面
-
-### 🤖 助理
-
-這主要是目標電腦的顯示卡驅動、OpenGL 硬體加速或 WSLg 相容性差異所導致的繪圖渲染問題。
-
-### 核心原因分析
-GMV (General Mesh Viewer) 高度依賴 **OpenGL** 進行 3D 網格與場域的繪圖渲染。當您打包 WSL2 匯入到不同電腦時，系統環境從「軟體層（Linux）」跨到了「硬體與宿主環境（Windows + 顯卡）」，常見導致「有視窗卻白屏/黑屏/無畫面」的原因有：
-
-1. **宿主電腦缺少 WSL Virtual GPU (vGPU) 驅動**
-  - WSL2 預設會透過 Mesa3D 將 OpenGL 指令轉譯給 Windows 的 GPU (DirectX 12)。若目標電腦的 Windows 顯示卡驅動太舊，或沒有安裝支援 WSL2 vGPU 的驅動程式，OpenGL 畫面就無法正常傳遞。
-2. **硬體加速渲染失敗（Direct3D 12 映射問題）**
-  - 部分整合顯示卡（例如舊款 Intel iGPU）或雙顯示卡筆電（Intel/AMD + NVIDIA）在 WSLg 的 GPU Passthrough 下，會發生繪圖 context 建立成功但無法繪製 buffer 的情況。
-3. **WSLg 與傳統 X-Server (VcXsrv/XMing) 設定衝突**
-  - 若無畫面的電腦使用的是較舊的 Windows 10（無原生 WSLg），或是環境變數 `$DISPLAY` 被指向了外部 X-Server，可能會因為 Direct Rendering (GLX) 被停用而無法顯示畫面。
-
-### 建議排查步驟
-您可以請發生問題的電腦執行以下測試，以確定是 GPU 驅動還是 OpenGL 渲染的問題：
-
-### 1. 測試 OpenGL 畫面是否能正常運作
-在 WSL2 中執行：
-
-```bash
-glxgears
-
-```
-
-- **若連齒輪畫面都沒有或同樣空白**：代表問題出在宿主電腦的 OpenGL / GPU 加速。
-- **若齒輪可以正常轉動**：代表是 GMV 專屬的 OpenGL Context 或 X11 視覺元件問題。
-
-### 2. 強制改用軟體渲染測試
-在該台電腦的 WSL2 中執行：
-
-```bash
-LIBGL_ALWAYS_SOFTWARE=1 gmv
-
-```
-
-- 如果加上 `LIBGL_ALWAYS_SOFTWARE=1` 後 **GMV 畫面就正常顯示了**，那就可以 100% 確定是該台電腦的顯示卡驅動或 WSL GPU 支援度問題。
-您可以先讓有問題的電腦嘗試上述測試，確認結果後我們再針對對應的原因調整環境設定或打包腳本！
-
----
-
-*Exported from [Voyager](https://github.com/Nagi-ovo/voyager) *  
-*Generated on August 15, 2026 at 02:48 AM*
+See also: [wsl2-gmv-import-troubleshooting](wsl2-gmv-import-troubleshooting.md)
 
 ---
 # 🔗 參考資料
