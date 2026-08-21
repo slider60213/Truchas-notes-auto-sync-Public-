@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-08-21 15:01
+modified: 2026-08-21 15:11
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -193,8 +193,10 @@ Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker
     
 2. **解壓並轉換**：您可以利用 Lima 的規格檔案（YAML），將這個 `.tar` 檔指定為虛擬機的磁碟映像來源，Lima 就會直接把這個備份還原成 Mac 上的 Linux 虛擬機環境。
 
+---
+
 ## 問題：GMV 開啟失敗
-在20260821後的 Truchas-WSL 已經透過設定 .bashrc 以及安裝繪圖套件來解決此問題。如果你還是遇到開啟失敗問題，請隨時讓我知道。
+在 20260821 後的 Truchas-WSL 已經透過設定 .bashrc 以及安裝繪圖套件來解決此問題。如果你還是遇到開啟失敗問題，請隨時讓我知道。
 
 The GMV launch failure has been resolved in Truchas-WSL (version 20260821 and later) by updating ~/.bashrc configuration and installing the required graphics packages. If you continue to experience this issue, please feel free to reach out.
 
