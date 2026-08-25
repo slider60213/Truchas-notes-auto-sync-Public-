@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-25 03:40
-modified: 2026-08-25 14:47
+modified: 2026-08-25 15:07
 tags:
   - "#Truchas"
 ---
@@ -47,6 +47,17 @@ AND !icontains(file.name, "excalidraw")
 
 
 - 從 GitHub 抓取 2.8.12 的靜態編譯版本: 下載 **cmake-2.8.12.2-Linux-i386.tar.gz**。 雖然它是 32 位元版本，但在您的 64 位元 Ubuntu 容器環境下，通常只要有相應的 32 位元相容庫，它依然可以正常運作。[聊天紀錄_編譯功能 # TURN 10](../C.%20Truchsa-WSL/02_Truchas-2.0.2/00_聊天紀錄/Gemini/移植-Truchas-編譯器版本確認/聊天紀錄_編譯功能.md#TURN%2010)
+
+<font color="#ffc000">如果專案本身完全是用 `GNUmakefile` 打造，你**完全不需要安裝 CMake**，不論是新版還是舊版都不需要。但是 packages 內的套件（PGSLib、Ubiksolve、Chaco）需要</font>
+
+
+
+
+
+
+
+
+
 
 ---
 # 🔗 參考資料
