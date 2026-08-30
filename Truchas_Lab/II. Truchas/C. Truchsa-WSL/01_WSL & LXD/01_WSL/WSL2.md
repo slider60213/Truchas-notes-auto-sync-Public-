@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-08-23 17:58
+modified: 2026-08-30 13:43
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -81,6 +81,11 @@ wsl --import Truchas-Lab D:\WSL_Truchas D:\Truchas_Parallel_Full_20260407.tar
 
 # 登入 WSL
 wsl -d Truchas-Lab
+
+# 設置成S槽
+net use S: "\\wsl.localhost\Truchas-Lab-Combo2" /persistent:yes
+
+
 ```
 
 ---
