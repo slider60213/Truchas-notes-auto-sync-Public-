@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-07-25 02:06
-modified: 2026-07-25 04:03
+modified: 2026-08-30 16:31
 tags:
   - "#Truchas"
 ---
@@ -35,7 +35,7 @@ AND !icontains(file.name, "excalidraw")
 
 ![525](pics/Pasted%20image%2020260725030110.png)
 
-![525](pics/Pasted%20image%2020260725030217.png)
+![525|900](pics/Pasted%20image%2020260725030217.png)
 
 ![525](pics/Pasted%20image%2020260725030337.png)
 
