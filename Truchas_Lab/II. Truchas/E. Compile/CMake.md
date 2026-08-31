@@ -1,7 +1,7 @@
 ---
 type: 📝 Research
 created: 2026-08-25 03:40
-modified: 2026-08-25 15:07
+modified: 2026-08-31 13:59
 tags:
   - "#Truchas"
 ---
@@ -61,6 +61,6 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 # 🔗 參考資料
-
+[實驗室機台-Truchas-移植回顧：CMake](聊天紀錄/實驗室機台-Truchas-移植回顧：CMake.md)
 
 ---
