@@ -10,7 +10,7 @@
 
 
 ## 160-WSL Comp
-[Truchas-WSL_2.5.3_Guishan_Landslide](../Truchas_Lab/II.%20Truchas/C.%20Truchsa-WSL/03_%20Truchas-2.5.3/Truchas-WSL_2.5.3_Guishan_Landslide.md)
+[Truchas-WSL_2.5.3_Guishan_Landslide](../Truchas_Lab/II.%20Truchas/C.%20Truchsa-WSL/03_Truchas-2.5.3/Truchas-WSL_2.5.3_Guishan_Landslide.md)
 [Comp_160 vs WSL_Guishan_Island](../Excalidraw/Comp_160%20vs%20WSL_Guishan_Island.md)
 To optimize computational throughput for large-scale free-surface hydrodynamic simulations, the numerical solver (Truchas) was benchmarked across hardware configurations and virtualized operating environments. The control dataset—established from previous reporting benchmarks executed on Machine 160 utilizing a 4-CPU parallel domain decomposition—served as the reference baseline ($N = 8,000$ spatial grid nodes at $t = 125.02\text{ s}$). Performance metrics and field-scale accuracy were quantitatively evaluated against three comparative groups: Machine 160 (4 CPUs, repeatability check), Machine 160 (10 CPUs, parallel scalability test), and a containerized WSL-LXD environment (10 CPUs, platform migration test).
 
