@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-09-01 13:36
+modified: 2026-09-04 03:23
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -96,58 +96,113 @@ net use S: "\\wsl.localhost\Truchas-Lab-Combo2" /persistent:yes
 notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
 ```
 
-會跳出 `setting.json` 可於其中設定 WSL 的個人配置，以下內容僅供參考，複製貼上<font color="#ffc000">// 3. 多環境清單以上</font>的部分後，更換<font color="#ffc000">**★ 請修改此處 ★**</font>的內容。
+會跳出 `setting.json` 可於其中設定 WSL 的個人配置，可讓 AI 參考以下內容來實現個人化設置。
 
 ```
 {
-    "$help": "https://aka.ms",
-    "$schema": "https://aka.ms",
-    
-    // 1. 快捷鍵設定：提升操作效率
+    "$help": "https://aka.ms/terminal-documentation",
+    "$schema": "https://aka.ms/terminal-profiles-schema",
+    "actions": 
+    [
+        {
+            "command": 
+            {
+                "action": "copy",
+                "singleLine": false
+            },
+            "id": "User.copy.644BA8F2"
+        },
+        {
+            "command": "paste",
+            "id": "User.paste"
+        },
+        {
+            "command": "find",
+            "id": "User.find"
+        },
+        {
+            "command": 
+            {
+                "action": "splitPane",
+                "split": "auto",
+                "splitMode": "duplicate"
+            },
+            "id": "User.splitPane.A6751878"
+        }
+    ],
+    "copyFormatting": "none",
+    "copyOnSelect": false,
+    "defaultProfile": "{6857d8ba-efee-56b4-9660-da230a62acb0}",
     "keybindings": 
     [
-        { "id": "User.paste", "keys": "ctrl+v" },
-        { "id": "User.find", "keys": "ctrl+shift+f" },
-        { "id": "User.copy.644BA8F2", "keys": "ctrl+c" },
-        { "id": "User.splitPane.A6751878", "keys": "alt+shift+d" } // 快速自動分割視窗
+        {
+            "id": "User.copy.644BA8F2",
+            "keys": "ctrl+c"
+        },
+        {
+            "id": "User.paste",
+            "keys": "ctrl+v"
+        },
+        {
+            "id": "User.find",
+            "keys": "ctrl+shift+f"
+        },
+        {
+            "id": "User.splitPane.A6751878",
+            "keys": "alt+shift+d"
+        }
     ],
-    
-    "actions": [
-        { "command": { "action": "splitPane", "split": "auto", "splitMode": "duplicate" }, "id": "User.splitPane.A6751878" },
-        { "command": "find", "id": "User.find" },
-        { "command": "paste", "id": "User.paste" },
-        { "command": { "action": "copy", "singleLine": false }, "id": "User.copy.644BA8F2" }
+    "newTabMenu": 
+    [
+        {
+            "type": "remainingProfiles"
+        }
     ],
-
-    // 2. 視覺外觀設定：所有終端機環境皆會自動繼承此處的視覺預設值
     "profiles": 
     {
         "defaults": 
         {
-            // ★ 請修改此處 ★ 請替換成您個人電腦中的圖片絕對路徑（注意：路徑中的斜線必須是雙反斜線 \\）
-            "backgroundImage": "C:\\Users\\您的使用者名稱\\Pictures\\您的背景圖片.png",
-            
-            // 背景圖片透明度：數值範圍為 0.0 (完全透明) 到 1.0 (完全不透明)
-            "backgroundImageOpacity": 0.15, 
-            
-            // 圖片縮放模式："uniform" 代表保持原圖比例縮放，直到碰到視窗邊緣
-            "backgroundImageStretchMode": "uniform",
-            
-            // 圖片對齊位置
+            "backgroundImage": "C:\\Users\\user\\Desktop\\LOGO_Slider_01.png",
             "backgroundImageAlignment": "center",
-
-            // 若要固定圖片的具體像素寬高，可取消下方兩行註解並自訂數值：
-            "backgroundImageHeight": "1600px",
-            "backgroundImageWidth": "1600px"
+            "backgroundImageOpacity": 0.15,
+            "backgroundImageStretchMode": "uniform"
         },
-        
-        // 3. 多環境清單：此處的 WSL 與系統環境會由 Windows Terminal 自動偵測動態生成
-        // ⚠️ 注意：以下清單僅供結構參考，複製貼上至個人電腦將無法直接使用，請保留您原本設定檔中的 list 內容。
         "list": 
         [
-            // 您的 Windows PowerShell、命令提示字元 (CMD) 以及動態偵測到的所有 WSL Linux 散佈版會顯示於此
+            {
+                "commandline": "%SystemRoot%\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "guid": "{61c54bbd-c2c6-5271-96e7-009a87ff44bf}",
+                "hidden": false,
+                "name": "Windows PowerShell"
+            },
+            {
+                "commandline": "%SystemRoot%\\System32\\cmd.exe",
+                "guid": "{0caa0dad-35be-5f56-a8ff-afceeeaa6101}",
+                "hidden": false,
+                "name": "命令提示字元"
+            },
+            {
+                "guid": "{b453ae62-4e3d-5e58-b989-0a998ec441b8}",
+                "hidden": false,
+                "name": "Azure Cloud Shell",
+                "source": "Windows.Terminal.Azure"
+            },
+            {
+                "guid": "{2ece5bfe-50ed-5f3a-ab87-5cd4baafed2b}",
+                "hidden": false,
+                "name": "Git Bash",
+                "source": "Git"
+            },
+            {
+                "guid": "{6857d8ba-efee-56b4-9660-da230a62acb0}",
+                "hidden": false,
+                "name": "Truchas_WSL_20260831",
+                "source": "Microsoft.WSL"
+            }
         ]
-    }
+    },
+    "schemes": [],
+    "themes": []
 }
 
 ```
