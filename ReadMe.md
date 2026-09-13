@@ -49,35 +49,6 @@ This repository contains multiple research components and experimental environme
 
 ---
 
-# Directory Structure
-
-```text
-.
-├── Excalidraw/
-│   └── pics/
-├── LongForm/
-│   └── 論文大綱_V01/
-├── Note Templates/
-├── Note Test/
-│   └── pics/
-├── pics/
-├── tmp/
-│   └── pics/
-└── Truchas_Lab/
-    ├── I. Research Tools/
-    │   ├── A. Softwares 推薦軟體/
-    │   ├── B. Weasel 小狼毫輸入法/
-    │   ├── C. Code Editor 程式編輯器/
-    │   └── D. AI Tools  AI 工具/
-    ├── II. Truchas/
-    │   ├── A. Research Results/
-    │   ├── B. VFIFE/
-    │   ├── C. Truchsa-WSL/
-    │   └── D. 160-Truchas-2.5.3/
-    └── III. COMCOT/
-
-```
-
 ---
 
 #  Timeline of Repo
@@ -85,7 +56,7 @@ This repository contains multiple research components and experimental environme
 
 ![](pics/timeline_vertical%208.png)
 
-![](pics/timeline_gantt.png)
+
 
 ---
 
