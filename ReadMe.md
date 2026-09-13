@@ -8,12 +8,12 @@
 |                             |                             |
 
 ### Guishan Island Lanslide
-[_Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guishan_Landslide.md)
+[_Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
 
 This figure will be available upon publication.
 
 ### Guandu Bridge Local Scour
-[_Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
+[_Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guishan_Landslide2.md)
 
 This figure will be available upon publication.
 
