@@ -4,6 +4,7 @@ consistency-report.md
 **/Guandu*.gif
 **/Guishan*.md
 **/Guandu*.md
+**/機台版_Summarize.md
 
 # 排除特定資料夾
 Doctoral dissertation/
@@ -50,6 +51,7 @@ LongForm/
 **/*_AI CHAT/
 
 
-**/機台版_*/
+
 **/02_Truchas-2.0.2/
 **/03_Truchas-2.5.3/
+**/E. Compile/
