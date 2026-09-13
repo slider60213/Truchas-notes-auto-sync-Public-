@@ -1,12 +1,11 @@
 ---
 type: 📝 Research
-created: 2026-05-27 13:33
-modified: 2026-08-12 03:57
+created: 2026-05-24 03:11
+modified: 2026-09-13 18:06
 tags:
   - "#Truchas"
 ---
-
-![](pics/龜山島%20landslide.gif)## 📂 本文關聯檔案索引
+## 📂 本文關聯檔案索引
 ```dataview
 LIST
 WHERE contains(this.file.outlinks, file.link)
@@ -37,3 +36,6 @@ AND !icontains(file.name, "excalidraw")
 
 
 ---
+
+![](pics/Buoy_Global.gif)
+![](pics/Buoy_Local.gif)
