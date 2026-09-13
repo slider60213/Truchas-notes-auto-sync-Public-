@@ -1,6 +1,9 @@
 # 排除特定筆記
 consistency-report.md
 ReadMe.md
+**/Guishan_*.gif
+**/Guandu_*.gif
+
 
 # 排除特定資料夾
 tmp/
