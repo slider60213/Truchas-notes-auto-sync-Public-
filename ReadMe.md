@@ -9,6 +9,7 @@
 
 ### Guishan Island Lanslide
 [_Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/龜山島山崩海嘯.md)
+HIDE
 
 | ![\|425](pics/Guishan_SideView.gif) | ![\|425](pics/Guishan_TopView.gif) |
 | ----------------------------------- | ---------------------------------- |
@@ -16,6 +17,7 @@
 
 ### Guandu Bridge Local Scour
 [_Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/關渡橋局部沖刷.md)
+HIDE
 
 | ![\|425](pics/image140.gif) | ![\|425](pics/image141.gif) |
 | --------------------------- | --------------------------- |
