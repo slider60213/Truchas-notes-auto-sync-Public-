@@ -6,6 +6,7 @@ consistency-report.md
 **/Guandu*.md
 
 # 排除特定資料夾
+Doctoral dissertation/
 tmp/
 copilot/
 Excalidraw/
