@@ -1,19 +1,19 @@
 #  Truchas Lab Research Showcase
 
 ### Buoy-Wave Interaction
-[_Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Buoy-Wave%20Interaction.md)
+[Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Buoy-Wave%20Interaction.md)
 
 | ![\|425](pics/Buoy_Global.gif) | ![Buoy\|425](pics/Buoy_Local.gif) |
 | --------------------------- | --------------------------- |
 |                             |                             |
 
 ### Guishan Island Lanslide
-[_Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
+[Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
 
 This figure will be available upon publication.
 
 ### Guandu Bridge Local Scour
-[_Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guishan_Landslide2.md)
+[Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guishan_Landslide2.md)
 
 This figure will be available upon publication.
 
