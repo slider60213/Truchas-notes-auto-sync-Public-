@@ -37,5 +37,5 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 
-![](pics/Buoy_Global.gif)
-![](pics/Buoy_Local.gif)
+![](../../../pics/Buoy_Global.gif)
+![](../../../pics/Buoy_Local.gif)
