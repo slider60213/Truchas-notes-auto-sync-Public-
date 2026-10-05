@@ -4,8 +4,10 @@
 [Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Buoy-Wave%20Interaction.md)
 
 | ![\|425](pics/Buoy_Global.gif) | ![Buoy\|425](pics/Buoy_Local.gif) |
-| --------------------------- | --------------------------- |
-|                             |                             |
+| ------------------------------ | --------------------------------- |
+|                                |                                   |
+### Tuchas Slider (GUI for Trucahs-WSL)
+![](pics/file-20261005130822972.png)![](pics/file-20261005130721199.png)
 
 ### Guishan Island Lanslide
 [Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
