@@ -6,7 +6,7 @@
 | ![\|425](pics/Buoy_Global.gif) | ![Buoy\|425](pics/Buoy_Local.gif) |
 | ------------------------------ | --------------------------------- |
 
-### Tuchas Slider (GUI for Trucahs-WSL)
+### Tuchas Slider (GUI with MeshViewer for Trucahs-WSL)
 ![](pics/file-20261005130822972.png)![](pics/file-20261005130721199.png)
 
 ### Guishan Island Lanslide
