@@ -7,7 +7,7 @@
 | ------------------------------ | --------------------------------- |
 
 ### 1.1.2. Tuchas Slider (GUI with MeshViewer for Trucahs-WSL)
-https://youtu.be/2wgxBXZuq6M
+* Tutorial Video: [👉 Youtube](https://youtu.be/2wgxBXZuq6M)
 ![](pics/file-20261005130822972.png)![](pics/file-20261005130721199.png)
 
 ### 1.1.3. Guishan Island Lanslide
