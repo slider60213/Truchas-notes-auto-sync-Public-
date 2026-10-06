@@ -1,4 +1,8 @@
-# 第三章 研究方法與數值模型
+---
+number headings: start-at 3
+---
+
+# 3 第三章 研究方法與數值模型
 
 ## 3.1 控制方程式 (Governing Equations)
 

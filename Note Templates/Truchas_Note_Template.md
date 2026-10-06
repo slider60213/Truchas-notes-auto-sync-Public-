@@ -1,11 +1,11 @@
 ---
 type: 📝 Research
 created: <% tp.date.now("YYYY-MM-DD HH:mm") %>
-modified: 2026-07-31 22:53
+modified: 2026-10-06 17:52
 tags:
   - "#Truchas"
 ---
-## 📂 本文關聯檔案索引
+## 0.1. 📂 本文關聯檔案索引
 ```dataview
 LIST
 WHERE contains(this.file.outlinks, file.link)
@@ -16,23 +16,23 @@ AND !icontains(file.name, "excalidraw")
 ```
 
 ---
-# 📌 摘要
+# 1. 📌 摘要
 
 
 ---
-# 🦖 以前
+# 2. 🦖 以前
 
 
 ---
-# 👨‍💻 以後
+# 3. 👨‍💻 以後
 
 
 ---
-# 📝 內容紀錄
+# 4. 📝 內容紀錄
 
 
 ---
-# 🔗 參考資料
+# 5. 🔗 參考資料
 
 
 ---
