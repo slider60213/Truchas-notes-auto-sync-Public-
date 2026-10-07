@@ -7,6 +7,7 @@ consistency-report.md
 **/機台版_Summarize.md
 
 # 排除特定資料夾
+Project/
 Doctoral dissertation/
 tmp/
 copilot/
