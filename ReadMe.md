@@ -8,7 +8,7 @@
 
 ### 1.1.2. Tuchas Slider (GUI with MeshViewer for Trucahs-WSL)
 * Tutorial Video: [👉 Youtube](https://youtu.be/2wgxBXZuq6M)
-  ![](pics/file-20261007173321801.png)
+  ![](pics/file-20261007173650505.png)
 
 ### 1.1.3. Guishan Island Lanslide
 [Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
