@@ -1,13 +1,13 @@
 ---
 type: 📝 Research
 created: 2026-05-14 01:49
-modified: 2026-08-05 01:29
+modified: 2026-10-14 03:30
 tags:
   - "#Truchas"
   - Truchas/VFIFE
 ---
 2026-04-12 17:55  
-## 📂 本文關聯檔案索引
+## 0.1. 📂 本文關聯檔案索引
 ```dataview
 LIST
 WHERE contains(this.file.outlinks, file.link)
@@ -18,21 +18,21 @@ AND !icontains(file.name, "excalidraw")
 ```
 
 ---
-# 📌 摘要
+# 1. 📌 摘要
 
 
 ---
-# 🦖 以前
+# 2. 🦖 以前
 
 
 ---
-# 👨‍💻 以後
+# 3. 👨‍💻 以後
 
 
 ---
-# 📝 內容紀錄
+# 4. 📝 內容紀錄
 
-# 註解範例：cylinder.dat
+# 5. 註解範例：cylinder.dat
 
 <font color="#ffff00">Cylinder Case: Floating Column in Waves</font> ! Title Card  
 <font color="#ffff00">356 1276 2 1 1000 1.0e-6 1.0 -1.0e-6</font> ! nnd, nel, nummat, minstp, maxstp, delta, alpha, toler  
@@ -67,15 +67,15 @@ AND !icontains(file.name, "excalidraw")
 
 ---
 
-# **第一部分：全域與控制區 (始終存在)**
+# 6. **第一部分：全域與控制區 (始終存在)**
 
-## **CARD 1: 標題卡 (Title Card)**
+## 6.1. **CARD 1: 標題卡 (Title Card)**
 
 <center><font color="#ffff00">a cantilever beam under pure bending</font>  </center>
 
 - **head**：長度為 80 個字元的字串，用於定義模擬案例的名稱（如範例中的 Cylinder Case）,。
 
-## **CARD 2: 全域控制參數 (General Control)**
+## 6.2. **CARD 2: 全域控制參數 (General Control)**
   
   
 <center><font color="#ffff00">356  1276 2   1	1000	1.0e-6  1.0  -1.0e-6 </font>	</center>	  
@@ -88,7 +88,7 @@ AND !icontains(file.name, "excalidraw")
 - **alpha <font color="#ffff00">1.0</font>**：質量阻尼係數。用於數值穩定，壓制固體運動的震盪。
 - **toler <font color="#ffff00">-1.0e-6</font>**：收斂容許誤差。判斷固體位移計算是否達成數值平衡。
 
-## **CARD 3: 力/位移控制卡 (Force/Displacement Control)**
+## 6.3. **CARD 3: 力/位移控制卡 (Force/Displacement Control)**
   
 <center><font color="#ffff00">1  0  1  0  0	0</font></center>  
 
@@ -109,7 +109,7 @@ AND !icontains(file.name, "excalidraw")
 		  
 - **isequel <font color="#ffff00">0</font>**：續算指標。1 代表從上一個工作檔案（DMP 檔）讀取位移與塑性數據進行續算,。
 
-## **CARD 4: 輸出控制卡 (Output Control)**
+## 6.4. **CARD 4: 輸出控制卡 (Output Control)**
   
 <center><font color="#ffff00">1000  1000000  1  0  2  1.  0</font></center>  
 
@@ -122,14 +122,14 @@ AND !icontains(file.name, "excalidraw")
 - **thick <font color="#ffff00">1.</font>**：分析厚度。定義二維結構在第三維度的名目厚度。
 - **icontact <font color="#ffff00">0</font>**：接觸條件指標。決定是否啟用塊體間的邊界接觸演算法。
 
-## **CARD 5: (遺失/跳過)**
+## 6.5. **CARD 5: (遺失/跳過)**
   
 - 在 `SOLID_module.F90` 的 `readata1` 中，程式碼從 1800 格式讀完後直接標記 `CARD 6` 註解並開始讀取節點。
   
 ---
-# **第二部分：幾何與材料定義區 (始終存在)**
+# 7. **第二部分：幾何與材料定義區 (始終存在)**
 
-## **CARD 6: 節點數據 (Node Data)**
+## 7.1. **CARD 6: 節點數據 (Node Data)**
   
 <center><font color="#ffff00">1 0.2024 0.2028 0.0438 0 0 0</font></center>  
 
@@ -137,7 +137,7 @@ AND !icontains(file.name, "excalidraw")
 - **X, Y, Z <font color="#ffff00">0.2024 0.2028 0.0438</font>**：節點在三維空間的初始座標值。
 - **ifixX, ifixY, ifixZ <font color="#ffff00">0 0 0</font>**：位移約束旗標。1 為固定（Fixed），0 為自由（Free）。
 
-## **CARD 7: 單元幾何數據 (Element Data)**
+## 7.2. **CARD 7: 單元幾何數據 (Element Data)**
   
 <center><font color="#ffff00">1 1 2 3 4 1 10 1 1 1</font></center>  
 
@@ -148,7 +148,7 @@ AND !icontains(file.name, "excalidraw")
 	-  `mat-mdl` 選項是決定「應力計算公式」的開關。目前代碼中明確定義了 **10（線性彈性）** 與 **20（黏彈性）**，其餘數值則預留給**彈塑性（Non-linear Plasticity）**計算，並要求使用者補全對應的強度常數
 - **row, col, layer <font color="#ffff00">1 1 1</font>**：幾何排列索引。用於描述單元在結構中的拓樸方位。
 
-## **CARD 8: 材料特性 (Material Property)**
+## 7.3. **CARD 8: 材料特性 (Material Property)**
   
 <center><font color="#ffff00">1 1 256.34 1e10 0.35 0.0</font></center>
 
@@ -162,7 +162,7 @@ AND !icontains(file.name, "excalidraw")
 - **Poisson <font color="#ffff00">0.35</font>**：帕松比 (ν)。
 - **Relaxation <font color="#ffff00">0.0</font>**：鬆弛時間 (τ)。用於黏彈性模型計算。
 
-## CARD 9: 進階屬性
+## 7.4. CARD 9: 進階屬性
 
  <center><font color="#ffff00">10. 10. 0. 0.</font></center>
 
@@ -173,8 +173,8 @@ AND !icontains(file.name, "excalidraw")
 - **Hardening <font color="#ffff00">0.</font>**：硬化參數 $\beta$。
 
 ---
-# **第三部分：受力歷史區 (取決於 CARD 3 的設定)**
-## **CARD 10 & 11: Body force (依照 ifbody)**
+# 8. **第三部分：受力歷史區 (取決於 CARD 3 的設定)**
+## 8.1. **CARD 10 & 11: Body force (依照 ifbody)**
   
 <center><font color="#ffff00">3</font></center>
 <center><font color="#ffff00">0.0 9.81 0.1 9.81 50.0 9.81</font></center>
@@ -187,12 +187,12 @@ AND !icontains(file.name, "excalidraw")
 - **Time, Gravity-Z <font color="#ffff00">0.0 9.81</font>**：定義重力值隨時間變動的數值對。
 
 
-## CARD 12~14: Ground Acceleration (iacc)
+## 8.2. CARD 12~14: Ground Acceleration (iacc)
 
 - `nptsX`, `nptsY`, `g`: X/Y 向點數、重力倍率。隨後讀取對應的加速度歷時。
 - 目前 iacc = 0，因此dat檔中沒有對應的區段。
 
-## **CARD 15-18: 任意力載重 (依照 iforce2)**
+## 8.3. **CARD 15-18: 任意力載重 (依照 iforce2)**
   
 <center><font color="#ffff00">1 2</font></center>
 <center><font color="#ffff00">11</font></center> 
@@ -212,17 +212,17 @@ AND !icontains(file.name, "excalidraw")
     - **物理行為**：這是在模擬中「主動」對結構施加能量。這兩行告訴電腦：在節點 1 和節點 2 的 **X 方向**（代碼 1），掛載你剛才定義的那組 **第 1 號力歷時曲線**。
 
 
-## CARD 19～20 (依照 iforce3)
+## 8.4. CARD 19～20 (依照 iforce3)
 - `nnaf3`: 點數。隨後讀取 `ID`, `Dir`, `Amp`, `Freq`。
 - 目前 iforce3 = 0，因此dat檔中沒有對應的區段。
 
-## CARD 21～24 (依照 iforce4)
+## 8.5. CARD 21～24 (依照 iforce4)
 - `kf4`, `nnaf4`: 歷時點數、受力點數。隨後讀取攪拌力歷時與中心定義。
 - 目前 iforce4 = 0，因此dat檔中沒有對應的區段。
 
 ---
-# **第四部分：數據請求區 (取決於 CARD 4 的 numout)**
-## **CARD 25: 輸出請求 (Output Request)**
+# 9. **第四部分：數據請求區 (取決於 CARD 4 的 numout)**
+## 9.1. **CARD 25: 輸出請求 (Output Request)**
 
 <center><font color="#ffff00">13 0 1</font></center>
 
@@ -232,7 +232,7 @@ AND !icontains(file.name, "excalidraw")
 
 
 ---
-# 🔗 參考資料
+# 10. 🔗 參考資料
 
 
 ---
