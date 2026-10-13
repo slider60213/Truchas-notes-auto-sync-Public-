@@ -10,7 +10,7 @@
 <video src="https://github.com/user-attachments/assets/0576f3e3-3318-4b76-847b-24e10f2a4e4e" autoplay loop muted playsinline width="100%">
 </video>
   
-*  Download: [Truchas Slider]([https://youtu.be/2wgxBXZuq6M](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Trucahs_Slider))   
+*  Download: [Truchas Slider](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Trucahs_Slider)
 * Tutorial Video: [👉 Youtube](https://youtu.be/2wgxBXZuq6M)  
 
 
