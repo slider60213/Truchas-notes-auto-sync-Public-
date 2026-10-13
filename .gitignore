@@ -1,3 +1,6 @@
+# 特例（還是要上傳的）
+!/pics/Truchas_Slider_Video_20261013.mp4
+
 # 排除特定筆記
 consistency-report.md
 **/Guishan*.gif
@@ -50,8 +53,6 @@ LongForm/
 
 # 忽略所有名稱以 _AI CHAT 結尾的資料夾（包含內部所有層級）
 **/*_AI CHAT/
-
-
 
 **/02_Truchas-2.0.2/
 **/03_Truchas-2.5.3/
