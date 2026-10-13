@@ -7,7 +7,8 @@
 | ------------------------------ | --------------------------------- |
 
 ### 1.1.2. Tuchas Slider (GUI with MeshViewer for Trucahs-WSL)
-https://github.com/user-attachments/assets/0576f3e3-3318-4b76-847b-24e10f2a4e4e
+<video src="https://github.com/user-attachments/assets/0576f3e3-3318-4b76-847b-24e10f2a4e4e" autoplay loop muted playsinline width="100%">
+</video>
 * Tutorial Video: [👉 Youtube](https://youtu.be/2wgxBXZuq6M)
 
 
