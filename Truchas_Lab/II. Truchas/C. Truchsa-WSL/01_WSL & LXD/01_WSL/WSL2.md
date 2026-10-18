@@ -4,13 +4,13 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-09-04 03:23
+modified: 2026-10-19 00:58
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
   - 電腦/WINDOWS/LXD
 ---
-# 📂 本文關聯檔案索引
+# 1. 📂 本文關聯檔案索引
 ```dataview
 LIST
 WHERE contains(this.file.outlinks, file.link)
@@ -19,22 +19,22 @@ AND !icontains(file.name, ".jpg")
 AND !icontains(file.name, ".pdf")
 AND !icontains(file.name, "excalidraw")
 ```
-# 📌 摘要與目標
+# 2. 📌 摘要與目標
 
 
-# 📝 內容紀錄
-## WSL 是什麼?
+# 3. 📝 內容紀錄
+## 3.1. WSL 是什麼?
 
 WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是微軟開發的一項 Windows 內建功能，讓使用者能在 Windows 電腦上直接執行 Linux 環境。它省去了過去需要安裝個別虛擬機（如 VMware、VirtualBox）或設定雙系統的麻煩，讓開發人員可以同時享受 Windows 的日常便利與 Linux 的強大開發工具。 [[1](https://learn.microsoft.com/zh-tw/windows/wsl/about)]
 
-### 💡 核心優點與特色
+### 3.1.1. 💡 核心優點與特色
 
 - **無縫整合**：Windows 與 Linux 的檔案系統相互打通，可以直接在 Windows 讀取 Linux 檔案。
 - **資源消耗極低**：比傳統虛擬機更輕量，啟動通常只需幾秒鐘。
 - **支援主流發行版**：可直接透過 [Microsoft Store](https://learn.microsoft.com/zh-tw/windows/wsl/about) 安裝 Ubuntu、Debian、Kali Linux 等多種系統。
 - **GPU 加速**：支援顯卡直通，可直接在 WSL 裡跑深度學習或機器訓練。
 
-### 🛠️ 可以用來做什麼？
+### 3.1.2. 🛠️ 可以用來做什麼？
 
 - 執行常用的 Linux 終端機指令（如 `grep`、`sed`、`awk`）。
 - 執行 Bash 腳本與各類程式語言環境（如 Python、Node.js、Rust、Go、C++）。
@@ -42,7 +42,7 @@ WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是�
 - 亦可以針對不同研究主題設置 [(LXD vs Docker ?)](../../02_Truchas-2.0.2/pics/LXD_Docker_.venv.md)
 - 使用 Linux 套件管理工具（如 `apt`）一鍵下載安裝各式軟體。 
 
-### 🔄 WSL 1 與 WSL 2 的差別
+### 3.1.3. 🔄 WSL 1 與 WSL 2 的差別
 
 微軟目前主要推薦使用 **WSL 2**，兩者架構有顯著不同： [[1](https://learn.microsoft.com/zh-tw/windows/wsl/compare-versions)]
 
@@ -52,7 +52,7 @@ WSL（Windows Subsystem for Linux，適用於 Linux 的 Windows 子系統）是�
 | **執行效能**                                                                                                                                                                                                                                           | 檔案系統存取效能較慢                    | 檔案系統存取極快，提升數倍             |
 | **相容性**                                                                                                                                                                                                                                            | 無法執行需要完整內核的軟體（如 Docker）       | 100% 完整 Linux 系統相容性       |
 
-### 🚀 如何快速安裝？
+### 3.1.4. 🚀 如何快速安裝？
 
 ![](pics/Pasted%20image%2020260818235636.png)
 
@@ -68,7 +68,7 @@ wsl --install
 安裝完成後依提示重啟電腦，系統預設會自動幫你裝好最新版的 [Ubuntu](https://learn.microsoft.com/zh-tw/windows/wsl/install) 環境。 [[1](https://learn.microsoft.com/zh-tw/windows/wsl/install)]
 
 
-### 💼 匯出/匯入整個 WSL
+### 3.1.5. 💼 匯出/匯入整個 WSL
 ```
 # 先關閉 WSL 確保資料完整
 wsl --shutdown
@@ -90,7 +90,7 @@ net use S: "\\wsl.localhost\Truchas-Lab-Combo2" /persistent:yes
 
 ---
 
-### 🎨 個人化設定
+### 3.1.6. 🎨 個人化設定
 透過 power shell 輸入
 ```
 notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
@@ -208,9 +208,9 @@ notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\Local
 ```
 
 
-### 👨‍💻 若為 MAC 用戶 (尚未測試)
+### 3.1.7. 👨‍💻 若為 MAC 用戶 (尚未測試)
 
-#### 方案 A：使用 Docker 匯入（最快、最直覺）
+#### 3.1.7.1. 方案 A：使用 Docker 匯入（最快、最直覺）
 
 Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker 映像檔（Image），並直接啟動。
 
@@ -237,7 +237,7 @@ Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker
     
     _注意：因為 WSL 本身就是一個完整的系統，裡面可能帶有一些不必要的 init 服務，但這種方式能讓您最快在 Mac 裡面看到原本的檔案與軟體。_
 
-#### 方案 B：使用 Lima 虛擬機還原（最接近原本 WSL 的體驗）
+#### 3.1.7.2. 方案 B：使用 Lima 虛擬機還原（最接近原本 WSL 的體驗）
 
 如果您希望像原本 WSL 一樣，擁有一個獨立的 Linux 虛擬機，而且能在裡面繼續操作 LXD，可以用 **Lima** 來載入這個根檔案系統：
 
@@ -255,7 +255,7 @@ Mac 上的 Docker 可以直接把 WSL 導出的 `.tar` 檔匯入成一個 Docker
 
 ---
 
-## 問題：GMV 開啟失敗
+## 3.2. 問題：GMV 開啟失敗
 在 20260821 後的 Truchas-WSL 已經透過設定 .bashrc 以及安裝繪圖套件來解決此問題。如果你還是遇到開啟失敗問題，請隨時讓我知道。
 
 The GMV launch failure has been resolved in Truchas-WSL (version 20260821 and later) by updating ~/.bashrc configuration and installing the required graphics packages. If you continue to experience this issue, please feel free to reach out.
@@ -263,4 +263,4 @@ The GMV launch failure has been resolved in Truchas-WSL (version 20260821 and la
 See also: [wsl2-gmv-import-troubleshooting](wsl2-gmv-import-troubleshooting.md)
 
 ---
-# 🔗 參考資料
+# 4. 🔗 參考資料
