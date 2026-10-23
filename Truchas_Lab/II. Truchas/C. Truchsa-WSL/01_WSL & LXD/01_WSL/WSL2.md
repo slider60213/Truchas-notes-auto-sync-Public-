@@ -4,7 +4,7 @@ project: Truchas-Lab
 status: 🟢 Active
 type: 📝 Research
 created: 2026-05-13 00:23
-modified: 2026-10-19 00:58
+modified: 2026-10-23 14:28
 tags:
   - 電腦/WINDOWS/WSL
   - 電腦/Linux
@@ -91,6 +91,31 @@ net use S: "\\wsl.localhost\Truchas-Lab-Combo2" /persistent:yes
 ---
 
 ### 3.1.6. 🎨 個人化設定
+透過 power shell 輸入 `notepad $PROFILE`
+新增以下內容：
+```
+# WSL 動態補齊：依目前已安裝的發行版名稱補完 -d / --distribution
+Register-ArgumentCompleter -Native -CommandName wsl,wsl.exe -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+
+    if ($commandAst.ToString() -notmatch '(?i)(?:^|\s)(?:-d|--distribution)\s+\S*$') {
+        return
+    }
+
+    wsl.exe --list --quiet 2>$null | ForEach-Object {
+        $name = ($_ -replace "`0", '').Trim() -replace '^\*\s*', ''
+        if ($name -and $name.StartsWith(
+            $wordToComplete,
+            [System.StringComparison]::OrdinalIgnoreCase
+        )) {
+            [System.Management.Automation.CompletionResult]::new(
+                $name, $name, 'ParameterValue', $name
+            )
+        }
+    }
+}
+```
+
 透過 power shell 輸入
 ```
 notepad $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
