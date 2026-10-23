@@ -1,0 +1,11 @@
+Research manuscript and dissertation preparation
+
+Authorized source materials: the reports and presentations explicitly listed in the user's request; research notes and dissertation drafts inside the specified Truchas vault; existing manuscripts in the specified submission directory.
+
+Outputs requested: English Guishan Island manuscript (.md and .docx), English Guandu Bridge manuscript (.md and .docx), and a new English dissertation draft in Doctoral dissertation_GPT. Existing source files will be preserved.
+
+Processing: Codex bundled document tools, expressly authorized by the user on 24 October 2026. Temporary extraction and rendering files remain in the task workspace. External literature checking uses remote web tools.
+
+Gemini: The requested Edge window was found, but the computer-use safety mechanism stopped access because it could not reliably determine the browser URL. No manuscript text has been sent to Gemini. Browser safety restrictions will not be bypassed.
+
+Status: All eight listed report/presentation sources are readable and have been parsed. The original dissertation has nine chapter files and an existing integrated draft. This file verifies write access to the two requested output destinations; it is not a manuscript or a claim of completion.
