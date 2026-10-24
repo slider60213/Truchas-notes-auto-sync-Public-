@@ -1,6 +1,6 @@
-# Chapter 5 Guishan Island Landslide and Tsunami Scenarios
+# 1. Chapter 5 Guishan Island Landslide and Tsunami Scenarios
 
-## 5.1 Introduction
+## 1.1. Introduction
 
 Guishan Island lies approximately 10 km offshore of the Yilan Plain in northeastern Taiwan. Its volcanic terrain and adjacent submarine slopes provide a setting in which flank instability can generate waves close to an inhabited coast. Geological and geophysical studies document the island's structural complexity and offshore mass movements (Huang, 2018; Deffontaines et al., 2022). The relevant hazard question is how the geometry and mobility of a plausible failure translate into a tsunami source. A mapped deposit is valuable evidence, but it records the outcome of mass transport rather than the complete acceleration and water-displacement history.
 
@@ -10,9 +10,9 @@ The problem also spans different numerical scales. A three-dimensional source mo
 
 This study addresses three connected questions. Which material configurations reproduce the broad MTD3 footprint? How do density and material-interface treatment change the simulated source behavior? How do a transferred surface field and idealized directional sources affect regional elevation patterns? We examine these questions through a sequence of source experiments and regional scenarios, retaining the distinction between deposit consistency and independent validation. The resulting interpretation emphasizes the mechanisms supported by the calculations and the uncertainties that limit reconstruction of a unique event.
 
-## 5.2 Methods
+## 1.2. Methods
 
-### 5.2.1 Deposit geometry and source reconstruction
+### 1.2.1. Deposit geometry and source reconstruction
 
 The geological framework follows the northern-flank investigation of Huang (2018), which used bathymetric and acoustic observations to distinguish mass transport deposits. The simulations focus on MTD3. Deposit thickness is subtracted from the contemporary bathymetry to approximate the substrate before deposition. This operation restores a candidate basal surface. It does not recover erosion during motion, the original distribution of all failed material, or changes unrelated to the modeled event.
 
@@ -20,7 +20,7 @@ The reconstructed source is defined from the difference between present terrain 
 
 The initial source experiments use x = −1000 to 4000 m, y = −2000 to 3000 m, and z = −300 to 400 m. The documented uniform mesh comprises 100 × 100 × 70 cells, corresponding to spacings of 50, 50, and 10 m. The initial water surface is z = 0 m. The bottom is no-slip, the upper boundary has zero prescribed pressure, and lateral boundaries are free-slip walls. These boundaries and the coarse initial mesh constrain interpretation of late-time source motion and outgoing waves. The regional calculation is a separate stage and is not assigned this source-domain mesh.
 
-### 5.2.2 Three-dimensional flow and material representation
+### 1.2.2. Three-dimensional flow and material representation
 
 Splash3D solves the incompressible multiphase Navier–Stokes equations using a finite-volume formulation. Material volume fractions describe the distribution of air, water, and mobile material. In compact notation, the governing conservation statements are
 
@@ -52,7 +52,7 @@ The strain-rate invariant must be defined consistently with the stress tensor wh
 
 Guishan Island samples collected on 17 June 2023 were measured with a rotational viscometer. Their measured stress–rate relationship did not follow a simple Newtonian or Bingham idealization, and the project used a fitted viscosity–rate curve for the sample-based configuration. We refer to this configuration as the sample-based rheological case, identified as DBM in the project results. This terminology does not imply that a continuous empirical fit is mathematically identical to the piecewise constitutive law. The precise implemented curve and its low-rate regularization require confirmation from the simulation inputs because the report's printed equation and figure annotation differ.
 
-### 5.2.3 Sensitivity experiments and diagnostic quantities
+### 1.2.3. Sensitivity experiments and diagnostic quantities
 
 Constant dynamic viscosities of 10⁻³, 10⁵, and 10⁸ Pa s bracket mobile, intermediate, and nearly immobile behavior. They are numerical sensitivity cases rather than independently measured material states. Material densities of 2000 and 4000 kg/m³ are compared. The higher density is an extreme sensitivity bound and is not presented as an estimate of the bulk density of the deposit.
 
@@ -60,7 +60,7 @@ Motion is compared at three visually identified stages: first spreading to the o
 
 The third-year experiments compare the original DBM-PLIC treatment with a DBM-Diffused treatment at 2000 kg/m³. Fifteen virtual gauges occupy the combinations x = 1000, 1500, and 2000 m and y = −500, −250, 0, 250, and 500 m. The comparison uses surface-elevation timing and excursions. Because the diffuse treatment changes material fractions near the interface, a difference in an extracted water surface may include a measurement-definition effect as well as a dynamical effect.
 
-### 5.2.4 Regional and directional scenarios
+### 1.2.4. Regional and directional scenarios
 
 The regional calculations use COMCOT, a tsunami propagation and inundation model. In the transferred-field experiment, a Splash3D surface-elevation snapshot at t = 10 s is converted from Cartesian to geographical coordinates, geometrically aligned with the receiving bathymetry, and interpolated onto the regional grid. The documented procedure transfers elevation. A transfer of depth-integrated momentum has not been established in the available methodological record. The experiment is therefore interpreted as propagation from an imposed surface state rather than a fully demonstrated conservative coupling of two solvers.
 
@@ -68,9 +68,9 @@ A second experiment family places an idealized source at eight positions around 
 
 The regional figure ordinate identifies the output as maximum free-surface elevation. We retain that quantity when reporting regional maxima. It differs from crest-to-trough wave height, run-up above a coastal datum, and inland flow depth. No conversion among these quantities is assumed.
 
-## 5.3 Results
+## 1.3. Results
 
-### 5.3.1 Material mobility and deposit consistency
+### 1.3.1. Material mobility and deposit consistency
 
 At 2000 kg/m³, the low-viscosity experiment spreads to the mapped boundary at approximately 35 s, reaches the intermediate settling stage at 90 s, and occupies the mapped area at 265 s. The sample-based rheological case reaches the same stages at approximately 35, 110, and 280 s (Table 5.1). Both reproduce the broad direction and eventual extent of the mapped deposit, despite their different constitutive descriptions.
 
@@ -91,7 +91,7 @@ Table 5.1. Snapshot-based stages of material motion.
 | Sample-based case | 2000 | 35 | 110 | 280 |
 | Sample-based case | 4000 | 40 | 70 | 150 |
 
-### 5.3.2 Source-region surface response
+### 1.3.2. Source-region surface response
 
 The material enters the water near the reconstructed opening and spreads over the shallow portion of the slope before settling into deeper water. The source calculation shows an initial depression near the entry region and an outward positive disturbance. A later rebound at the source reaches approximately 30 m at about 175 s in the representative sequence. These values describe a local three-dimensional response and should not be substituted for a regional coastal maximum.
 
@@ -99,7 +99,7 @@ Across the density and rheology experiments, some gauge maxima reach approximate
 
 With DBM-Diffused enabled, positive and negative surface excursions are generally reduced while their main timing remains similar to the DBM-PLIC results. The reduction is more apparent in the intermediate-viscosity comparison. In the highly viscous diffusive case, a gauge near the opening records a late disturbance after approximately 500 s, associated with material reaching the water-entry region. The source report notes that local water fractions may fall below the 0.5 criterion used to identify the surface. Consequently, the reduced gauge response cannot yet be attributed entirely to physical mixing or enhanced energy dissipation.
 
-### 5.3.3 Regional elevations and source direction
+### 1.3.3. Regional elevations and source direction
 
 The COMCOT experiment initialized from the three-dimensional snapshot produces a reported maximum of approximately 30 m in waters adjacent to the source and around 15 m in part of the island's northeastern coastal area. Selected island gauges reach approximately 9 m. These outputs have different spatial supports: a maximum over a mapped domain need not coincide with a maximum sampled at a limited set of gauges.
 
@@ -107,34 +107,34 @@ At the mainland reference stations, the plotted maximum surface elevations reach
 
 The eight idealized directional scenarios likewise produce strong spatial differences. Their largest island-adjacent values remain close to their imposed sources and are reported to exceed 40 m. Selected mainland stations reach elevations of order 1 m, with some regional maxima near 1.5 m. Because source location and orientation vary together, these experiments establish sensitivity to their combined configuration. They do not isolate an azimuth-only effect or demonstrate that direction dominates every other uncertain source parameter.
 
-## 5.4 Discussion
+## 1.4. Discussion
 
-### 5.4.1 What the deposit constrains
+### 1.4.1. What the deposit constrains
 
 The mapped MTD3 footprint helps reject nearly immobile configurations within the adopted source geometry. Its main contribution is to constrain the eventual reach and direction of mobile material. Similar footprint occupation in the sample-based and low-viscosity cases shows that this constraint is insufficient to identify a unique constitutive relation. Different densities also alter the chronology without necessarily eliminating broad spatial agreement.
 
 This non-uniqueness matters for tsunami reconstruction. Two sources can arrive at similar final deposits after displacing water at different rates. The present comparison therefore supports a family of mobile reconstructions. Stronger discrimination would require deposit-thickness residuals, mass-balance checks, source-geometry ensembles, and observations independent of the footprint used for comparison. A uniformly successful reconstruction of MTD3 thickness is not established by visual footprint agreement.
 
-### 5.4.2 Interface and model-transfer uncertainty
+### 1.4.2. Interface and model-transfer uncertainty
 
 The diffuse-interface comparison exposes a second uncertainty: the observable itself depends on how mixed cells are interpreted. If the gauge follows a selected volume-fraction isosurface, spreading the interface can move that isosurface without an equivalent change in a uniquely defined water boundary. Testing several thresholds, examining vertical water-fraction profiles, and checking material-volume conservation would help separate this effect from a change in the wave dynamics. A smaller extracted crest alone does not establish a more accurate source calculation.
 
 The regional transfer introduces additional assumptions. At t = 10 s the landslide-generated disturbance is still evolving. An elevation-only initialization may omit momentum and later forcing. Geometrical scaling and rotation also need to preserve the intended length and amplitude units. Until those operations and the receiving grid are fully documented, the regional maxima should be treated as conditional scenario results. They identify potentially affected sectors but do not establish a calibrated inundation forecast.
 
-### 5.4.3 Implications for scenario assessment
+### 1.4.3. Implications for scenario assessment
 
 The useful outcome is a structured separation of uncertainties. Material behavior influences the source motion, interface treatment influences both dynamics and extracted surface elevations, and source placement influences regional patterns. These factors should be varied and evaluated with observables appropriate to each stage. No event probability, recurrence interval, or warning lead time can be assigned from the present scenario set alone.
 
 For Guishan Island, the modeled contrast between strong local disturbances and lower but spatially variable mainland elevations motivates continued source investigation. The numerical values are conditional on the reconstructed geometry and imposed fields. Their practical use is to guide where improved bathymetry, deposit characterization, and source-transfer validation would most reduce uncertainty.
 
-## 5.5 Conclusions
+## 1.5. Conclusions
 
 Within the adopted reconstruction, mobile constant-viscosity and sample-based rheological cases reproduce the broad MTD3 footprint, whereas the most viscous original-interface cases do not. Their similar final extent does not determine a unique material rheology. Increasing density delays initial lateral spreading but accelerates subsequent settling and footprint occupation in the mobile cases.
 
 The diffusive material treatment generally reduces recorded surface excursions while retaining their main timing. The dependence of surface extraction on material fraction prevents interpreting this reduction solely as physical damping. Regional calculations produce selected Yilan maximum elevations approaching 1.5 m, and idealized source scenarios demonstrate sensitivity to combined location and orientation. These findings support conditional hazard scenarios and identify the measurements and numerical checks needed for a defensible historical reconstruction.
 
 
-## 5.6 Figures
+## 1.6. Figures
 
 
 ![Reconstructed substrate obtained by removing mapped MTD3 thickness](pics/G1_27.png)

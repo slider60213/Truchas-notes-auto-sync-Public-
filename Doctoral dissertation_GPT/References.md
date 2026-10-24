@@ -1,4 +1,4 @@
-# References
+# 1. References
 
 Baykal C, Sumer BM, Fuhrman DR, Jacobsen NG, Fredsøe J (2015) Numerical investigation of flow and scour around a vertical circular cylinder. Philosophical Transactions of the Royal Society A 373:20140104. https://doi.org/10.1098/rsta.2014.0104
 
