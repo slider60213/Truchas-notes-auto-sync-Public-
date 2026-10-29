@@ -6,15 +6,9 @@
 | ![\|425](pics/Buoy_Global.gif) | ![Buoy\|425](pics/Buoy_Local.gif) |
 | ------------------------------ | --------------------------------- |
 
-### 1.1.2. Tuchas Slider (GUI with MeshViewer for Trucahs-WSL)
-<video src="https://github.com/user-attachments/assets/0576f3e3-3318-4b76-847b-24e10f2a4e4e" autoplay loop muted playsinline width="100%">
-</video>
-  
-*  Download: [Truchas Slider](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Trucahs_Slider)
-* Tutorial Video: [👉 Youtube](https://youtu.be/2wgxBXZuq6M)  
 
 
-### 1.1.3. Guishan Island Lanslide
+### 1.1.2. Guishan Island Lanslide
 [Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
 
 
@@ -22,13 +16,21 @@
 
 This page will be available upon publication.
 
-### 1.1.4. Guandu Bridge Local Scour
+### 1.1.3. Guandu Bridge Local Scour
 [Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guishan_Landslide2.md)
 
 ![](pics/file-20261030054651462.gif)
 
 This page will be available upon publication.
 
+
+
+### 1.1.4. Tuchas Slider (GUI with MeshViewer for Trucahs-WSL)
+<video src="https://github.com/user-attachments/assets/0576f3e3-3318-4b76-847b-24e10f2a4e4e" autoplay loop muted playsinline width="100%">
+</video>
+  
+*  Download: [Truchas Slider](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Trucahs_Slider)
+* Tutorial Video: [👉 Youtube](https://youtu.be/2wgxBXZuq6M)  
 ---
 
 # 2. Release Structure
