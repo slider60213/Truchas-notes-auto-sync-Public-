@@ -16,7 +16,9 @@
 
 ### 1.1.3. Guishan Island Lanslide
 [Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
-![](pics/image.gif)
+
+![](pics/file-20261029152709909.gif)
+
 
 This page will be available upon publication.
 
