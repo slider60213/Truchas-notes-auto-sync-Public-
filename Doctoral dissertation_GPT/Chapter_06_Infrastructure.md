@@ -1,6 +1,6 @@
-# Chapter 6 Containerized Deployment and Numerical Consistency
+# 1. Chapter 6 Containerized Deployment and Numerical Consistency
 
-## 6.1 Deployment problem and design rationale
+## 1.1. Deployment problem and design rationale
 
 The laboratory workflow historically combines a customized Linux solver with Windows-based preparation and visualization. This arrangement preserves access to specialized physical modules but introduces dependencies on particular compilers, libraries, file formats, and operational knowledge. Development notes describe cross-system line-ending problems, incompatible library architectures, input-parser changes, and repeated output-conversion steps. These are concrete sources of execution friction, although their frequency and cost have not been measured systematically.
 
@@ -8,7 +8,7 @@ The migration strategy packages a compatible Linux userspace in LXD and operates
 
 The alternative of adopting current upstream Truchas would require a separate reconciliation of input conventions, code changes, and laboratory extensions. The upstream project remains relevant for comparison, but a common project name does not make two code histories interchangeable. The present work therefore examines preservation and assessment of the laboratory version. It does not establish that this is the only viable modernization route.
 
-## 6.2 Dependency and architecture issues
+## 1.2. Dependency and architecture issues
 
 Build notes identify Chaco, PGSLib, Ubiksolve, an MPI implementation, and legacy compiler or parser dependencies. The migration must maintain agreement among their binary interfaces. Mixing 32-bit and 64-bit libraries can prevent linking or lead to incompatible assumptions about integer and address sizes. The label 64-bit must therefore be defined carefully: executable architecture, integer width, addressability, and floating-point precision are different properties.
 
@@ -16,7 +16,7 @@ The notes describe changes to source syntax, compiler handling of nested calls o
 
 Container export and import can preserve an environment image. To make that image scientifically useful, its identity must be recorded together with the case manifest and executable checksum. A container that can start is an operational artifact; a container that can reproduce a specified result with documented tolerances is a stronger research artifact. These are separate milestones.
 
-## 6.3 Recorded timing experiment
+## 1.3. Recorded timing experiment
 
 The benchmark note uses a Guishan configuration with 100 × 80 × 70 cells, or 560000 cells in total. It records material density 2000 kg/m³, constant viscosity 10⁻³ Pa s, and an output interval of 5 s. This grid differs from the 100 × 100 × 70 initial source grid described in Chapter 5. The timing record is therefore treated as a distinct benchmark configuration and is not assigned retrospectively to every physical result.
 
@@ -39,7 +39,7 @@ Within Machine 160, increasing the recorded worker count from four to ten gives 
 
 The four-worker cross-platform ratio is 846/348 = 2.43, while the ten-worker ratio is 337/267 = 1.26. Their difference further cautions against a single statement about virtualization speed. A controlled comparison would use the same hardware, equivalent builds and inputs, fixed output placement, explicit worker binding, and repeated runs. It would separately report initialization, solver, and output costs if those phases can be measured reliably.
 
-## 6.4 Reported field comparison
+## 1.4. Reported field comparison
 
 The draft comparison uses the legacy four-worker field as a numerical reference. It describes 8000 horizontal samples at a selected time of approximately 125.02 s. For the ten-worker WSL comparison, the note reports MAE = 0.0204 m, RMSE = 0.3420 m, mean difference = 0.0041 m, and R² = 0.9953. It also reports 99.00% of sampled differences below 0.10 m and a maximum absolute difference of 15.0 m at approximately (1025, −875) m.
 
@@ -49,7 +49,7 @@ The notes propose wetting–drying or interface reconstruction as an explanation
 
 A later note labeled DBM-64bit reports R² = 0.9918 for a comparison associated with a different output index. It is not pooled with the earlier R² = 0.9953 result. Their case identities, output times, constitutive settings, and masks must be reconciled before a joint conclusion is made. The 64-bit label also does not establish that the same floating-point precision changed between the compared runs.
 
-## 6.5 A reproducible migration assessment
+## 1.5. A reproducible migration assessment
 
 The next assessment should start with a case that can be executed in every environment with exactly identified inputs. One comparison should retain worker count while changing environment; another should retain environment while changing worker count. A third can assess the architecture transition with consistent libraries and an explicit precision specification. Repeated timings would quantify variability and reveal initialization or file-system effects.
 
@@ -59,7 +59,7 @@ Field differences should be evaluated globally and near the quantities of intere
 
 Acceptance tolerances should be set according to intended use before examining all differences. A tolerance adequate for visualizing an offshore wave field may be inadequate for a threshold decision at one gauge. Numerical reproducibility is therefore best stated as agreement within a defined tolerance for a defined case and observable. Exact bitwise equality is a separate, stronger requirement and is not assumed here.
 
-## 6.6 Findings and limitations
+## 1.6. Findings and limitations
 
 The deployment records demonstrate that the customized platform can execute in the recorded WSL/LXD workflow and that selected configurations reach the benchmark output faster than the legacy reference. The timing table provides a useful baseline for further controlled tests. The reported field summaries also support substantial similarity over much of one sampled surface field.
 
