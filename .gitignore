@@ -11,7 +11,7 @@ consistency-report.md
 
 # 排除特定資料夾
 Project/
-Doctoral dissertation/
+Doctoral*/
 tmp/
 copilot/
 Excalidraw/
