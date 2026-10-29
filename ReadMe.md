@@ -24,8 +24,9 @@ This page will be available upon publication.
 
 ### 1.1.4. Guandu Bridge Local Scour
 [Method: DBM (Discontinuous Bi-viscous Model)  ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guishan_Landslide2.md)
-![](pics/file-20261029152413954.png)
 
+
+![](pics/file-20261030051751240.png)
 This page will be available upon publication.
 
 ---
