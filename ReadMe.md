@@ -18,7 +18,7 @@
 [Method: DBM (Discontinuous Bi-viscous Model) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Guandu_Local_Scour.md)
 
 
-![](pics/file-20261030053716440.gif)
+![](pics/file-20261030055237080.gif)
 
 This page will be available upon publication.
 
