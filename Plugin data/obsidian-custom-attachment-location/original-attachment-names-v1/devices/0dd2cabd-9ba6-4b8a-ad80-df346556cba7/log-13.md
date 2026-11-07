@@ -1,0 +1,3 @@
+```json
+[{"deleted":false,"key":"1b069796-f4a3-40fd-b4e1-730774adc94e","value":{"fileName":"CFD_DOI_English_Liu_Wu_2004.png","kind":"arrival","path":"Doctoral dissertaion GPT V2/ZH-TW/pics/file-20261106023125291.png","time":1793903485324},"counter":0,"device":"0dd2cabd-9ba6-4b8a-ad80-df346556cba7","sequence":13,"tags":[],"time":1793903486351},{"deleted":false,"key":"a56c6f2e-6fba-46af-bbfa-bb53f5979051","value":{"kind":"source","originalPath":"C:\\Users\\user\\Desktop\\CFD_DOI_English_Liu_Wu_2004.png","path":"Doctoral dissertaion GPT V2/ZH-TW/pics/file-20261106023125291.png","time":1793903485327},"counter":1,"device":"0dd2cabd-9ba6-4b8a-ad80-df346556cba7","sequence":14,"tags":[],"time":1793903486351}]
+```
