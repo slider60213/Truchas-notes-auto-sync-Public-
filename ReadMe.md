@@ -2,7 +2,7 @@
 
 ## 1.1. SLIDER LANL MS3 (Android App for CFD)
 
-[👉 Try it]([https://youtu.be/2wgxBXZuq6M](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Slider_LANL_MS3))  
+- *Latest Download:* [👉 Try it]([https://youtu.be/2wgxBXZuq6M](https://github.com/slider60213/Truchas-notes-auto-sync-Public-/releases/tag/Slider_LANL_MS3))  
 <div align="center">
   <video src="https://github.com/user-attachments/assets/dbea3a65-cf09-451e-83f4-a927057e5f8f" width="720" controls></video>
   <p><sub>Full-screen Results on Android</sub></p>
