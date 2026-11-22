@@ -1,6 +1,6 @@
 # 1. Truchas Lab Research Showcase
 
-## Landscape demo
+## 1.1. SLIDER LANL MS3 (Android App for CFD)
 
 <div align="center">
   <video src="https://github.com/user-attachments/assets/dbea3a65-cf09-451e-83f4-a927057e5f8f" width="720" controls></video>
