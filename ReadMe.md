@@ -1,5 +1,7 @@
 # 1. Truchas Lab Research Showcase
 
+<video src="https://github.com/user-attachments/assets/dbea3a65-cf09-451e-83f4-a927057e5f8f" width="720" controls></video>
+
 ### 1.1.1. Buoy-Wave Interaction
 [Method: VFIFE (Vector Form Intrinsic Finite Element) ](Truchas_Lab/II.%20Truchas/A.%20Research%20Results/Buoy-Wave%20Interaction.md)
 
